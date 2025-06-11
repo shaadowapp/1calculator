@@ -41,6 +41,58 @@
         android:paddingVertical="12dp">
 
         <!-- Row 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_sqrt"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:text="√"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_margin="12dp"
+            android:backgroundTint="#9C27B0"
+            app:cornerRadius="36dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_power"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:text="^"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_margin="12dp"
+            android:backgroundTint="#9C27B0"
+            app:cornerRadius="36dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_pi"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:text="π"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_margin="12dp"
+            android:backgroundTint="#A1A1A1"
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+            app:cornerRadius="36dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_factorial"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:text="!"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_margin="12dp"
+            android:backgroundTint="#9C27B0"
+            app:cornerRadius="36dp" />
+    </LinearLayout>
+
+        <!--Row 2-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,7 +148,7 @@
                 app:cornerRadius="36dp" />
         </LinearLayout>
 
-        <!-- Row 2 -->
+        <!-- Row 3 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -149,7 +201,7 @@
                 app:cornerRadius="36dp" />
         </LinearLayout>
 
-        <!-- Row 3 -->
+        <!-- Row 4 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -202,7 +254,7 @@
                 app:cornerRadius="36dp" />
         </LinearLayout>
 
-        <!-- Row 4 -->
+        <!-- Row 5 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -255,7 +307,7 @@
                 app:cornerRadius="36dp" />
         </LinearLayout>
 
-        <!-- Row 5 -->
+        <!-- Row 6 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

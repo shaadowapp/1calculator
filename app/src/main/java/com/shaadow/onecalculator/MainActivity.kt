@@ -1,129 +1,103 @@
 package com.shaadow.onecalculator
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.Scriptable
+import com.shaadow.onecalculator.parser.Expression
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity() {
 
-    private lateinit var resultTv: TextView
     private lateinit var solutionTv: TextView
-
-    private var bracketToggleState = true // true = "(", false = ")"
+    private lateinit var resultTv: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        resultTv = findViewById(R.id.result_tv)
         solutionTv = findViewById(R.id.solution_tv)
+        resultTv = findViewById(R.id.result_tv)
 
-        assignId(R.id.button_backspace)
-        assignId(R.id.button_bracket)
-        assignId(R.id.button_percent)
-        assignId(R.id.button_divide)
-        assignId(R.id.button_multiply)
-        assignId(R.id.button_plus)
-        assignId(R.id.button_minus)
-        assignId(R.id.button_equals)
-        assignId(R.id.button_0)
-        assignId(R.id.button_1)
-        assignId(R.id.button_2)
-        assignId(R.id.button_3)
-        assignId(R.id.button_4)
-        assignId(R.id.button_5)
-        assignId(R.id.button_6)
-        assignId(R.id.button_7)
-        assignId(R.id.button_8)
-        assignId(R.id.button_9)
-        assignId(R.id.button_ac)
-        assignId(R.id.button_dot)
-    }
+        val buttons = listOf(
+            R.id.button_0, R.id.button_1, R.id.button_2, R.id.button_3, R.id.button_4,
+            R.id.button_5, R.id.button_6, R.id.button_7, R.id.button_8, R.id.button_9,
+            R.id.button_plus, R.id.button_minus, R.id.button_multiply, R.id.button_divide,
+            R.id.button_dot, R.id.button_percent, R.id.button_bracket,
+            R.id.button_sqrt, R.id.button_power, R.id.button_factorial, R.id.button_pi
+        )
 
-    private fun assignId(id: Int) {
-        findViewById<MaterialButton>(id).setOnClickListener(this)
-    }
+        for (id in buttons) {
+            val button = findViewById<MaterialButton>(id)
+            button.setOnClickListener {
+                val currentText = solutionTv.text.toString()
+                val newText = currentText + button.text.toString()
+                solutionTv.text = newText
 
-    override fun onClick(view: View) {
-        val button = view as MaterialButton
-        val buttonText = button.text.toString()
-        var dataToCalculate = solutionTv.text.toString()
-
-        when (button.id) {
-
-            R.id.button_ac -> {
-                solutionTv.text = ""
-                resultTv.text = "0"
-                return
-            }
-
-            R.id.button_equals -> {
-                solutionTv.text = resultTv.text
-                return
-            }
-
-            R.id.button_backspace -> {
-                if (dataToCalculate.isNotEmpty()) {
-                    dataToCalculate = dataToCalculate.dropLast(1)
-                }
-            }
-
-            R.id.button_bracket -> {
-                val openCount = dataToCalculate.count { it == '(' }
-                val closeCount = dataToCalculate.count { it == ')' }
-
-                dataToCalculate += if (openCount > closeCount) ")" else "("
-            }
-
-            R.id.button_percent -> {
-                // Convert percent to division by 100 for JS engine compatibility
-                dataToCalculate += "/100"
-            }
-
-            else -> {
-                dataToCalculate += buttonText
-            }
-        }
-
-        solutionTv.text = dataToCalculate
-
-        val finalResult = getResult(dataToCalculate)
-        if (finalResult !== "Error") {
-            resultTv.text = finalResult
-        } else {
-            resultTv.text = "..."
-        }
-
-    }
-
-    private fun getResult(expression: String): String {
-        if (expression.isBlank()) return ""
-
-        val rhino = Context.enter()
-        rhino.optimizationLevel = -1
-        return try {
-            val scope: Scriptable = rhino.initStandardObjects()
-            val result = rhino.evaluateString(scope, expression, "JavaScript", 1, null)
-
-            if (result == Context.getUndefinedValue()) {
-                ""
-            } else {
-                val resultStr = result.toString()
-                if (resultStr.endsWith(".0")) {
-                    resultStr.dropLast(2) // remove ".0"
+                // Only try to evaluate if expression is valid (does not end in an operator)
+                val expressionToEvaluate = convertSymbolsToOperators(newText)
+                if (isExpressionComplete(expressionToEvaluate)) {
+                    try {
+                        val result = Expression.calculate(expressionToEvaluate)
+                        resultTv.text = result.toString()
+                    } catch (e: Exception) {
+                        resultTv.text = ""
+                    }
                 } else {
-                    resultStr
+                    resultTv.text = ""
                 }
             }
         }
-        catch (e: Exception) {
-            "Error"
-        } finally {
-            Context.exit()
+
+        findViewById<MaterialButton>(R.id.button_ac).setOnClickListener {
+            solutionTv.text = ""
+            resultTv.text = "0"
         }
+
+        findViewById<MaterialButton>(R.id.button_backspace).setOnClickListener {
+            val text = solutionTv.text.toString()
+            if (text.isNotEmpty()) {
+                val updatedText = text.substring(0, text.length - 1)
+                solutionTv.text = updatedText
+
+                val expressionToEvaluate = convertSymbolsToOperators(updatedText)
+                if (isExpressionComplete(expressionToEvaluate)) {
+                    try {
+                        val result = Expression.calculate(expressionToEvaluate)
+                        resultTv.text = result.toString()
+                    } catch (e: Exception) {
+                        resultTv.text = ""
+                    }
+                } else {
+                    resultTv.text = ""
+                }
+            }
+        }
+
+        findViewById<MaterialButton>(R.id.button_equals).setOnClickListener {
+            val expression = solutionTv.text.toString()
+            val formattedExpression = convertSymbolsToOperators(expression)
+            try {
+                val result = Expression.calculate(formattedExpression)
+                resultTv.text = result.toString()
+            } catch (e: Exception) {
+                resultTv.text = "Error"
+            }
+        }
+    }
+
+    private fun convertSymbolsToOperators(expression: String): String {
+        return expression
+            .replace("×", "*")
+            .replace("÷", "/")
+            .replace("π", "pi")
+            .replace("√", "√") // assuming your parser handles √ directly
+            .replace("^", "^")
+            .replace("%", "%")
+    }
+
+    // Check if expression ends with a valid number, pi, or closing bracket
+    private fun isExpressionComplete(expression: String): Boolean {
+        return expression.isNotEmpty() &&
+                (expression.last().isDigit() || expression.last() == ')' || expression.endsWith("pi"))
     }
 }
