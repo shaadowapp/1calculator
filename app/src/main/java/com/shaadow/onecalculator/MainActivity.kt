@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         for (id in buttons) {
             val button = findViewById<MaterialButton>(id)
+
             button.setOnClickListener {
                 val currentText = solutionTv.text.toString()
                 val newText = currentText + button.text.toString()
