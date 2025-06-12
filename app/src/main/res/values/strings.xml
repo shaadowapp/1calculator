@@ -31,4 +31,5 @@
     <string name="initial_result_text_description">Result</string>
     <string name="btn_0_text_description">0</string>
     <string name="error_text">Error</string>
+    <string name="e_button_description">e</string>
 </resources>
