@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     try {
                         val result = Expression.calculate(expressionToEvaluate)
                         resultTv.text = result.toString()
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         resultTv.text = ""
                     }
                 } else {
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                     try {
                         val result = Expression.calculate(expressionToEvaluate)
                         resultTv.text = result.toString()
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         resultTv.text = ""
                     }
                 } else {
@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity() {
             try {
                 val result = Expression.calculate(formattedExpression)
                 resultTv.text = result.toString()
-            } catch (e: Exception) {
-                resultTv.text = "Error"
+            } catch (_: Exception) {
+                resultTv.text = getString(R.string.error_text)
             }
         }
     }

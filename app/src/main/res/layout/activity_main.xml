@@ -75,7 +75,8 @@
             android:text="@string/_0"
             android:textAlignment="textEnd"
             android:textColor="@android:color/white"
-            android:textSize="48sp" />
+            android:textSize="48sp"
+            android:contentDescription="@string/initial_result_text_description"/>
     </LinearLayout>
 
 
@@ -106,7 +107,8 @@
                 app:icon="@drawable/ic_sqrt"
                 app:iconSize="29dp"
                 app:iconTint="@color/white"
-                app:iconGravity="textStart" />
+                app:iconGravity="textStart"
+                android:contentDescription="@string/square_root_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_power"
@@ -120,7 +122,8 @@
                 app:iconTint="@color/white"
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
-                app:iconGravity="textStart" />
+                app:iconGravity="textStart"
+                android:contentDescription="@string/power_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_pi"
@@ -134,7 +137,8 @@
                 app:iconTint="@color/white"
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
-                app:iconGravity="textStart" />
+                app:iconGravity="textStart"
+                android:contentDescription="@string/pi_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_factorial"
@@ -148,7 +152,8 @@
                 app:iconTint="@color/white"
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
-                app:iconGravity="textStart" />
+                app:iconGravity="textStart"
+                android:contentDescription="@string/factorial_button_description"/>
         </LinearLayout>
 
 
@@ -173,7 +178,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/brackets_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_percent"
@@ -189,7 +195,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/percent_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_backspace"
@@ -205,7 +212,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/backspace_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_divide"
@@ -221,7 +229,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/divide_button_description"/>
         </LinearLayout>
 
         <!-- Row 3 -->
@@ -281,7 +290,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/multiply_button_description"/>
         </LinearLayout>
 
         <!-- Row 4 -->
@@ -341,7 +351,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/plus_button_description"/>
         </LinearLayout>
 
         <!-- Row 5 -->
@@ -401,7 +412,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/minus_button_description"/>
         </LinearLayout>
 
         <!-- Row 6 -->
@@ -433,7 +445,8 @@
                 android:layout_margin="12dp"
                 style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
                 app:cornerRadius="36dp"
-                android:backgroundTint="#121212" />
+                android:backgroundTint="#121212"
+                android:contentDescription="@string/btn_0_text_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_dot"
@@ -449,7 +462,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/dot_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_equals"
@@ -465,7 +479,8 @@
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
                 app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton" />
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/equals_button_description"/>
         </LinearLayout>
 
     </LinearLayout>

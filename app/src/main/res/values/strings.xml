@@ -14,4 +14,21 @@
     <string name="_2">2</string>
     <string name="_3">3</string>
     <string name="ac">AC</string>
+    <!-- Add descriptions for your icon buttons -->
+    <string name="square_root_button_description">Square root</string>
+    <string name="power_button_description">Power</string>
+    <string name="pi_button_description">Pi</string>
+    <string name="factorial_button_description">Factorial</string>
+    <string name="brackets_button_description">Brackets</string>
+    <string name="percent_button_description">Percent</string>
+    <string name="backspace_button_description">Backspace</string>
+    <string name="divide_button_description">Divide</string>
+    <string name="multiply_button_description">Multiply</string>
+    <string name="minus_button_description">Minus</string>
+    <string name="equals_button_description">Equal</string>
+    <string name="plus_button_description">Plus</string>
+    <string name="dot_button_description">Dot</string>
+    <string name="initial_result_text_description">Result</string>
+    <string name="btn_0_text_description">0</string>
+    <string name="error_text">Error</string>
 </resources>
