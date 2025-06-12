@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
             R.id.button_0, R.id.button_1, R.id.button_2, R.id.button_3, R.id.button_4,
             R.id.button_5, R.id.button_6, R.id.button_7, R.id.button_8, R.id.button_9,
             R.id.button_plus, R.id.button_minus, R.id.button_multiply, R.id.button_divide,
-            R.id.button_dot, R.id.button_percent, R.id.button_bracket,
+            R.id.button_dot, R.id.button_percent, R.id.button_brackets,
             R.id.button_sqrt, R.id.button_power, R.id.button_factorial, R.id.button_pi
         )
 
