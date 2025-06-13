@@ -100,9 +100,9 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_sqrt"
                 android:layout_width="65dp"
-                android:layout_height="55dp"
+                android:layout_height="40dp"
                 android:layout_margin="6dp"
-                android:background="#000"
+                app:backgroundTint="#000000"
                 android:textColor="@color/white"
                 app:icon="@drawable/ic_sqrt"
                 app:iconSize="29dp"
@@ -114,9 +114,9 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_power"
                 android:layout_width="65dp"
-                android:layout_height="55dp"
+                android:layout_height="40dp"
                 android:layout_margin="6dp"
-                android:background="#000"
+                app:backgroundTint="#000000"
                 android:textColor="@color/white"
                 app:icon="@drawable/ic_power"
                 app:iconSize="26dp"
@@ -130,12 +130,12 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_pi"
                 android:layout_width="65dp"
-                android:layout_height="55dp"
+                android:layout_height="40dp"
                 android:layout_margin="6dp"
-                android:background="#000"
+                app:backgroundTint="#000000"
                 android:textColor="@color/white"
                 app:icon="@drawable/ic_pi"
-                app:iconSize="27dp"
+                app:iconSize="26dp"
                 app:iconTint="@color/white"
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
@@ -146,9 +146,9 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_factorial"
                 android:layout_width="65dp"
-                android:layout_height="55dp"
+                android:layout_height="40dp"
                 android:layout_margin="6dp"
-                android:background="#000"
+                app:backgroundTint="#000000"
                 android:textColor="@color/white"
                 app:icon="@drawable/ic_factorial"
                 app:iconSize="30dp"
@@ -162,12 +162,12 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_e"
                 android:layout_width="65dp"
-                android:layout_height="55dp"
+                android:layout_height="40dp"
                 android:layout_margin="6dp"
-                android:background="#000"
+                app:backgroundTint="#000000"
                 android:textColor="@color/white"
                 app:icon="@drawable/ic_e"
-                app:iconSize="28dp"
+                app:iconSize="26dp"
                 app:iconTint="@color/white"
                 android:paddingStart="11dp"
                 android:paddingEnd="0dp"
@@ -219,23 +219,6 @@
                 android:contentDescription="@string/percent_button_description"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_backspace"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_margin="12dp"
-                app:cornerRadius="36dp"
-                android:backgroundTint="#FF9800"
-                android:textColor="@color/white"
-                app:icon="@drawable/ic_backspace"
-                app:iconSize="32dp"
-                app:iconTint="@color/white"
-                android:paddingStart="11dp"
-                android:paddingEnd="0dp"
-                app:iconGravity="textStart"
-                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-                android:contentDescription="@string/backspace_button_description"/>
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_divide"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
@@ -251,6 +234,23 @@
                 app:iconGravity="textStart"
                 style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
                 android:contentDescription="@string/divide_button_description"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_backspace"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_margin="12dp"
+                app:cornerRadius="36dp"
+                android:backgroundTint="#F44336"
+                android:textColor="@color/white"
+                app:icon="@drawable/ic_backspace"
+                app:iconSize="34dp"
+                app:iconTint="@color/white"
+                android:paddingStart="11dp"
+                android:paddingEnd="0dp"
+                app:iconGravity="textStart"
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:contentDescription="@string/backspace_button_description"/>
         </LinearLayout>
 
         <!-- Row 3 -->
@@ -449,7 +449,7 @@
                 android:layout_height="75dp"
                 android:text="@string/ac"
                 android:textColor="@color/white"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:layout_margin="12dp"
                 android:backgroundTint="#F44336"
                 style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"

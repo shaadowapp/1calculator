@@ -1,12 +1,15 @@
 package com.shaadow.onecalculator
 
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.shaadow.onecalculator.parser.Expression
+import com.shaadow.onecalculator.parser.Expression.insertImplicitMultiplication
 
 class MainActivity : AppCompatActivity() {
+    private var isResultShown = false
 
     private lateinit var solutionTv: TextView
     private lateinit var resultTv: TextView
@@ -23,23 +26,43 @@ class MainActivity : AppCompatActivity() {
             R.id.button_5, R.id.button_6, R.id.button_7, R.id.button_8, R.id.button_9,
             R.id.button_plus, R.id.button_minus, R.id.button_multiply, R.id.button_divide,
             R.id.button_dot, R.id.button_percent, R.id.button_brackets,
-            R.id.button_sqrt, R.id.button_power, R.id.button_factorial, R.id.button_pi
+            R.id.button_sqrt, R.id.button_power, R.id.button_factorial,
+            R.id.button_pi, R.id.button_e
         )
 
         for (id in buttons) {
             val button = findViewById<MaterialButton>(id)
-
             button.setOnClickListener {
-                val currentText = solutionTv.text.toString()
-                val newText = currentText + button.text.toString()
-                solutionTv.text = newText
+                val input = when (id) {
+                    R.id.button_multiply -> "×"
+                    R.id.button_divide -> "÷"
+                    R.id.button_plus -> "+"
+                    R.id.button_minus -> "-"
+                    R.id.button_percent -> "%"
+                    R.id.button_sqrt -> "√"
+                    R.id.button_power -> "^"
+                    R.id.button_factorial -> "!"
+                    R.id.button_pi -> "π"
+                    R.id.button_e -> "e"
+                    R.id.button_dot -> "."
+                    R.id.button_brackets -> getNextBracket(solutionTv.text.toString())
+                    else -> button.text.toString()
+                }
 
-                // Only try to evaluate if expression is valid (does not end in an operator)
-                val expressionToEvaluate = convertSymbolsToOperators(newText)
+                if (isResultShown) {
+                    solutionTv.text = resultTv.text.toString().removeSuffix(".0")
+                    isResultShown = false
+                }
+
+                solutionTv.visibility = View.VISIBLE
+                resultTv.textSize = 36f
+                appendToExpression(input)
+
+                val expressionToEvaluate = convertSymbolsToOperators(solutionTv.text.toString())
                 if (isExpressionComplete(expressionToEvaluate)) {
                     try {
                         val result = Expression.calculate(expressionToEvaluate)
-                        resultTv.text = result.toString()
+                        resultTv.text = result.toString().removeSuffix(".0")
                     } catch (_: Exception) {
                         resultTv.text = ""
                     }
@@ -52,19 +75,21 @@ class MainActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.button_ac).setOnClickListener {
             solutionTv.text = ""
             resultTv.text = "0"
+            solutionTv.visibility = View.VISIBLE
+            resultTv.textSize = 36f
+            isResultShown = false
         }
 
         findViewById<MaterialButton>(R.id.button_backspace).setOnClickListener {
             val text = solutionTv.text.toString()
             if (text.isNotEmpty()) {
-                val updatedText = text.substring(0, text.length - 1)
-                solutionTv.text = updatedText
+                solutionTv.text = text.dropLast(1)
 
-                val expressionToEvaluate = convertSymbolsToOperators(updatedText)
+                val expressionToEvaluate = convertSymbolsToOperators(solutionTv.text.toString())
                 if (isExpressionComplete(expressionToEvaluate)) {
                     try {
                         val result = Expression.calculate(expressionToEvaluate)
-                        resultTv.text = result.toString()
+                        resultTv.text = result.toString().removeSuffix(".0")
                     } catch (_: Exception) {
                         resultTv.text = ""
                     }
@@ -79,26 +104,47 @@ class MainActivity : AppCompatActivity() {
             val formattedExpression = convertSymbolsToOperators(expression)
             try {
                 val result = Expression.calculate(formattedExpression)
-                resultTv.text = result.toString()
+                resultTv.text = result.toString().removeSuffix(".0")
+                solutionTv.visibility = View.GONE
+                resultTv.textSize = 50f
+                isResultShown = true
             } catch (_: Exception) {
                 resultTv.text = getString(R.string.error_text)
             }
         }
     }
 
+    private fun appendToExpression(value: String) {
+        val current = solutionTv.text.toString()
+        val updated = getString(R.string.expression_append, current, value)
+        solutionTv.text = updated
+    }
+
     private fun convertSymbolsToOperators(expression: String): String {
-        return expression
+        val converted = expression
             .replace("×", "*")
             .replace("÷", "/")
             .replace("π", "pi")
-            .replace("√", "√") // assuming your parser handles √ directly
+            .replace("√", "sqrt")
             .replace("^", "^")
             .replace("%", "%")
+            .replace("!", "!")
+            .replace("e", "e")
+
+        return insertImplicitMultiplication(converted)
     }
 
-    // Check if expression ends with a valid number, pi, or closing bracket
     private fun isExpressionComplete(expression: String): Boolean {
         return expression.isNotEmpty() &&
-                (expression.last().isDigit() || expression.last() == ')' || expression.endsWith("pi"))
+                (expression.last().isDigit() ||
+                        expression.last() == ')' ||
+                        expression.endsWith("pi") ||
+                        expression.endsWith("e"))
+    }
+
+    private fun getNextBracket(expression: String): String {
+        val open = expression.count { it == '(' }
+        val close = expression.count { it == ')' }
+        return if (open > close) ")" else "("
     }
 }

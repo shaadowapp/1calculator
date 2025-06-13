@@ -1,127 +1,172 @@
-/**
- * Copyright © 2025 Shaadow Platforms
- * All rights reserved.
- *
- * This file is part of the proprietary app "My Calculator" developed by Shaadow Platforms.
- * Unauthorized use, reproduction, or distribution is strictly prohibited.
- * For learning purposes, permission must be requested at: suryasubhrajit@gmail.com
- * Website: https://shaadowplatforms.com
- */
-
 package com.shaadow.onecalculator.parser
 
-import java.math.BigDecimal
-import java.math.MathContext
-import java.math.RoundingMode
-import java.util.Stack
-import kotlin.math.sqrt
-import kotlin.math.pow
+import kotlin.math.*
 
 object Expression {
-
-    // Public method accessible from MainActivity
-    fun calculate(expression: String): String {
-        return try {
-            val result = evaluateExpression(expression)
-            formatResult(result)
-        } catch (e: Exception) {
-            "Error"
-        }
+    fun calculate(expression: String): Double {
+        val sanitized = sanitize(expression)
+        val withMultiplication = insertImplicitMultiplication(sanitized)
+        val postfix = infixToPostfix(withMultiplication)
+        return evaluatePostfix(postfix)
     }
 
-    // Internal evaluator returns BigDecimal
-    private fun evaluateExpression(expr: String): BigDecimal {
-        val output = Stack<BigDecimal>()
-        val operators = Stack<Char>()
+    private fun sanitize(expr: String): String {
+        return expr
+            .replace("−", "-")
+            .replace("×", "*")
+            .replace("÷", "/")
+            .replace("π", Math.PI.toString())
+            .replace("e", Math.E.toString())
+    }
 
-        var i = 0
-        while (i < expr.length) {
-            when (val c = expr[i]) {
-                in '0'..'9', '.' -> {
-                    val number = StringBuilder()
-                    while (i < expr.length && (expr[i].isDigit() || expr[i] == '.')) {
-                        number.append(expr[i])
-                        i++
-                    }
-                    output.push(BigDecimal(number.toString()))
-                    continue
-                }
-                '+', '-', '*', '/', '^' -> {
-                    while (operators.isNotEmpty() && precedence(operators.peek()) >= precedence(c)) {
-                        output.push(applyOperator(operators.pop(), output.pop(), output.pop()))
-                    }
-                    operators.push(c)
-                }
-                '(' -> operators.push(c)
-                ')' -> {
-                    while (operators.peek() != '(') {
-                        output.push(applyOperator(operators.pop(), output.pop(), output.pop()))
-                    }
-                    operators.pop() // pop '('
-                }
-                '√' -> {
-                    i++
-                    val number = StringBuilder()
-                    while (i < expr.length && (expr[i].isDigit() || expr[i] == '.')) {
-                        number.append(expr[i])
-                        i++
-                    }
-                    val value = BigDecimal(number.toString())
-                    output.push(BigDecimal(sqrt(value.toDouble()), MathContext.DECIMAL64))
-                    continue
-                }
-                '%' -> {
-                    val value = output.pop()
-                    output.push(value.divide(BigDecimal(100), MathContext.DECIMAL64))
-                }
-                '!' -> {
-                    val value = output.pop().toInt()
-                    output.push(BigDecimal(factorial(value)))
-                }
-                'π' -> {
-                    if (output.isNotEmpty()) {
-                        val prev = output.pop()
-                        output.push(prev.multiply(BigDecimal(Math.PI, MathContext.DECIMAL64)))
-                    } else {
-                        output.push(BigDecimal(Math.PI, MathContext.DECIMAL64))
-                    }
+    internal fun insertImplicitMultiplication(expr: String): String {
+        val sb = StringBuilder()
+        for (i in expr.indices) {
+            sb.append(expr[i])
+
+            if (i < expr.length - 1) {
+                val curr = expr[i]
+                val next = expr[i + 1]
+
+                if ((curr.isDigit() || curr == ')' || curr == '!') &&
+                    (next == '(' || next == '√' || next.isLetter() || next == 'π' || next == 'e')) {
+                    sb.append("*")
                 }
 
+                if ((curr == ')' || curr.isLetter() || curr == 'π' || curr == 'e') &&
+                    (next.isDigit() || next == '(' || next == '√')) {
+                    sb.append("*")
+                }
             }
-            i++
         }
-
-        while (operators.isNotEmpty()) {
-            output.push(applyOperator(operators.pop(), output.pop(), output.pop()))
-        }
-
-        return output.pop()
+        return sb.toString()
     }
 
-    private fun precedence(op: Char): Int = when (op) {
-        '+', '-' -> 1
-        '*', '/' -> 2
-        '^' -> 3
-        else -> -1
-    }
-
-    private fun applyOperator(op: Char, b: BigDecimal, a: BigDecimal): BigDecimal {
+    private fun precedence(op: String): Int {
         return when (op) {
-            '+' -> a.add(b)
-            '-' -> a.subtract(b)
-            '*' -> a.multiply(b)
-            '/' -> a.divide(b, 10, RoundingMode.HALF_UP)
-            '^' -> BigDecimal(a.toDouble().pow(b.toDouble()), MathContext.DECIMAL64)
-            else -> BigDecimal.ZERO
+            "+", "-" -> 1
+            "*", "/", "%" -> 2
+            "^" -> 3
+            "√", "!" -> 4
+            else -> 0
         }
     }
 
-    private fun factorial(n: Int): Long {
-        require(n >= 0) { "Factorial is undefined for negative numbers." }
-        return if (n == 0 || n == 1) 1 else n * factorial(n - 1)
+    private fun isOperator(token: String): Boolean {
+        return token in listOf("+", "-", "*", "/", "%", "^", "√", "!")
     }
 
-    private fun formatResult(result: BigDecimal): String {
-        return result.stripTrailingZeros().toPlainString()
+    private fun infixToPostfix(expression: String): List<String> {
+        val output = mutableListOf<String>()
+        val stack = mutableListOf<String>()
+        val tokens = tokenize(expression)
+
+        for (token in tokens) {
+            when {
+                token.isDouble() -> output.add(token)
+                token == "(" -> stack.add(token)
+                token == ")" -> {
+                    while (stack.isNotEmpty() && stack.last() != "(") {
+                        output.add(stack.removeAt(stack.size - 1))
+                    }
+                    if (stack.isNotEmpty() && stack.last() == "(") {
+                        stack.removeAt(stack.size - 1)
+                    }
+                }
+                isOperator(token) -> {
+                    while (stack.isNotEmpty() && precedence(token) <= precedence(stack.last())) {
+                        output.add(stack.removeAt(stack.size - 1))
+                    }
+                    stack.add(token)
+                }
+            }
+        }
+
+        while (stack.isNotEmpty()) {
+            output.add(stack.removeAt(stack.size - 1))
+        }
+
+        return output
+    }
+
+    private fun evaluatePostfix(postfix: List<String>): Double {
+        val stack = mutableListOf<Double>()
+
+        for (token in postfix) {
+            when {
+                token.isDouble() -> stack.add(token.toDouble())
+                token == "+" -> {
+                    val b = stack.removeAt(stack.lastIndex)
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(a + b)
+                }
+                token == "-" -> {
+                    val b = stack.removeAt(stack.lastIndex)
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(a - b)
+                }
+                token == "*" -> {
+                    val b = stack.removeAt(stack.lastIndex)
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(a * b)
+                }
+                token == "/" -> {
+                    val b = stack.removeAt(stack.lastIndex)
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(a / b)
+                }
+                token == "%" -> {
+                    val b = stack.removeAt(stack.lastIndex)
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(a % b)
+                }
+                token == "^" -> {
+                    val b = stack.removeAt(stack.lastIndex)
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(a.pow(b))
+                }
+                token == "√" -> {
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(sqrt(a))
+                }
+                token == "!" -> {
+                    val a = stack.removeAt(stack.lastIndex)
+                    stack.add(factorial(a.toInt()))
+                }
+            }
+        }
+
+        return stack.lastOrNull() ?: 0.0
+    }
+
+    private fun tokenize(expr: String): List<String> {
+        val tokens = mutableListOf<String>()
+        var num = ""
+
+        for (ch in expr) {
+            when {
+                ch.isDigit() || ch == '.' -> num += ch
+                ch in "+-*/%^()√!" -> {
+                    if (num.isNotEmpty()) {
+                        tokens.add(num)
+                        num = ""
+                    }
+                    tokens.add(ch.toString())
+                }
+                else -> throw IllegalArgumentException("Invalid character: $ch")
+            }
+        }
+        if (num.isNotEmpty()) tokens.add(num)
+
+        return tokens
+    }
+
+    private fun String.isDouble(): Boolean {
+        return this.toDoubleOrNull() != null
+    }
+
+    private fun factorial(n: Int): Double {
+        require(n >= 0) { "Factorial of negative number is undefined" }
+        return if (n == 0 || n == 1) 1.0 else n * factorial(n - 1)
     }
 }
