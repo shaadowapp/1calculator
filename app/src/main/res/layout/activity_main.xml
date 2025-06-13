@@ -64,6 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
+            android:longClickable="true"
             android:textColor="@android:color/white"
             android:textSize="29sp" />
 
@@ -76,6 +77,8 @@
             android:textAlignment="textEnd"
             android:textColor="@android:color/white"
             android:textSize="48sp"
+            android:longClickable="true"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/initial_result_text_description"/>
     </LinearLayout>
 

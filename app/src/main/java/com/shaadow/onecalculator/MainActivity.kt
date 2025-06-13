@@ -1,12 +1,19 @@
 package com.shaadow.onecalculator
 
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.shaadow.onecalculator.parser.Expression
 import com.shaadow.onecalculator.parser.Expression.insertImplicitMultiplication
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.view.View
+import android.widget.PopupWindow
+import android.widget.TextView
+import android.widget.Toast
+import android.widget.LinearLayout
+
 
 class MainActivity : AppCompatActivity() {
     private var isResultShown = false
@@ -112,6 +119,17 @@ class MainActivity : AppCompatActivity() {
                 resultTv.text = getString(R.string.error_text)
             }
         }
+
+        solutionTv.setOnLongClickListener {
+            showCustomPopup(it, true)
+            true
+        }
+
+        resultTv.setOnLongClickListener {
+            showCustomPopup(it, false)
+            true
+        }
+
     }
 
     private fun appendToExpression(value: String) {
@@ -121,25 +139,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun convertSymbolsToOperators(expression: String): String {
-        val converted = expression
-            .replace("×", "*")
-            .replace("÷", "/")
-            .replace("π", "pi")
-            .replace("√", "sqrt")
-            .replace("^", "^")
-            .replace("%", "%")
-            .replace("!", "!")
-            .replace("e", "e")
-
-        return insertImplicitMultiplication(converted)
+        return insertImplicitMultiplication(
+            expression
+                .replace("×", "*")
+                .replace("÷", "/")
+                .replace("π", "pi")
+                .replace("√", "sqrt")
+                .replace("^", "^")
+                .replace("%", "%")
+                .replace("!", "!")
+                .replace("e", "e")
+        )
     }
 
     private fun isExpressionComplete(expression: String): Boolean {
         return expression.isNotEmpty() &&
-                (expression.last().isDigit() ||
-                        expression.last() == ')' ||
-                        expression.endsWith("pi") ||
-                        expression.endsWith("e"))
+                (expression.last().isDigit() || expression.last() == ')' || expression.endsWith("pi") || expression.endsWith("e"))
     }
 
     private fun getNextBracket(expression: String): String {
@@ -147,4 +162,56 @@ class MainActivity : AppCompatActivity() {
         val close = expression.count { it == ')' }
         return if (open > close) ")" else "("
     }
+
+    private fun showCustomPopup(anchor: View, isExpression: Boolean) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        val popupView = if (isExpression) {
+            layoutInflater.inflate(R.layout.popup_menu_expression, null)
+        } else {
+            layoutInflater.inflate(R.layout.popup_menu_result, null)
+        }
+
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWidth = popupView.measuredWidth
+
+        val popup = PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
+        popup.elevation = 10f
+        popup.setBackgroundDrawable(getDrawable(android.R.color.transparent))
+
+        // Position to the right side of the TextView and slightly below
+        val offsetX = anchor.width - popupWidth  // aligns to the right side of the anchor
+        val offsetY = anchor.height / 3          // slight vertical spacing below the anchor
+
+        popup.showAsDropDown(anchor, offsetX, offsetY)
+
+        popupView.findViewById<TextView>(R.id.btn_copy).setOnClickListener {
+            val textToCopy = if (isExpression) solutionTv.text.toString() else resultTv.text.toString()
+            if (textToCopy.isNotEmpty()) {
+                val clip = ClipData.newPlainText("text", textToCopy)
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
+            }
+            popup.dismiss()
+        }
+
+        if (isExpression) {
+            popupView.findViewById<TextView>(R.id.btn_paste).setOnClickListener {
+                if (clipboard.hasPrimaryClip()) {
+                    val pasted = clipboard.primaryClip?.getItemAt(0)?.text.toString()
+                    if (pasted.isNotEmpty()) {
+                        solutionTv.text = pasted
+                        try {
+                            val result = Expression.calculate(convertSymbolsToOperators(pasted))
+                            resultTv.text = result.toString().removeSuffix(".0")
+                        } catch (_: Exception) {
+                            resultTv.text = getString(R.string.error_text)
+                        }
+                    }
+                }
+                popup.dismiss()
+            }
+        }
+    }
+
 }

@@ -33,4 +33,6 @@
     <string name="error_text">Error</string>
     <string name="e_button_description">e</string>
     <string name="expression_append">%1$s%2$s</string>
+    <string name="copy_text">Copy</string>
+    <string name="paste_text">Paste</string>
 </resources>
