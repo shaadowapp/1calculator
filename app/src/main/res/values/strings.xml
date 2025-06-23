@@ -35,4 +35,7 @@
     <string name="expression_append">%1$s%2$s</string>
     <string name="copy_text">Copy</string>
     <string name="paste_text">Paste</string>
+    <string name="back_text">Back</string>
+    <string name="search_text">Search</string>
+    <string name="calculator_text">Calculator</string>
 </resources>

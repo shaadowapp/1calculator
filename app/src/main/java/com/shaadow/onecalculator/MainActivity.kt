@@ -13,6 +13,8 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.LinearLayout
+import android.widget.Button
+import android.content.Intent
 
 
 class MainActivity : AppCompatActivity() {
@@ -128,6 +130,16 @@ class MainActivity : AppCompatActivity() {
         resultTv.setOnLongClickListener {
             showCustomPopup(it, false)
             true
+        }
+
+        findViewById<Button>(R.id.nav_basic).setOnClickListener {
+            // Do nothing, already on Basic
+        }
+        findViewById<Button>(R.id.nav_advanced).setOnClickListener {
+            startActivity(Intent(this, AdvancedActivity::class.java))
+        }
+        findViewById<Button>(R.id.nav_history).setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
         }
 
     }

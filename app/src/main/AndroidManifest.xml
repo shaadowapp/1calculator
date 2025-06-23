@@ -20,6 +20,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".AdvancedActivity" />
+        <activity android:name=".HistoryActivity" />
+
     </application>
 
 </manifest>
