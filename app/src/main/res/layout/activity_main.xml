@@ -7,53 +7,53 @@
     android:background="#121212"
     tools:context=".MainActivity">
 
-    <!-- Navigation Buttons (restored) -->
+    <!-- Top bar for Basic screen -->
     <LinearLayout
-        android:id="@+id/navigation_buttons"
-        style="?android:attr/buttonBarStyle"
+        android:id="@+id/basic_navbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
+        android:background="#222"
         android:orientation="horizontal"
-        android:backgroundTint="#121212"
-        android:gravity="center">
+        android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/nav_basic"
-            style="?android:attr/buttonBarButtonStyle"
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_menu"
+            android:contentDescription="Menu" />
+
+        <TextView
+            android:id="@+id/basic_screen_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/basic"
-            android:textColor="#FF9800"
-            android:backgroundTint="#121212"
-            android:textSize="14sp" />
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginStart="4dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <Button
-            android:id="@+id/nav_advanced"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/advance"
-            android:textColor="@android:color/white"
-            android:backgroundTint="#121212"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/nav_history"
-            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/btn_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/history"
-            android:textColor="@android:color/white"
-            android:backgroundTint="#121212"
-            android:textSize="14sp" />
+            android:textColor="#FF9800"
+            android:background="@android:color/transparent"
+            android:textStyle="bold"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- Output Display Area -->
     <LinearLayout
         android:id="@+id/output_display_area"
-        android:layout_below="@id/navigation_buttons"
+        android:layout_below="@id/basic_navbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

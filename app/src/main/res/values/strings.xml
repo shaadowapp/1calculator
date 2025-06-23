@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">1Calculator</string>
     <string name="basic">Basic</string>
-    <string name="advance">Advance</string>
+    <string name="advance">Home</string>
     <string name="history">History</string>
     <string name="_0">0</string>
     <string name="_7">7</string>
@@ -38,4 +38,11 @@
     <string name="back_text">Back</string>
     <string name="search_text">Search</string>
     <string name="calculator_text">Calculator</string>
+    <string name="algebra">Algebra</string>
+    <string name="geometry">Geometry</string>
+    <string name="finance">Finance</string>
+    <string name="health">Health</string>
+    <string name="date_time">Date &amp; Time</string>
+    <string name="other_units">Other Units</string>
+    <string name="view_all">View All</string>
 </resources>

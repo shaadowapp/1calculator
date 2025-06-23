@@ -13,8 +13,8 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.LinearLayout
-import android.widget.Button
 import android.content.Intent
+import android.widget.Button
 
 
 class MainActivity : AppCompatActivity() {
@@ -132,13 +132,11 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        findViewById<Button>(R.id.nav_basic).setOnClickListener {
-            // Do nothing, already on Basic
-        }
-        findViewById<Button>(R.id.nav_advanced).setOnClickListener {
+        findViewById<TextView>(R.id.basic_screen_name).text = getString(R.string.basic)
+        findViewById<android.widget.ImageButton>(R.id.btn_menu).setOnClickListener {
             startActivity(Intent(this, AdvancedActivity::class.java))
         }
-        findViewById<Button>(R.id.nav_history).setOnClickListener {
+        findViewById<Button>(R.id.btn_history).setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
 
