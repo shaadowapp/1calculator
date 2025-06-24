@@ -146,16 +146,20 @@ class AdvancedActivity : AppCompatActivity() {
         val boxHeight = (boxWidth * 0.9).toInt()
 
         for ((i, label) in calculators.withIndex()) {
+            // If label has multiple words, insert a line break after the first word
+            val words = label.trim().split(" ")
+            val displayText = if (words.size > 1) words[0] + "\n" + words.subList(1, words.size).joinToString(" ") else label
             val button = Button(this).apply {
-                text = label.replaceFirstChar { it.uppercase() }
+                text = displayText
                 setTextColor(android.graphics.Color.WHITE)
                 setBackgroundResource(android.R.color.transparent)
-                textSize = 17f
+                textSize = 18f
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
                 gravity = android.view.Gravity.CENTER
                 isAllCaps = false
                 maxLines = 2
                 ellipsize = android.text.TextUtils.TruncateAt.END
+                setLineSpacing(0f, 1.18f)
             }
 
             // Only add left margin to boxes after the first in a row
