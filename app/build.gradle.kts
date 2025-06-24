@@ -45,4 +45,5 @@ dependencies {
     implementation(libs.rhino.android)
     implementation(libs.androidx.viewpager2)
     implementation(libs.material)
+    implementation(libs.flexbox)
 }

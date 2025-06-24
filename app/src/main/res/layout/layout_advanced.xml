@@ -111,7 +111,7 @@
                     android:orientation="horizontal" />
             </HorizontalScrollView>
 
-            <!-- Unit Categories Section -->
+            <!-- Algebra Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -119,14 +119,18 @@
                 android:textColor="@color/category_grey"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_marginTop="50dp"/>
-            <LinearLayout
+                android:layout_marginTop="50dp" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/algebra_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="2dp"
-                android:id="@+id/algebra_buttons"/>
+                android:layout_marginTop="4dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
 
+            <!-- Geometry Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -134,14 +138,18 @@
                 android:textColor="@color/category_grey"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_marginTop="18dp"/>
-            <LinearLayout
+                android:layout_marginTop="18dp" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/geometry_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="2dp"
-                android:id="@+id/geometry_buttons"/>
+                android:layout_marginTop="4dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
 
+            <!-- Finance Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -149,75 +157,60 @@
                 android:textColor="@color/category_grey"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_marginTop="18dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="2dp"
-                android:id="@+id/finance_buttons"/>
+                android:layout_marginTop="18dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Insurance"
-                android:textColor="@color/category_grey"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginTop="18dp"/>
-            <LinearLayout
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/finance_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="4dp"
-                android:id="@+id/insurance_buttons"/>
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/health"
-                android:textColor="@color/category_grey"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginTop="18dp"/>
-            <LinearLayout
+            <!-- Repeat the same for other sections -->
+            <!-- Insurance -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/insurance_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="2dp"
-                android:id="@+id/health_buttons"/>
+                android:layout_marginTop="4dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/date_time"
-                android:textColor="@color/category_grey"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginTop="18dp"/>
-            <LinearLayout
+            <!-- Health -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/health_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="2dp"
-                android:id="@+id/date_time_buttons"/>
+                android:layout_marginTop="4dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/other_units"
-                android:textColor="@color/category_grey"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginTop="18dp"/>
-            <LinearLayout
+            <!-- Date & Time -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/date_time_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="2dp"
-                android:id="@+id/other_units_buttons"/>
+                android:layout_marginTop="4dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
+
+            <!-- Other Units -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/other_units_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
+
         </LinearLayout>
-    </ScrollView> 
+    </ScrollView>
 
     <!-- FloatingActionButton at bottom-right -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -237,4 +230,4 @@
         app:iconTint="@color/white"
         app:tint="@color/white" />
 
-</RelativeLayout> 
+</RelativeLayout>
