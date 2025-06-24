@@ -103,7 +103,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:overScrollMode="never"
-                android:scrollbars="none">
+                android:scrollbars="none"
+                android:clipToPadding="false"
+                android:paddingEnd="8dp">
                 <LinearLayout
                     android:id="@+id/recent_history_container"
                     android:layout_width="wrap_content"
@@ -125,7 +127,7 @@
                 android:id="@+id/algebra_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:alignItems="center" />
@@ -144,7 +146,7 @@
                 android:id="@+id/geometry_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:alignItems="center" />
@@ -163,48 +165,83 @@
                 android:id="@+id/finance_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:alignItems="center" />
 
-            <!-- Repeat the same for other sections -->
             <!-- Insurance -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Insurance"
+                android:textColor="@color/category_grey"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="18dp" />
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/insurance_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:alignItems="center" />
 
             <!-- Health -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Health"
+                android:textColor="@color/category_grey"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="18dp" />
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/health_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:alignItems="center" />
 
             <!-- Date & Time -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date &amp; Time"
+                android:textColor="@color/category_grey"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="18dp" />
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/date_time_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:alignItems="center" />
 
             <!-- Other Units -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Others"
+                android:textColor="@color/category_grey"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="18dp" />
+
             <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/other_units_buttons"
+                android:id="@+id/others_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:alignItems="center" />
