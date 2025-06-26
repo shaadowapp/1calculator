@@ -51,4 +51,11 @@ dependencies {
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
     implementation(libs.lifecycle.runtime.ktx)
+    implementation("androidx.transition:transition:1.6.0")
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("androidx.transition:transition:1.6.0")
+    }
 }

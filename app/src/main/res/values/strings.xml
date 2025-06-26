@@ -46,4 +46,8 @@
     <string name="other_units">Other Units</string>
     <string name="view_all">View All</string>
     <string name="ac_button_description">AC</string>
+    <string name="clear_all">Clear All</string>
+    <string name="delete">Delete</string>
+    <string name="delete_history_item">Delete history item</string>
+    <string name="no_history">No history yet</string>
 </resources>

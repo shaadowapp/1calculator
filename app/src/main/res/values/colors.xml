@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="muted_border">#333A42</color>
     <color name="category_grey">#B0B0B0</color>
+    <color name="history_card_bg">#1A1A1A</color>
+    <color name="history_card_border">#333A42</color>
+    <color name="history_card_highlight">#292929</color>
 </resources>

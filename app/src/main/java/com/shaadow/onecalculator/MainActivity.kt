@@ -17,6 +17,9 @@ import android.content.Intent
 import android.widget.Button
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.GestureDetector.SimpleOnGestureListener
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var solutionTv: TextView
     private lateinit var resultTv: TextView
+    private lateinit var gestureDetector: GestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -149,6 +153,35 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
 
+        val outputArea = findViewById<LinearLayout>(R.id.output_display_area)
+        gestureDetector = GestureDetector(this, object : GestureDetector.OnGestureListener {
+            override fun onDown(e: MotionEvent): Boolean = false
+            override fun onShowPress(e: MotionEvent) {}
+            override fun onSingleTapUp(e: MotionEvent): Boolean = false
+            override fun onScroll(
+                e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float
+            ): Boolean = false
+            override fun onLongPress(e: MotionEvent) {}
+            override fun onFling(
+                e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float
+            ): Boolean {
+                val deltaY = e2.y - (e1?.y ?: 0f)
+                val deltaX = e2.x - (e1?.x ?: 0f)
+                if (deltaY > 200 && Math.abs(velocityY) > 800 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                    startActivity(Intent(this@MainActivity, HistoryActivity::class.java))
+                    return true
+                }
+                if (deltaX > 200 && Math.abs(velocityX) > 800 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                    startActivity(Intent(this@MainActivity, AdvancedActivity::class.java))
+                    return true
+                }
+                return false;
+            }
+        })
+        outputArea.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
     }
 
     private fun appendToExpression(value: String) {

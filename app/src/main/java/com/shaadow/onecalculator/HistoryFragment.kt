@@ -18,7 +18,10 @@ class HistoryFragment : Fragment(R.layout.layout_history) {
         viewLifecycleOwner.lifecycleScope.launch {
             val db = HistoryDatabase.getInstance(requireContext())
             val allHistory = db.historyDao().getAllHistory()
-            val adapter = if (allHistory.isEmpty()) HistoryAdapter(listOf(HistoryEntity(expression = "No history yet", result = ""))) else HistoryAdapter(allHistory)
+            val adapter = if (allHistory.isEmpty())
+                HistoryAdapter(mutableListOf(HistoryEntity(expression = "No history yet", result = ""))) { _, _ -> }
+            else
+                HistoryAdapter(allHistory.toMutableList()) { _, _ -> }
             recyclerView.adapter = adapter
         }
     }
