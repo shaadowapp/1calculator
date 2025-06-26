@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -46,4 +47,8 @@ dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.material)
     implementation(libs.flexbox)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+    implementation(libs.lifecycle.runtime.ktx)
 }

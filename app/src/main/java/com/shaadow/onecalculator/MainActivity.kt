@@ -15,6 +15,8 @@ import android.widget.Toast
 import android.widget.LinearLayout
 import android.content.Intent
 import android.widget.Button
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -117,6 +119,13 @@ class MainActivity : AppCompatActivity() {
                 solutionTv.visibility = View.GONE
                 resultTv.textSize = 50f
                 isResultShown = true
+                // Save to Room DB
+                val expr = expression
+                val res = result.toString().removeSuffix(".0")
+                lifecycleScope.launch {
+                    val db = HistoryDatabase.getInstance(this@MainActivity)
+                    db.historyDao().insert(HistoryEntity(expression = expr, result = res))
+                }
             } catch (_: Exception) {
                 resultTv.text = getString(R.string.error_text)
             }

@@ -459,13 +459,18 @@
                 android:id="@+id/button_ac"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
-                android:text="@string/ac"
-                android:textColor="@color/white"
-                android:textSize="24sp"
                 android:layout_margin="12dp"
-                android:backgroundTint="#F44336"
+                app:cornerRadius="36dp"
+                android:backgroundTint="#FF9800"
+                android:textColor="@color/white"
+                app:icon="@drawable/ic_ac"
+                app:iconSize="32dp"
+                app:iconTint="@color/white"
+                android:paddingStart="11dp"
+                android:paddingEnd="0dp"
+                app:iconGravity="textStart"
                 style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-                app:cornerRadius="36dp" />
+                android:contentDescription="@string/ac_button_description"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_0"

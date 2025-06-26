@@ -13,12 +13,10 @@ import android.graphics.drawable.GradientDrawable
 import android.widget.LinearLayout
 import androidx.core.view.marginTop
 import org.json.JSONObject
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class AdvancedActivity : AppCompatActivity() {
-
-    private val historyList = listOf(
-        "2 + 2 = 4", "5 * 6 = 30", "10 / 2 = 5", "sqrt(16) = 4", "100 - 45 = 55", "3^2 = 9"
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,48 +82,52 @@ class AdvancedActivity : AppCompatActivity() {
         val density = resources.displayMetrics.density
         val boxWidth = (density * 180).toInt()
         val boxHeight = (density * 90).toInt()
-        val margin = (density * 5).toInt() // more spacing between boxes
+        val margin = (density * 5).toInt()
 
-        for (item in historyList.take(5)) {
-            val box = LinearLayout(this)
-            box.orientation = LinearLayout.VERTICAL
-            val params = LinearLayout.LayoutParams(boxWidth, boxHeight)
-            params.setMargins(margin, 0, margin, 0)
-            box.layoutParams = params
+        // Use Room DB for last 5
+        lifecycleScope.launch {
+            val db = HistoryDatabase.getInstance(this@AdvancedActivity)
+            val allHistory = db.historyDao().getRecentHistory()
+            val historyToShow = if (allHistory.isNotEmpty()) allHistory else listOf(HistoryEntity(expression = "No history yet", result = ""))
+            runOnUiThread {
+                for (item in historyToShow) {
+                    val box = LinearLayout(this@AdvancedActivity)
+                    box.orientation = LinearLayout.VERTICAL
+                    val params = LinearLayout.LayoutParams(boxWidth, boxHeight)
+                    params.setMargins(margin, 0, margin, 0)
+                    box.layoutParams = params
 
-            val bg = GradientDrawable()
-            bg.setColor(0xFF181C20.toInt())
-            bg.setStroke(4, resources.getColor(R.color.muted_border, null))
-            bg.cornerRadius = 35f
-            box.background = bg
-            box.setPadding(35, 20, 35, 20)
+                    val bg = GradientDrawable()
+                    bg.setColor(0xFF181C20.toInt())
+                    bg.setStroke(4, resources.getColor(R.color.muted_border, null))
+                    bg.cornerRadius = 35f
+                    box.background = bg
+                    box.setPadding(35, 20, 35, 20)
 
-            val parts = item.split("=")
-            val expr = parts.getOrNull(0)?.trim()?.replaceFirstChar { it.uppercase() } ?: ""
-            val sol = parts.getOrNull(1)?.trim() ?: ""
+                    val exprView = TextView(this@AdvancedActivity)
+                    exprView.text = item.expression.replaceFirstChar { it.uppercase() }
+                    exprView.setTextColor(android.graphics.Color.GRAY)
+                    exprView.textSize = 20f
+                    exprView.setSingleLine(true)
 
-            val exprView = TextView(this)
-            exprView.text = expr
-            exprView.setTextColor(android.graphics.Color.GRAY)
-            exprView.textSize = 20f
-            exprView.setSingleLine(true)
+                    val solView = TextView(this@AdvancedActivity)
+                    solView.text = item.result
+                    solView.setTextColor(android.graphics.Color.WHITE)
+                    solView.textSize = 28f
+                    solView.setPadding(0,15,0,0)
+                    solView.setTypeface(null, android.graphics.Typeface.BOLD)
+                    solView.setSingleLine(true)
 
-            val solView = TextView(this)
-            solView.text = sol
-            solView.setTextColor(android.graphics.Color.WHITE)
-            solView.textSize = 28f
-            solView.setPadding(0,15,0,0)
-            solView.setTypeface(null, android.graphics.Typeface.BOLD)
-            solView.setSingleLine(true)
+                    box.addView(exprView)
+                    box.addView(solView)
 
-            box.addView(exprView)
-            box.addView(solView)
+                    box.setOnClickListener {
+                        Toast.makeText(this@AdvancedActivity, "Clicked: ${item.expression} = ${item.result}", Toast.LENGTH_SHORT).show()
+                    }
 
-            box.setOnClickListener {
-                Toast.makeText(this, "Clicked: $item", Toast.LENGTH_SHORT).show()
+                    container.addView(box)
+                }
             }
-
-            container.addView(box)
         }
     }
 
