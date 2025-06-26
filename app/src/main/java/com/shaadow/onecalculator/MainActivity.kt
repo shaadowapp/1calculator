@@ -155,18 +155,32 @@ class MainActivity : AppCompatActivity() {
 
         val outputArea = findViewById<LinearLayout>(R.id.output_display_area)
         gestureDetector = GestureDetector(this, object : GestureDetector.OnGestureListener {
-            override fun onDown(e: MotionEvent): Boolean = false
+            override fun onDown(e: MotionEvent): Boolean = true
             override fun onShowPress(e: MotionEvent) {}
             override fun onSingleTapUp(e: MotionEvent): Boolean = false
             override fun onScroll(
                 e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float
-            ): Boolean = false
+            ): Boolean {
+                if (e1 == null || e2 == null) return false
+                val deltaY = e2.y - e1.y
+                val deltaX = e2.x - e1.x
+                if (deltaY > 120 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                    startActivity(Intent(this@MainActivity, HistoryActivity::class.java))
+                    return true
+                }
+                if (deltaX > 120 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                    startActivity(Intent(this@MainActivity, AdvancedActivity::class.java))
+                    return true
+                }
+                return false
+            }
             override fun onLongPress(e: MotionEvent) {}
             override fun onFling(
                 e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float
             ): Boolean {
-                val deltaY = e2.y - (e1?.y ?: 0f)
-                val deltaX = e2.x - (e1?.x ?: 0f)
+                if (e1 == null || e2 == null) return false
+                val deltaY = e2.y - e1.y
+                val deltaX = e2.x - e1.x
                 if (deltaY > 200 && Math.abs(velocityY) > 800 && Math.abs(deltaY) > Math.abs(deltaX)) {
                     startActivity(Intent(this@MainActivity, HistoryActivity::class.java))
                     return true
@@ -175,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this@MainActivity, AdvancedActivity::class.java))
                     return true
                 }
-                return false;
+                return false
             }
         })
         outputArea.setOnTouchListener { _, event ->

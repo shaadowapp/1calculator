@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HistoryAdapter(
     private val items: MutableList<HistoryEntity>,
@@ -30,6 +32,18 @@ class HistoryAdapter(
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val item = items[position]
+        // Set date label
+        val date = Date(item.timestamp)
+        val today = Calendar.getInstance()
+        val itemCal = Calendar.getInstance().apply { time = date }
+        val isToday = today.get(Calendar.YEAR) == itemCal.get(Calendar.YEAR) &&
+                today.get(Calendar.DAY_OF_YEAR) == itemCal.get(Calendar.DAY_OF_YEAR)
+        val dateStr = if (isToday) {
+            "Today"
+        } else {
+            SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault()).format(date)
+        }
+        holder.tvDate.text = dateStr
         if (highlighter != null) {
             highlighter?.invoke(item, currentQuery, holder)
         } else {
@@ -48,10 +62,12 @@ class HistoryAdapter(
     }
 
     inner class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvDate: TextView = itemView.findViewById(R.id.tv_date)
         val tvExpression: TextView = itemView.findViewById(R.id.tv_expression)
         val tvResult: TextView = itemView.findViewById(R.id.tv_result)
         val btnDelete: ImageButton = itemView.findViewById(R.id.btn_delete)
         fun bind(item: HistoryEntity) {
+            tvDate.text = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault()).format(Date(item.timestamp))
             tvExpression.text = item.expression
             tvResult.text = item.result
         }

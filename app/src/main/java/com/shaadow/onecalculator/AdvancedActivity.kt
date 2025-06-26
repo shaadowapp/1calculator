@@ -32,9 +32,9 @@ class AdvancedActivity : AppCompatActivity() {
         }
         setupRecentHistory()
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
-        findViewById<ImageButton>(R.id.btn_search).setOnClickListener {
-            Toast.makeText(this, "Search clicked (stub)", Toast.LENGTH_SHORT).show()
-        }
+        // findViewById<ImageButton>(R.id.btn_search).setOnClickListener {
+        //     Toast.makeText(this, "Search clicked (stub)", Toast.LENGTH_SHORT).show()
+        // }
         findViewById<ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_view_all_history).setOnClickListener {
             Toast.makeText(this, "View All History clicked", Toast.LENGTH_SHORT).show()

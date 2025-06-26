@@ -24,6 +24,7 @@ import android.text.style.BackgroundColorSpan
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
+import android.content.Intent
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var adapter: HistoryAdapter
@@ -38,10 +39,30 @@ class HistoryActivity : AppCompatActivity() {
 
         val rootView = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.history_root)
         val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                if (e1 == null || e2 == null) return false
+                val deltaY = e2.y - e1.y
+                val deltaX = e2.x - e1.x
+                if (deltaY < -120 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                    finish() // Swipe up to return to calculator
+                    return true
+                }
+                if (deltaX > 120 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                    startActivity(Intent(this@HistoryActivity, AdvancedActivity::class.java)) // Swipe right for home
+                    return true
+                }
+                return false
+            }
             override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                val deltaY = e2.y - (e1?.y ?: 0f)
-                if (deltaY < -200 && Math.abs(velocityY) > 800 && Math.abs(deltaY) > Math.abs(e2.x - (e1?.x ?: 0f))) {
+                if (e1 == null || e2 == null) return false
+                val deltaY = e2.y - e1.y
+                val deltaX = e2.x - e1.x
+                if (deltaY < -200 && Math.abs(velocityY) > 800 && Math.abs(deltaY) > Math.abs(deltaX)) {
                     finish()
+                    return true
+                }
+                if (deltaX > 200 && Math.abs(velocityX) > 800 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                    startActivity(Intent(this@HistoryActivity, AdvancedActivity::class.java))
                     return true
                 }
                 return false
@@ -85,10 +106,9 @@ class HistoryActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
         val searchInput = findViewById<EditText>(R.id.search_input)
-        val searchBtn = findViewById<ImageButton>(R.id.btn_search)
-
+        // val searchBtn = findViewById<ImageButton>(R.id.btn_search)
         // Remove search button
-        searchBtn.visibility = View.GONE
+        // searchBtn.visibility = View.GONE
 
         // Search logic with highlight
         fun highlightMatch(text: String, query: String): SpannableString {
@@ -162,9 +182,6 @@ class HistoryActivity : AppCompatActivity() {
 
         findViewById<android.widget.ImageButton>(R.id.btn_back).setOnClickListener {
             finish()
-        }
-        findViewById<android.widget.ImageButton>(R.id.btn_search).setOnClickListener {
-            Toast.makeText(this, "Search clicked (stub)", Toast.LENGTH_SHORT).show()
         }
         findViewById<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener {
             finish()
