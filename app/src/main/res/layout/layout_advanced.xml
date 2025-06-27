@@ -37,22 +37,51 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/btn_search"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_search"
-            android:contentDescription="@string/search_text" />
     </LinearLayout>
 
-    <!-- Content below top bar -->
+    <!-- Modern search bar below top bar (copied from history screen) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_below="@id/top_bar"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="8dp">
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:autofillHints="none"
+            android:background="@drawable/search_rounded_bg"
+            android:hint="@string/search_history_text"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="@color/category_grey"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="16sp"
+            android:singleLine="true"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Search results list, hidden by default -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_results_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_bar_container"
+        android:layout_above="@id/fab_calculator"
+        android:visibility="gone"
+        android:padding="8dp"/>
+
+    <!-- Content below search bar -->
     <ScrollView
         android:id="@+id/home_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/top_bar"
+        android:layout_below="@id/search_bar_container"
         android:layout_above="@id/fab_calculator"
         android:fillViewport="true">
 
@@ -220,6 +249,25 @@
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/date_time_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:alignItems="center" />
+
+            <!-- Unit Converters -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unit Converters"
+                android:textColor="@color/category_grey"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="18dp" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/unit_converters_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"

@@ -15,6 +15,14 @@ import androidx.core.view.marginTop
 import org.json.JSONObject
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import android.content.Intent
+import android.view.LayoutInflater
+import android.view.ViewGroup
 
 class AdvancedActivity : AppCompatActivity() {
 
@@ -23,13 +31,85 @@ class AdvancedActivity : AppCompatActivity() {
         setContentView(R.layout.layout_advanced)
         supportActionBar?.hide()
 
+        val searchInput = findViewById<EditText>(R.id.search_input)
+        val searchResultsRecycler = findViewById<RecyclerView>(R.id.search_results_recycler)
+        val homeScrollView = findViewById<View>(R.id.home_scrollview)
+        val fab = findViewById<View>(R.id.fab_calculator)
+
         val categories = loadCategoriesFromJson()
-        for (cat in categories) {
-            val resId = getCategoryFlexboxId(cat.name)
-            if (resId != null) {
-                addFlexButtons(resId, cat.buttons)
+        var filteredCategories = categories
+        val recentHistory = mutableListOf<HistoryEntity>()
+        val allHistory = mutableListOf<HistoryEntity>()
+        val searchResults = mutableListOf<SearchResultSection>()
+        val searchAdapter = SearchResultsAdapter(searchResults) { result ->
+            when (result) {
+                is SearchResult.HistoryItem -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("expression", result.entity.expression)
+                    intent.putExtra("result", result.entity.result)
+                    startActivity(intent)
+                }
+                is SearchResult.CalculatorItem -> {
+                    // TODO: Open respective calculator screen
+                    Toast.makeText(this, "Open calculator: ${result.category} - ${result.label}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+        searchResultsRecycler.layoutManager = LinearLayoutManager(this)
+        searchResultsRecycler.adapter = searchAdapter
+
+        fun updateSearchResults(query: String) {
+            searchResults.clear()
+            if (query.isBlank()) {
+                searchResultsRecycler.visibility = View.GONE
+                homeScrollView.visibility = View.VISIBLE
+                fab.visibility = View.VISIBLE
+                return
+            }
+            // Group: Recent Calculations
+            val recent = recentHistory.filter {
+                it.expression.contains(query, true) || it.result.contains(query, true)
+            }
+            if (recent.isNotEmpty()) {
+                searchResults.add(SearchResultSection("From Recent Calculations", recent.map { SearchResult.HistoryItem(it) }))
+            }
+            // Group: All History
+            val history = allHistory.filter {
+                it.expression.contains(query, true) || it.result.contains(query, true)
+            }
+            if (history.isNotEmpty()) {
+                searchResults.add(SearchResultSection("From All History", history.map { SearchResult.HistoryItem(it) }))
+            }
+            // Group: Categories
+            for (cat in categories) {
+                val matches = cat.buttons.filter { it.contains(query, true) }
+                if (matches.isNotEmpty()) {
+                    searchResults.add(SearchResultSection("From ${cat.name}", matches.map { SearchResult.CalculatorItem(cat.name, it) }))
+                }
+            }
+            searchAdapter.updateSections(searchResults)
+            searchResultsRecycler.visibility = View.VISIBLE
+            homeScrollView.visibility = View.GONE
+            fab.visibility = View.GONE
+        }
+
+        // Load history from DB
+        lifecycleScope.launch {
+            val db = HistoryDatabase.getInstance(this@AdvancedActivity)
+            val all = db.historyDao().getAllHistory()
+            val recent = db.historyDao().getRecentHistory()
+            allHistory.clear(); allHistory.addAll(all)
+            recentHistory.clear(); recentHistory.addAll(recent)
+        }
+
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString() ?: ""
+                updateSearchResults(query)
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
         setupRecentHistory()
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
         // findViewById<ImageButton>(R.id.btn_search).setOnClickListener {
@@ -38,6 +118,14 @@ class AdvancedActivity : AppCompatActivity() {
         findViewById<ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_view_all_history).setOnClickListener {
             Toast.makeText(this, "View All History clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        // After loading categories, display all categories on home screen
+        for (cat in categories) {
+            val resId = getCategoryFlexboxId(cat.name)
+            if (resId != null) {
+                addFlexButtons(resId, cat.buttons)
+            }
         }
     }
 
@@ -69,7 +157,7 @@ class AdvancedActivity : AppCompatActivity() {
             "insurance" -> R.id.insurance_buttons
             "health" -> R.id.health_buttons
             "date & time" -> R.id.date_time_buttons
-            "unit converters" -> R.id.others_buttons
+            "unit converters" -> R.id.unit_converters_buttons
             "others" -> R.id.others_buttons
             else -> null
         }
@@ -186,4 +274,77 @@ class AdvancedActivity : AppCompatActivity() {
         }
     }
 
+}
+
+sealed class SearchResult {
+    data class HistoryItem(val entity: HistoryEntity) : SearchResult()
+    data class CalculatorItem(val category: String, val label: String) : SearchResult()
+}
+data class SearchResultSection(val title: String, val items: List<SearchResult>)
+
+class SearchResultsAdapter(
+    private var sections: List<SearchResultSection>,
+    private val onClick: (SearchResult) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    companion object {
+        private const val TYPE_HEADER = 0
+        private const val TYPE_ITEM = 1
+    }
+    private val flatList = mutableListOf<Pair<Int, Any>>() // 0=header, 1=item
+    init { rebuildFlatList() }
+    override fun getItemViewType(position: Int): Int = flatList[position].first
+    override fun getItemCount(): Int = flatList.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_HEADER) {
+            val tv = TextView(parent.context)
+            tv.setPadding(24, 32, 0, 12)
+            tv.setTextColor(parent.context.getColor(R.color.category_grey))
+            tv.textSize = 16f
+            object : RecyclerView.ViewHolder(tv) {}
+        } else {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.history_item, parent, false)
+            object : RecyclerView.ViewHolder(view) {}
+        }
+    }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val (type, data) = flatList[position]
+        if (type == TYPE_HEADER) {
+            (holder.itemView as TextView).text = data as String
+        } else {
+            val item = data as SearchResult
+            val exprView = holder.itemView.findViewById<TextView>(R.id.tv_expression)
+            val resView = holder.itemView.findViewById<TextView>(R.id.tv_result)
+            val dateView = holder.itemView.findViewById<TextView>(R.id.tv_date)
+            val delBtn = holder.itemView.findViewById<ImageButton>(R.id.btn_delete)
+            delBtn.visibility = View.GONE
+            when (item) {
+                is SearchResult.HistoryItem -> {
+                    exprView.text = item.entity.expression
+                    resView.text = item.entity.result
+                    dateView.text = ""
+                    holder.itemView.setOnClickListener { onClick(item) }
+                }
+                is SearchResult.CalculatorItem -> {
+                    exprView.text = item.label
+                    resView.text = ""
+                    dateView.text = ""
+                    holder.itemView.setOnClickListener { onClick(item) }
+                }
+            }
+        }
+    }
+    private fun rebuildFlatList() {
+        flatList.clear()
+        for (section in sections) {
+            flatList.add(TYPE_HEADER to section.title)
+            for (item in section.items) {
+                flatList.add(TYPE_ITEM to item)
+            }
+        }
+    }
+    fun updateSections(newSections: List<SearchResultSection>) {
+        this.sections = newSections
+        rebuildFlatList()
+        super.notifyDataSetChanged()
+    }
 }
