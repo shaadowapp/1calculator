@@ -204,6 +204,17 @@ class HistoryActivity : AppCompatActivity() {
         params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
         params.topMargin = 24
         notFoundText.layoutParams = params
+
+        // Make search input focusable only after user taps it
+        searchInput.setOnClickListener {
+            if (!searchInput.isFocusable) {
+                searchInput.isFocusable = true
+                searchInput.isFocusableInTouchMode = true
+                searchInput.requestFocus()
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.showSoftInput(searchInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
     }
 
     private fun showNoHistory() {

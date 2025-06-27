@@ -44,7 +44,7 @@
             android:layout_height="40dp"
             android:text="@string/clear_all"
             android:textColor="@color/white"
-            android:backgroundTint="@color/purple_200"
+            android:backgroundTint="#FF9800"
             android:textSize="14sp"
             android:layout_marginEnd="8dp"
             android:layout_gravity="center_vertical"
@@ -73,7 +73,7 @@
             android:layout_marginEnd="0dp"
             android:autofillHints="none"
             android:background="@drawable/search_rounded_bg"
-            android:hint="@string/search_history_text"
+            android:hint="@string/search_history_text_placeholder"
             android:inputType="text"
             android:textColor="@color/white"
             android:textColorHint="@color/category_grey"
@@ -84,7 +84,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="true"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -125,7 +128,7 @@
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:backgroundTint="@color/purple_200"
+        app:backgroundTint="#FF9800"
         app:icon="@drawable/ic_calc_icon"
         app:iconTint="@color/white"
         app:tint="@color/white" />

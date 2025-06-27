@@ -50,6 +50,7 @@
     <string name="delete">Delete</string>
     <string name="delete_history_item">Delete history item</string>
     <string name="no_history">No history yet</string>
-    <string name="search_history_text">Search history...</string>
+    <string name="search_history_text_placeholder">Search history...</string>
     <string name="no_history_found_text">No history found</string>
+    <string name="search_1calculator_text_placeholder">Search 1Calculator</string>
 </resources>

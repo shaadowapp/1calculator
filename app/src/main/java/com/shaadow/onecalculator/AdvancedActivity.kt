@@ -117,7 +117,7 @@ class AdvancedActivity : AppCompatActivity() {
         // }
         findViewById<ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_view_all_history).setOnClickListener {
-            Toast.makeText(this, "View All History clicked", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, HistoryActivity::class.java))
         }
 
         // After loading categories, display all categories on home screen
@@ -125,6 +125,17 @@ class AdvancedActivity : AppCompatActivity() {
             val resId = getCategoryFlexboxId(cat.name)
             if (resId != null) {
                 addFlexButtons(resId, cat.buttons)
+            }
+        }
+
+        // Make search input focusable only after user taps it
+        searchInput.setOnClickListener {
+            if (!searchInput.isFocusable) {
+                searchInput.isFocusable = true
+                searchInput.isFocusableInTouchMode = true
+                searchInput.requestFocus()
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.showSoftInput(searchInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
             }
         }
     }

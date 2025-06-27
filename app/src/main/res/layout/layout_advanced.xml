@@ -55,14 +55,17 @@
             android:layout_height="48dp"
             android:autofillHints="none"
             android:background="@drawable/search_rounded_bg"
-            android:hint="@string/search_history_text"
+            android:hint="@string/search_1calculator_text_placeholder"
             android:inputType="text"
             android:textColor="@color/white"
             android:textColorHint="@color/category_grey"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:textSize="16sp"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="true"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -297,7 +300,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- FloatingActionButton at bottom-right -->
+    <!-- Place the floating button as the last child of the root RelativeLayout, outside of ScrollView -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_calculator"
         android:layout_width="wrap_content"
@@ -310,7 +313,7 @@
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:backgroundTint="@color/purple_200"
+        app:backgroundTint="#FF9800"
         app:icon="@drawable/ic_calc_icon"
         app:iconTint="@color/white"
         app:tint="@color/white" />
