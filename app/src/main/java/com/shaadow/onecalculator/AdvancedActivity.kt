@@ -346,20 +346,15 @@ class SearchResultsAdapter(
             val item = data as SearchResult
             val exprView = holder.itemView.findViewById<TextView>(R.id.tv_expression)
             val resView = holder.itemView.findViewById<TextView>(R.id.tv_result)
-            val dateView = holder.itemView.findViewById<TextView>(R.id.tv_date)
-            val delBtn = holder.itemView.findViewById<ImageButton>(R.id.btn_delete)
-            delBtn.visibility = View.GONE
             when (item) {
                 is SearchResult.HistoryItem -> {
                     exprView.text = item.entity.expression
                     resView.text = item.entity.result
-                    dateView.text = ""
                     holder.itemView.setOnClickListener { onClick(item) }
                 }
                 is SearchResult.CalculatorItem -> {
                     exprView.text = item.label
                     resView.text = ""
-                    dateView.text = ""
                     holder.itemView.setOnClickListener { onClick(item) }
                 }
             }

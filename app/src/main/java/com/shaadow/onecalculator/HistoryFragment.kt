@@ -7,7 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 // Import the shared adapter
-import com.shaadow.onecalculator.HistoryAdapter
+import com.shaadow.onecalculator.HistorySectionAdapter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 
@@ -17,16 +17,16 @@ class HistoryFragment : Fragment(R.layout.layout_history) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.history_recycler)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         
-        val adapter = HistoryAdapter(mutableListOf()) { _, _ -> }
+        val adapter = HistorySectionAdapter { _, _ -> }
         recyclerView.adapter = adapter
         
         viewLifecycleOwner.lifecycleScope.launch {
             val db = HistoryDatabase.getInstance(requireContext())
             db.historyDao().getAllHistory().collect { allHistory ->
                 if (allHistory.isEmpty()) {
-                    adapter.updateHistory(mutableListOf(HistoryEntity(expression = "No history yet", result = "")))
+                    adapter.updateHistory(listOf(HistoryEntity(expression = "No history yet", result = "")))
                 } else {
-                    adapter.updateHistory(allHistory.toMutableList())
+                    adapter.updateHistory(allHistory)
                 }
             }
         }

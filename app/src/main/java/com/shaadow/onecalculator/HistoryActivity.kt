@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.shaadow.onecalculator.HistoryAdapter
+import com.shaadow.onecalculator.HistorySectionAdapter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 import androidx.lifecycle.lifecycleScope
@@ -33,10 +33,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 
 class HistoryActivity : AppCompatActivity() {
-    private lateinit var adapter: HistoryAdapter
+    private lateinit var adapter: HistorySectionAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var db: HistoryDatabase
-    private var items = mutableListOf<HistoryEntity>()
     private var allItems = mutableListOf<HistoryEntity>() // for search
     private var historyJob: Job? = null
     private var searchJob: Job? = null
@@ -131,7 +130,7 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = HistoryAdapter(items) { item, position ->
+        adapter = HistorySectionAdapter { item, position ->
             deleteHistoryItem(item, position)
         }
         recyclerView.adapter = adapter
@@ -141,9 +140,12 @@ class HistoryActivity : AppCompatActivity() {
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
             override fun onSwiped(vh: RecyclerView.ViewHolder, dir: Int) {
                 val pos = vh.bindingAdapterPosition
-                if (pos != RecyclerView.NO_POSITION && pos < items.size) {
-                    val item = items[pos]
-                    deleteHistoryItem(item, pos)
+                if (pos != RecyclerView.NO_POSITION) {
+                    // Find the actual history item from the adapter
+                    val item = adapter.getItemAt(pos)
+                    if (item is HistoryItem.HistoryEntry) {
+                        deleteHistoryItem(item.entity, item.position)
+                    }
                 }
             }
         })
@@ -155,10 +157,9 @@ class HistoryActivity : AppCompatActivity() {
             try {
                 db.historyDao().deleteById(item.id)
                 withContext(Dispatchers.Main) {
-                    if (position < items.size) {
-                        adapter.removeAt(position)
-                        if (adapter.itemCount == 0) showNoHistory()
-                    }
+                    allItems.remove(item)
+                    adapter.updateHistory(allItems)
+                    if (allItems.isEmpty()) showNoHistory()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -195,9 +196,7 @@ class HistoryActivity : AppCompatActivity() {
             val filtered = if (query.isBlank()) allItems else allItems.filter {
                 it.expression.contains(query, ignoreCase = true) || it.result.contains(query, ignoreCase = true)
             }
-            items.clear()
-            items.addAll(filtered)
-            adapter.notifyDataSetChanged()
+            adapter.updateHistory(filtered)
             val notFoundText = findViewById<TextView>(R.id.no_history_found)
             notFoundText?.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
         }
@@ -238,10 +237,8 @@ class HistoryActivity : AppCompatActivity() {
                         try {
                             allItems.clear()
                             allItems.addAll(allHistory)
-                            items.clear()
-                            items.addAll(allHistory)
-                            adapter.notifyDataSetChanged()
-                            if (items.isEmpty()) showNoHistory()
+                            adapter.updateHistory(allItems)
+                            if (allItems.isEmpty()) showNoHistory()
                         } catch (e: Exception) {
                             e.printStackTrace()
                             Toast.makeText(this@HistoryActivity, "Error updating UI", Toast.LENGTH_SHORT).show()
@@ -279,8 +276,8 @@ class HistoryActivity : AppCompatActivity() {
             try {
                 db.historyDao().clearAll()
                 withContext(Dispatchers.Main) {
-                    items.clear()
-                    adapter.notifyDataSetChanged()
+                    allItems.clear()
+                    adapter.updateHistory(allItems)
                     showNoHistory()
                     Toast.makeText(this@HistoryActivity, R.string.clear_all, Toast.LENGTH_SHORT).show()
                 }
@@ -314,16 +311,14 @@ class HistoryActivity : AppCompatActivity() {
 
     private fun showNoHistory() {
         try {
-            items.clear()
             allItems.clear()
             allItems.add(HistoryEntity(expression = getString(R.string.no_history), result = ""))
-            adapter.notifyDataSetChanged()
+            adapter.updateHistory(allItems)
         } catch (e: Exception) {
             // Fallback if string resource is not available
-            items.clear()
             allItems.clear()
             allItems.add(HistoryEntity(expression = "No history yet", result = ""))
-            adapter.notifyDataSetChanged()
+            adapter.updateHistory(allItems)
         }
     }
 
@@ -360,7 +355,7 @@ class HistoryActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         // Reload history when activity resumes
-        if (items.isEmpty()) {
+        if (allItems.isEmpty()) {
             loadHistory()
         }
     }
