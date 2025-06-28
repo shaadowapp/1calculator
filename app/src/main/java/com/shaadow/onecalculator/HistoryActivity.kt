@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.shaadow.onecalculator.HistoryAdapter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 import androidx.lifecycle.lifecycleScope
 import android.widget.Button
 import android.widget.Toast
@@ -157,14 +158,15 @@ class HistoryActivity : AppCompatActivity() {
 
         // Load history
         lifecycleScope.launch {
-            val allHistory = db.historyDao().getAllHistory().toMutableList()
-            runOnUiThread {
-                allItems.clear()
-                allItems.addAll(allHistory)
-                items.clear()
-                items.addAll(allHistory)
-                adapter.notifyDataSetChanged()
-                if (items.isEmpty()) showNoHistory()
+            db.historyDao().getAllHistory().collect { allHistory ->
+                runOnUiThread {
+                    allItems.clear()
+                    allItems.addAll(allHistory)
+                    items.clear()
+                    items.addAll(allHistory)
+                    adapter.notifyDataSetChanged()
+                    if (items.isEmpty()) showNoHistory()
+                }
             }
         }
 

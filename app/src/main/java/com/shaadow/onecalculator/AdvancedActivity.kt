@@ -15,6 +15,7 @@ import androidx.core.view.marginTop
 import org.json.JSONObject
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
@@ -96,10 +97,13 @@ class AdvancedActivity : AppCompatActivity() {
         // Load history from DB
         lifecycleScope.launch {
             val db = HistoryDatabase.getInstance(this@AdvancedActivity)
-            val all = db.historyDao().getAllHistory()
+            db.historyDao().getAllHistory().collect { all ->
+                allHistory.clear()
+                allHistory.addAll(all)
+            }
             val recent = db.historyDao().getRecentHistory()
-            allHistory.clear(); allHistory.addAll(all)
-            recentHistory.clear(); recentHistory.addAll(recent)
+            recentHistory.clear()
+            recentHistory.addAll(recent)
         }
 
         searchInput.addTextChangedListener(object : TextWatcher {

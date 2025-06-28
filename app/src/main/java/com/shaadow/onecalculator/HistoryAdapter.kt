@@ -61,6 +61,12 @@ class HistoryAdapter(
         notifyItemRemoved(position)
     }
 
+    fun updateHistory(newItems: MutableList<HistoryEntity>) {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
+    }
+
     inner class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvDate: TextView = itemView.findViewById(R.id.tv_date)
         val tvExpression: TextView = itemView.findViewById(R.id.tv_expression)
