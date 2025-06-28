@@ -22,7 +22,7 @@
             android:layout_height="48dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_menu"
-            android:contentDescription="Menu" />
+            android:contentDescription="@string/menu_text_desc" />
 
         <TextView
             android:id="@+id/basic_screen_name"
@@ -58,7 +58,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="#121212"
-        android:padding="18dp">
+        android:padding="18dp"
+        android:paddingBottom="32dp">
 
         <TextView
             android:id="@+id/solution_tv"
@@ -453,7 +454,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="20dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_ac"
