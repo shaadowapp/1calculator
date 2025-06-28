@@ -3,7 +3,7 @@ package com.shaadow.onecalculator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
@@ -31,6 +31,8 @@ class HistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
+        if (position >= items.size) return
+        
         val item = items[position]
         // Set date label
         val date = Date(item.timestamp)
@@ -57,8 +59,10 @@ class HistoryAdapter(
     override fun getItemCount() = items.size
 
     fun removeAt(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
+        if (position >= 0 && position < items.size) {
+            items.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     fun updateHistory(newItems: MutableList<HistoryEntity>) {
@@ -71,7 +75,8 @@ class HistoryAdapter(
         val tvDate: TextView = itemView.findViewById(R.id.tv_date)
         val tvExpression: TextView = itemView.findViewById(R.id.tv_expression)
         val tvResult: TextView = itemView.findViewById(R.id.tv_result)
-        val btnDelete: ImageButton = itemView.findViewById(R.id.btn_delete)
+        val btnDelete: Button = itemView.findViewById(R.id.btn_delete)
+        
         fun bind(item: HistoryEntity) {
             tvDate.text = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault()).format(Date(item.timestamp))
             tvExpression.text = item.expression

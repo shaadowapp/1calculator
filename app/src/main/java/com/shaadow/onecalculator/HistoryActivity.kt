@@ -26,6 +26,11 @@ import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import android.content.Intent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var adapter: HistoryAdapter
@@ -33,11 +38,61 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var db: HistoryDatabase
     private var items = mutableListOf<HistoryEntity>()
     private var allItems = mutableListOf<HistoryEntity>() // for search
+    private var historyJob: Job? = null
+    private var searchJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_history)
+        try {
+            setContentView(R.layout.layout_history)
 
+            initializeViews()
+            setupGestureDetector()
+            setupRecyclerView()
+            setupSearch()
+            loadHistory()
+            setupClickListeners()
+            
+            // Add a test entry to verify functionality
+            addTestEntry()
+        } catch (e: Exception) {
+            // Log the error and show a user-friendly message
+            e.printStackTrace()
+            Toast.makeText(this, "Error initializing history screen", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    private fun initializeViews() {
+        try {
+            recyclerView = findViewById(R.id.history_recycler)
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            db = HistoryDatabase.getInstance(this)
+            
+            // Test database connectivity
+            testDatabaseConnection()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error initializing views", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    private fun testDatabaseConnection() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // Try to access the database to ensure it's working
+                db.historyDao().getRecentHistory()
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    e.printStackTrace()
+                    Toast.makeText(this@HistoryActivity, "Database connection error", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun setupGestureDetector() {
         val rootView = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.history_root)
         val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
@@ -73,19 +128,11 @@ class HistoryActivity : AppCompatActivity() {
             gestureDetector.onTouchEvent(event)
             false
         }
+    }
 
-        recyclerView = findViewById(R.id.history_recycler)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        db = HistoryDatabase.getInstance(this)
-
+    private fun setupRecyclerView() {
         adapter = HistoryAdapter(items) { item, position ->
-            lifecycleScope.launch {
-                db.historyDao().deleteById(item.id)
-                runOnUiThread {
-                    adapter.removeAt(position)
-                    if (adapter.itemCount == 0) showNoHistory()
-                }
-            }
+            deleteHistoryItem(item, position)
         }
         recyclerView.adapter = adapter
 
@@ -94,22 +141,35 @@ class HistoryActivity : AppCompatActivity() {
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
             override fun onSwiped(vh: RecyclerView.ViewHolder, dir: Int) {
                 val pos = vh.bindingAdapterPosition
-                val item = items[pos]
-                lifecycleScope.launch {
-                    db.historyDao().deleteById(item.id)
-                    runOnUiThread {
-                        adapter.removeAt(pos)
-                        if (adapter.itemCount == 0) showNoHistory()
-                    }
+                if (pos != RecyclerView.NO_POSITION && pos < items.size) {
+                    val item = items[pos]
+                    deleteHistoryItem(item, pos)
                 }
             }
         })
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
 
-        val searchInput = findViewById<EditText>(R.id.search_input)
-        // val searchBtn = findViewById<ImageButton>(R.id.btn_search)
-        // Remove search button
-        // searchBtn.visibility = View.GONE
+    private fun deleteHistoryItem(item: HistoryEntity, position: Int) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                db.historyDao().deleteById(item.id)
+                withContext(Dispatchers.Main) {
+                    if (position < items.size) {
+                        adapter.removeAt(position)
+                        if (adapter.itemCount == 0) showNoHistory()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@HistoryActivity, "Error deleting item", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun setupSearch() {
+        val searchInput = findViewById<EditText>(R.id.search_input) ?: return
 
         // Search logic with highlight
         fun highlightMatch(text: String, query: String): SpannableString {
@@ -130,6 +190,7 @@ class HistoryActivity : AppCompatActivity() {
                 SpannableString(text)
             }
         }
+
         fun filterHistory(query: String) {
             val filtered = if (query.isBlank()) allItems else allItems.filter {
                 it.expression.contains(query, ignoreCase = true) || it.result.contains(query, ignoreCase = true)
@@ -138,8 +199,9 @@ class HistoryActivity : AppCompatActivity() {
             items.addAll(filtered)
             adapter.notifyDataSetChanged()
             val notFoundText = findViewById<TextView>(R.id.no_history_found)
-            notFoundText.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
+            notFoundText?.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
         }
+
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -156,57 +218,6 @@ class HistoryActivity : AppCompatActivity() {
             holder.tvResult.text = highlightMatch(item.result, query)
         }
 
-        // Load history
-        lifecycleScope.launch {
-            db.historyDao().getAllHistory().collect { allHistory ->
-                runOnUiThread {
-                    allItems.clear()
-                    allItems.addAll(allHistory)
-                    items.clear()
-                    items.addAll(allHistory)
-                    adapter.notifyDataSetChanged()
-                    if (items.isEmpty()) showNoHistory()
-                }
-            }
-        }
-
-        findViewById<Button>(R.id.btn_clear_all).setOnClickListener {
-            lifecycleScope.launch {
-                db.historyDao().clearAll()
-                runOnUiThread {
-                    items.clear()
-                    adapter.notifyDataSetChanged()
-                    showNoHistory()
-                    Toast.makeText(this@HistoryActivity, R.string.clear_all, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        findViewById<android.widget.ImageButton>(R.id.btn_back).setOnClickListener {
-            finish()
-        }
-        findViewById<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener {
-            finish()
-        }
-
-        val notFoundText = TextView(this).apply {
-            id = View.generateViewId()
-            text = "No history found"
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
-            visibility = View.GONE
-        }
-        val layout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.history_root)
-        layout.addView(notFoundText)
-        val params = notFoundText.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
-        params.width = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
-        params.height = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
-        params.topToBottom = R.id.search_bar_container
-        params.startToStart = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-        params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-        params.topMargin = 24
-        notFoundText.layoutParams = params
-
         // Make search input focusable only after user taps it
         searchInput.setOnClickListener {
             if (!searchInput.isFocusable) {
@@ -219,10 +230,151 @@ class HistoryActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadHistory() {
+        historyJob = lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                db.historyDao().getAllHistory().collectLatest { allHistory ->
+                    withContext(Dispatchers.Main) {
+                        try {
+                            allItems.clear()
+                            allItems.addAll(allHistory)
+                            items.clear()
+                            items.addAll(allHistory)
+                            adapter.notifyDataSetChanged()
+                            if (items.isEmpty()) showNoHistory()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(this@HistoryActivity, "Error updating UI", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    e.printStackTrace()
+                    Toast.makeText(this@HistoryActivity, "Error loading history", Toast.LENGTH_SHORT).show()
+                    showNoHistory()
+                }
+            }
+        }
+    }
+
+    private fun setupClickListeners() {
+        findViewById<Button>(R.id.btn_clear_all)?.setOnClickListener {
+            clearAllHistory()
+        }
+
+        findViewById<android.widget.ImageButton>(R.id.btn_back)?.setOnClickListener {
+            finish()
+        }
+        
+        findViewById<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>(R.id.fab_calculator)?.setOnClickListener {
+            finish()
+        }
+
+        setupNoHistoryText()
+    }
+
+    private fun clearAllHistory() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                db.historyDao().clearAll()
+                withContext(Dispatchers.Main) {
+                    items.clear()
+                    adapter.notifyDataSetChanged()
+                    showNoHistory()
+                    Toast.makeText(this@HistoryActivity, R.string.clear_all, Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@HistoryActivity, "Error clearing history", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun setupNoHistoryText() {
+        val notFoundText = TextView(this).apply {
+            id = View.generateViewId()
+            text = "No history found"
+            setTextColor(Color.LTGRAY)
+            textSize = 18f
+            visibility = View.GONE
+        }
+        val layout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.history_root)
+        layout?.addView(notFoundText)
+        val params = notFoundText.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+        params.width = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
+        params.height = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
+        params.topToBottom = R.id.search_bar_container
+        params.startToStart = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+        params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+        params.topMargin = 24
+        notFoundText.layoutParams = params
+    }
+
     private fun showNoHistory() {
-        items.clear()
-        allItems.clear()
-        allItems.add(HistoryEntity(expression = getString(R.string.no_history), result = ""))
-        adapter.notifyDataSetChanged()
+        try {
+            items.clear()
+            allItems.clear()
+            allItems.add(HistoryEntity(expression = getString(R.string.no_history), result = ""))
+            adapter.notifyDataSetChanged()
+        } catch (e: Exception) {
+            // Fallback if string resource is not available
+            items.clear()
+            allItems.clear()
+            allItems.add(HistoryEntity(expression = "No history yet", result = ""))
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun addTestEntry() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // Add a test entry if no history exists
+                val recentHistory = db.historyDao().getRecentHistory()
+                if (recentHistory.isEmpty()) {
+                    db.historyDao().insert(HistoryEntity(
+                        expression = "2 + 2",
+                        result = "4"
+                    ))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        historyJob?.cancel()
+        searchJob?.cancel()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Cancel any ongoing operations when activity is paused
+        historyJob?.cancel()
+        searchJob?.cancel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reload history when activity resumes
+        if (items.isEmpty()) {
+            loadHistory()
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Handle configuration changes gracefully
+        // The activity will not be recreated due to configChanges in manifest
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        // Cancel jobs and clear unnecessary data when memory is low
+        historyJob?.cancel()
+        searchJob?.cancel()
     }
 } 

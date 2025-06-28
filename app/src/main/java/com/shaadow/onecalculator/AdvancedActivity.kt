@@ -29,118 +29,128 @@ class AdvancedActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_advanced)
-        supportActionBar?.hide()
+        try {
+            setContentView(R.layout.layout_advanced)
+            supportActionBar?.hide()
 
-        val searchInput = findViewById<EditText>(R.id.search_input)
-        val searchResultsRecycler = findViewById<RecyclerView>(R.id.search_results_recycler)
-        val homeScrollView = findViewById<View>(R.id.home_scrollview)
-        val fab = findViewById<View>(R.id.fab_calculator)
+            val searchInput = findViewById<EditText>(R.id.search_input)
+            val searchResultsRecycler = findViewById<RecyclerView>(R.id.search_results_recycler)
+            val homeScrollView = findViewById<View>(R.id.home_scrollview)
+            val fab = findViewById<View>(R.id.fab_calculator)
 
-        val categories = loadCategoriesFromJson()
-        var filteredCategories = categories
-        val recentHistory = mutableListOf<HistoryEntity>()
-        val allHistory = mutableListOf<HistoryEntity>()
-        val searchResults = mutableListOf<SearchResultSection>()
-        val searchAdapter = SearchResultsAdapter(searchResults) { result ->
-            when (result) {
-                is SearchResult.HistoryItem -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra("expression", result.entity.expression)
-                    intent.putExtra("result", result.entity.result)
-                    startActivity(intent)
+            val categories = loadCategoriesFromJson()
+            var filteredCategories = categories
+            val recentHistory = mutableListOf<HistoryEntity>()
+            val allHistory = mutableListOf<HistoryEntity>()
+            val searchResults = mutableListOf<SearchResultSection>()
+            val searchAdapter = SearchResultsAdapter(searchResults) { result ->
+                when (result) {
+                    is SearchResult.HistoryItem -> {
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra("expression", result.entity.expression)
+                        intent.putExtra("result", result.entity.result)
+                        startActivity(intent)
+                    }
+                    is SearchResult.CalculatorItem -> {
+                        // TODO: Open respective calculator screen
+                        Toast.makeText(this, "Open calculator: ${result.category} - ${result.label}", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                is SearchResult.CalculatorItem -> {
-                    // TODO: Open respective calculator screen
-                    Toast.makeText(this, "Open calculator: ${result.category} - ${result.label}", Toast.LENGTH_SHORT).show()
+            }
+            searchResultsRecycler.layoutManager = LinearLayoutManager(this)
+            searchResultsRecycler.adapter = searchAdapter
+
+            fun updateSearchResults(query: String) {
+                searchResults.clear()
+                if (query.isBlank()) {
+                    searchResultsRecycler.visibility = View.GONE
+                    homeScrollView.visibility = View.VISIBLE
+                    fab.visibility = View.VISIBLE
+                    return
+                }
+                // Group: Recent Calculations
+                val recent = recentHistory.filter {
+                    it.expression.contains(query, true) || it.result.contains(query, true)
+                }
+                if (recent.isNotEmpty()) {
+                    searchResults.add(SearchResultSection("From Recent Calculations", recent.map { SearchResult.HistoryItem(it) }))
+                }
+                // Group: All History
+                val history = allHistory.filter {
+                    it.expression.contains(query, true) || it.result.contains(query, true)
+                }
+                if (history.isNotEmpty()) {
+                    searchResults.add(SearchResultSection("From All History", history.map { SearchResult.HistoryItem(it) }))
+                }
+                // Group: Categories
+                for (cat in categories) {
+                    val matches = cat.buttons.filter { it.contains(query, true) }
+                    if (matches.isNotEmpty()) {
+                        searchResults.add(SearchResultSection("From ${cat.name}", matches.map { SearchResult.CalculatorItem(cat.name, it) }))
+                    }
+                }
+                searchAdapter.updateSections(searchResults)
+                searchResultsRecycler.visibility = View.VISIBLE
+                homeScrollView.visibility = View.GONE
+                fab.visibility = View.GONE
+            }
+
+            // Load history from DB
+            lifecycleScope.launch {
+                try {
+                    val db = HistoryDatabase.getInstance(this@AdvancedActivity)
+                    db.historyDao().getAllHistory().collect { all ->
+                        allHistory.clear()
+                        allHistory.addAll(all)
+                    }
+                    val recent = db.historyDao().getRecentHistory()
+                    recentHistory.clear()
+                    recentHistory.addAll(recent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
-        }
-        searchResultsRecycler.layoutManager = LinearLayoutManager(this)
-        searchResultsRecycler.adapter = searchAdapter
 
-        fun updateSearchResults(query: String) {
-            searchResults.clear()
-            if (query.isBlank()) {
-                searchResultsRecycler.visibility = View.GONE
-                homeScrollView.visibility = View.VISIBLE
-                fab.visibility = View.VISIBLE
-                return
+            searchInput.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val query = s?.toString() ?: ""
+                    updateSearchResults(query)
+                }
+                override fun afterTextChanged(s: Editable?) {}
+            })
+            setupRecentHistory()
+            findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
+            // findViewById<ImageButton>(R.id.btn_search).setOnClickListener {
+            //     Toast.makeText(this, "Search clicked (stub)", Toast.LENGTH_SHORT).show()
+            // }
+            findViewById<ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener { finish() }
+            findViewById<Button>(R.id.btn_view_all_history).setOnClickListener {
+                startActivity(Intent(this, HistoryActivity::class.java))
             }
-            // Group: Recent Calculations
-            val recent = recentHistory.filter {
-                it.expression.contains(query, true) || it.result.contains(query, true)
-            }
-            if (recent.isNotEmpty()) {
-                searchResults.add(SearchResultSection("From Recent Calculations", recent.map { SearchResult.HistoryItem(it) }))
-            }
-            // Group: All History
-            val history = allHistory.filter {
-                it.expression.contains(query, true) || it.result.contains(query, true)
-            }
-            if (history.isNotEmpty()) {
-                searchResults.add(SearchResultSection("From All History", history.map { SearchResult.HistoryItem(it) }))
-            }
-            // Group: Categories
+
+            // After loading categories, display all categories on home screen
             for (cat in categories) {
-                val matches = cat.buttons.filter { it.contains(query, true) }
-                if (matches.isNotEmpty()) {
-                    searchResults.add(SearchResultSection("From ${cat.name}", matches.map { SearchResult.CalculatorItem(cat.name, it) }))
+                val resId = getCategoryFlexboxId(cat.name)
+                if (resId != null) {
+                    addFlexButtons(resId, cat.buttons)
                 }
             }
-            searchAdapter.updateSections(searchResults)
-            searchResultsRecycler.visibility = View.VISIBLE
-            homeScrollView.visibility = View.GONE
-            fab.visibility = View.GONE
-        }
 
-        // Load history from DB
-        lifecycleScope.launch {
-            val db = HistoryDatabase.getInstance(this@AdvancedActivity)
-            db.historyDao().getAllHistory().collect { all ->
-                allHistory.clear()
-                allHistory.addAll(all)
+            // Make search input focusable only after user taps it
+            searchInput.setOnClickListener {
+                if (!searchInput.isFocusable) {
+                    searchInput.isFocusable = true
+                    searchInput.isFocusableInTouchMode = true
+                    searchInput.requestFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                    imm.showSoftInput(searchInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+                }
             }
-            val recent = db.historyDao().getRecentHistory()
-            recentHistory.clear()
-            recentHistory.addAll(recent)
-        }
-
-        searchInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s?.toString() ?: ""
-                updateSearchResults(query)
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        })
-        setupRecentHistory()
-        findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
-        // findViewById<ImageButton>(R.id.btn_search).setOnClickListener {
-        //     Toast.makeText(this, "Search clicked (stub)", Toast.LENGTH_SHORT).show()
-        // }
-        findViewById<ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener { finish() }
-        findViewById<Button>(R.id.btn_view_all_history).setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
-        }
-
-        // After loading categories, display all categories on home screen
-        for (cat in categories) {
-            val resId = getCategoryFlexboxId(cat.name)
-            if (resId != null) {
-                addFlexButtons(resId, cat.buttons)
-            }
-        }
-
-        // Make search input focusable only after user taps it
-        searchInput.setOnClickListener {
-            if (!searchInput.isFocusable) {
-                searchInput.isFocusable = true
-                searchInput.isFocusableInTouchMode = true
-                searchInput.requestFocus()
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-                imm.showSoftInput(searchInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error initializing advanced screen", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 
@@ -148,18 +158,25 @@ class AdvancedActivity : AppCompatActivity() {
 
     private fun loadCategoriesFromJson(): List<HomeCategory> {
         val categories = mutableListOf<HomeCategory>()
-        val jsonStr = assets.open("home_categories.json").bufferedReader().use { it.readText() }
-        val root = JSONObject(jsonStr)
-        val arr = root.getJSONArray("categories")
-        for (i in 0 until arr.length()) {
-            val obj = arr.getJSONObject(i)
-            val name = obj.getString("name")
-            val btnArr = obj.getJSONArray("buttons")
-            val btns = mutableListOf<String>()
-            for (j in 0 until btnArr.length()) {
-                btns.add(btnArr.getString(j))
+        try {
+            val jsonStr = assets.open("home_categories.json").bufferedReader().use { it.readText() }
+            val root = JSONObject(jsonStr)
+            val arr = root.getJSONArray("categories")
+            for (i in 0 until arr.length()) {
+                val obj = arr.getJSONObject(i)
+                val name = obj.getString("name")
+                val btnArr = obj.getJSONArray("buttons")
+                val btns = mutableListOf<String>()
+                for (j in 0 until btnArr.length()) {
+                    btns.add(btnArr.getString(j))
+                }
+                categories.add(HomeCategory(name, btns))
             }
-            categories.add(HomeCategory(name, btns))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Return default categories if JSON file is missing or corrupted
+            categories.add(HomeCategory("Basic", listOf("Calculator", "History", "Settings")))
+            Toast.makeText(this, "Error loading categories", Toast.LENGTH_SHORT).show()
         }
         return categories
     }
