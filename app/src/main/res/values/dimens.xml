@@ -3,10 +3,10 @@
     <dimen name="popup_vertical_offset">12dp</dimen>
     
     <!-- Responsive dimensions for calculator -->
-    <dimen name="button_size_small">65dp</dimen>
-    <dimen name="button_size_medium">75dp</dimen>
-    <dimen name="button_size_large">85dp</dimen>
-    <dimen name="button_size_xlarge">95dp</dimen>
+    <dimen name="button_size_small">70dp</dimen>
+    <dimen name="button_size_medium">80dp</dimen>
+    <dimen name="button_size_large">90dp</dimen>
+    <dimen name="button_size_xlarge">100dp</dimen>
     
     <!-- Special button sizes (first row - sqrt, power, pi, factorial, e) -->
     <dimen name="special_button_size_small">55dp</dimen>
@@ -21,10 +21,10 @@
     <dimen name="button_margin_xlarge">12dp</dimen>
     
     <!-- Special button margins (first row - much tighter) -->
-    <dimen name="special_button_margin_small">0.5dp</dimen>
-    <dimen name="special_button_margin_medium">0.75dp</dimen>
-    <dimen name="special_button_margin_large">1dp</dimen>
-    <dimen name="special_button_margin_xlarge">1.5dp</dimen>
+    <dimen name="special_button_margin_small">0.25dp</dimen>
+    <dimen name="special_button_margin_medium">0.5dp</dimen>
+    <dimen name="special_button_margin_large">0.75dp</dimen>
+    <dimen name="special_button_margin_xlarge">1dp</dimen>
     
     <dimen name="text_size_small">22sp</dimen>
     <dimen name="text_size_medium">26sp</dimen>
