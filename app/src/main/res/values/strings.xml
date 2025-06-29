@@ -54,4 +54,7 @@
     <string name="no_history_found_text">No history found</string>
     <string name="search_1calculator_text_placeholder">Search 1Calculator</string>
     <string name="menu_text_desc">Menu</string>
+    <string name="delete_btn_desc">Delete</string>
+    <string name="result_desc">Result</string>
+    <string name="expression_desc">Expression</string>
 </resources>

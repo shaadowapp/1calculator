@@ -31,15 +31,20 @@
     <dimen name="text_size_large">30sp</dimen>
     <dimen name="text_size_xlarge">34sp</dimen>
     
-    <dimen name="display_text_size_small">40sp</dimen>
-    <dimen name="display_text_size_medium">46sp</dimen>
-    <dimen name="display_text_size_large">52sp</dimen>
-    <dimen name="display_text_size_xlarge">58sp</dimen>
+    <dimen name="display_text_size_small">44sp</dimen>
+    <dimen name="display_text_size_medium">50sp</dimen>
+    <dimen name="display_text_size_large">45sp</dimen>
+    <dimen name="display_text_size_xlarge">45sp</dimen>
     
-    <dimen name="solution_text_size_small">24sp</dimen>
-    <dimen name="solution_text_size_medium">28sp</dimen>
-    <dimen name="solution_text_size_large">32sp</dimen>
-    <dimen name="solution_text_size_xlarge">36sp</dimen>
+    <dimen name="solution_text_size_small">30sp</dimen>
+    <dimen name="solution_text_size_medium">40sp</dimen>
+    <dimen name="solution_text_size_large">55sp</dimen>
+    <dimen name="solution_text_size_xlarge">55sp</dimen>
+    
+    <dimen name="result_text_size_small">55sp</dimen>
+    <dimen name="result_text_size_medium">55sp</dimen>
+    <dimen name="result_text_size_large">55sp</dimen>
+    <dimen name="result_text_size_xlarge">55sp</dimen>
     
     <!-- Regular icon sizes -->
     <dimen name="icon_size_small">26dp</dimen>

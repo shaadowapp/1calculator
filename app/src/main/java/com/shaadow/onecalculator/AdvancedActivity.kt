@@ -346,6 +346,11 @@ class SearchResultsAdapter(
             val item = data as SearchResult
             val exprView = holder.itemView.findViewById<TextView>(R.id.tv_expression)
             val resView = holder.itemView.findViewById<TextView>(R.id.tv_result)
+            val deleteBtn = holder.itemView.findViewById<ImageButton>(R.id.btn_delete)
+            
+            // Hide delete button for search results
+            deleteBtn.visibility = View.GONE
+            
             when (item) {
                 is SearchResult.HistoryItem -> {
                     exprView.text = item.entity.expression

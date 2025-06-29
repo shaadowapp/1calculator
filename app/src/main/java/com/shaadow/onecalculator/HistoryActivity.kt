@@ -135,6 +135,14 @@ class HistoryActivity : AppCompatActivity() {
         }
         recyclerView.adapter = adapter
 
+        // Add click listener for history items
+        adapter.setOnItemClickListener { historyEntity ->
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("expression", historyEntity.expression)
+            intent.putExtra("result", historyEntity.result)
+            startActivity(intent)
+        }
+
         // Swipe to delete (LEFT)
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
