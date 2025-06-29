@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: android.text.Editable?) {
                 adjustExpressionTextSize()
+                updateSolutionVisibility()
                 adjustSolutionTextSize()
             }
         })
@@ -97,11 +98,12 @@ class MainActivity : AppCompatActivity() {
                 adjustSolutionTextSize()
                 appendToExpression(input)
 
-                val expressionToEvaluate = convertSymbolsToOperators(expressionTv.text.toString())
+                val expressionToEvaluate = getExpressionForCalculation()
                 if (isExpressionComplete(expressionToEvaluate)) {
                     try {
-                        val result = Expression.calculate(expressionToEvaluate)
-                        solutionTv.text = result.toString().removeSuffix(".0")
+                        val result = safeCalculate(expressionToEvaluate)
+                        val formattedResult = formatNumberWithCommas(doubleToStringWithoutScientificNotation(result))
+                        solutionTv.text = formattedResult
                         adjustSolutionTextSize()
                     } catch (_: Exception) {
                         solutionTv.text = ""
@@ -118,6 +120,8 @@ class MainActivity : AppCompatActivity() {
             expressionTv.setText("")
             solutionTv.text = "0"
             expressionTv.visibility = View.VISIBLE
+            solutionTv.textSize = 50f
+            updateSolutionVisibility()
             adjustSolutionTextSize()
             isResultShown = false
         }
@@ -144,11 +148,12 @@ class MainActivity : AppCompatActivity() {
                     expressionTv.setSelection(selectionStart)
                 }
 
-                val expressionToEvaluate = convertSymbolsToOperators(expressionTv.text.toString())
+                val expressionToEvaluate = getExpressionForCalculation()
                 if (isExpressionComplete(expressionToEvaluate)) {
                     try {
-                        val result = Expression.calculate(expressionToEvaluate)
-                        solutionTv.text = result.toString().removeSuffix(".0")
+                        val result = safeCalculate(expressionToEvaluate)
+                        val formattedResult = formatNumberWithCommas(doubleToStringWithoutScientificNotation(result))
+                        solutionTv.text = formattedResult
                         adjustSolutionTextSize()
                     } catch (_: Exception) {
                         solutionTv.text = ""
@@ -163,16 +168,17 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<MaterialButton>(R.id.button_equals).setOnClickListener {
             val expression = expressionTv.text.toString()
-            val formattedExpression = convertSymbolsToOperators(expression)
+            val formattedExpression = getExpressionForCalculation()
             try {
-                val result = Expression.calculate(formattedExpression)
-                solutionTv.text = result.toString().removeSuffix(".0")
+                val result = safeCalculate(formattedExpression)
+                val formattedResult = formatNumberWithCommas(doubleToStringWithoutScientificNotation(result))
+                solutionTv.text = formattedResult
                 expressionTv.visibility = View.GONE
-                solutionTv.textSize = 55f
+                solutionTv.textSize = 58f
                 isResultShown = true
                 // Save to Room DB
                 val expr = expression
-                val res = result.toString().removeSuffix(".0")
+                val res = doubleToStringWithoutScientificNotation(result)
                 lifecycleScope.launch {
                     val db = HistoryDatabase.getInstance(this@MainActivity)
                     db.historyDao().insert(HistoryEntity(expression = expr, result = res))
@@ -262,31 +268,72 @@ class MainActivity : AppCompatActivity() {
             val beforeCursor = current.substring(0, selectionStart)
             val afterCursor = current.substring(selectionStart)
             val newText = beforeCursor + value + afterCursor
-            expressionTv.setText(newText)
-            expressionTv.setSelection(selectionStart + value.length)
+            val formattedText = formatExpressionWithCommas(newText)
+            expressionTv.setText(formattedText)
+            
+            // Calculate correct cursor position after formatting
+            val newCursorPosition = calculateCursorPositionAfterFormatting(
+                beforeCursor, value, afterCursor, formattedText
+            )
+            expressionTv.setSelection(newCursorPosition)
         } else {
             // Text is selected, replace selection
             val beforeSelection = current.substring(0, selectionStart)
             val afterSelection = current.substring(selectionEnd)
             val newText = beforeSelection + value + afterSelection
-            expressionTv.setText(newText)
-            expressionTv.setSelection(selectionStart + value.length)
+            val formattedText = formatExpressionWithCommas(newText)
+            expressionTv.setText(formattedText)
+            
+            // Calculate correct cursor position after formatting
+            val newCursorPosition = calculateCursorPositionAfterFormatting(
+                beforeSelection, value, afterSelection, formattedText
+            )
+            expressionTv.setSelection(newCursorPosition)
         }
     }
 
-    private fun isValidInput(currentText: String, newValue: String, selectionStart: Int, selectionEnd: Int): Boolean {
-        // Define operators
-        val operators = setOf("+", "-", "×", "÷", "%", "^", "!")
+    private fun calculateCursorPositionAfterFormatting(
+        beforeText: String, 
+        insertedValue: String, 
+        afterText: String, 
+        formattedText: String
+    ): Int {
+        // Find where the inserted value should be in the formatted text
+        val targetText = beforeText + insertedValue + afterText
         
-        // If it's not an operator, always allow
-        if (newValue !in operators) {
-            return true
+        // Find the position of the inserted value in the formatted text
+        // We need to find where the inserted value appears after formatting
+        val beforeFormatted = formatExpressionWithCommas(beforeText)
+        val beforePlusInsertedFormatted = formatExpressionWithCommas(beforeText + insertedValue)
+        
+        // The cursor should be at the end of the formatted inserted value
+        return beforePlusInsertedFormatted.length
+    }
+
+    private fun isValidInput(currentText: String, newValue: String, selectionStart: Int, selectionEnd: Int): Boolean {
+        // Define operators and special symbols
+        val operators = setOf("+", "-", "×", "÷", "%", "^", "!")
+        val specialSymbols = setOf("√", "π", "e", "(", ")")
+        val allowedSymbols = operators + specialSymbols + setOf(".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+        
+        // If it's not an allowed symbol, reject it (prevents alphabets)
+        if (newValue !in allowedSymbols) {
+            return false
         }
         
         // Get the text that would result after insertion
         val beforeCursor = currentText.substring(0, selectionStart)
         val afterCursor = currentText.substring(selectionEnd)
         val resultingText = beforeCursor + newValue + afterCursor
+        
+        // Check for maximum number length (15 digits for any single number)
+        val numberPattern = Regex("\\d+")
+        val numbers = numberPattern.findAll(resultingText)
+        for (match in numbers) {
+            if (match.value.length > 15) {
+                return false // Number too large
+            }
+        }
         
         // Check for consecutive operators
         val consecutiveOperators = listOf("++", "--", "××", "÷÷", "%%", "^^", "!!")
@@ -316,6 +363,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
         
+        // Check for consecutive commas (which would create confusing expressions)
+        if (resultingText.contains(",,")) {
+            return false
+        }
+        
         return true
     }
 
@@ -331,6 +383,32 @@ class MainActivity : AppCompatActivity() {
                 .replace("!", "!")
                 .replace("e", "e")
         )
+    }
+
+    private fun removeCommasFromExpression(expression: String): String {
+        // Remove all commas from the expression for calculation
+        val result = expression.replace(",", "")
+        
+        // Validate that all commas were removed
+        if (result.contains(",")) {
+            throw IllegalArgumentException("Failed to remove all commas from expression")
+        }
+        
+        return result
+    }
+
+    private fun getExpressionForCalculation(): String {
+        // Get the expression text and remove commas for calculation
+        val expressionWithCommas = expressionTv.text.toString()
+        
+        try {
+            val expressionWithoutCommas = removeCommasFromExpression(expressionWithCommas)
+            return convertSymbolsToOperators(expressionWithoutCommas)
+        } catch (e: Exception) {
+            // Log the error and return a safe fallback
+            println("Error processing expression: ${e.message}")
+            return "0"
+        }
     }
 
     private fun isExpressionComplete(expression: String): Boolean {
@@ -383,8 +461,10 @@ class MainActivity : AppCompatActivity() {
                     if (pasted.isNotEmpty() && isValidPastedExpression(pasted)) {
                         expressionTv.setText(pasted)
                         try {
-                            val result = Expression.calculate(convertSymbolsToOperators(pasted))
-                            solutionTv.text = result.toString().removeSuffix(".0")
+                            val expressionWithoutCommas = removeCommasFromExpression(pasted)
+                            val result = safeCalculate(convertSymbolsToOperators(expressionWithoutCommas))
+                            val formattedResult = formatNumberWithCommas(doubleToStringWithoutScientificNotation(result))
+                            solutionTv.text = formattedResult
                             adjustSolutionTextSize()
                         } catch (_: Exception) {
                             solutionTv.text = getString(R.string.error_text)
@@ -408,6 +488,7 @@ class MainActivity : AppCompatActivity() {
             expressionTv.setText(expression)
             solutionTv.text = result
             expressionTv.visibility = View.VISIBLE
+            updateSolutionVisibility()
             adjustSolutionTextSize()
             isResultShown = false
         }
@@ -421,13 +502,13 @@ class MainActivity : AppCompatActivity() {
     private fun adjustExpressionTextSize() {
         val text = expressionTv.text.toString()
         if (text.isEmpty()) {
-            expressionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 55f)
+            expressionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 58f)
             return
         }
 
         val deviceWidth = resources.displayMetrics.widthPixels
-        val maxSize = 55f // Maximum text size in SP
-        val minSize = 30f // Minimum text size in SP
+        val maxSize = 58f // Maximum text size in SP
+        val minSize = 25f // Minimum text size in SP
         
         // Calculate available width (considering padding)
         val availableWidth = deviceWidth - (expressionTv.paddingLeft + expressionTv.paddingRight) * 2
@@ -437,6 +518,7 @@ class MainActivity : AppCompatActivity() {
         var currentSize = maxSize
         var reductionCount = 0
         
+        // Keep reducing until text fits or we reach minimum size
         while (currentSize > minSize) {
             paint.textSize = currentSize * resources.displayMetrics.scaledDensity
             val textWidth = paint.measureText(text)
@@ -448,8 +530,8 @@ class MainActivity : AppCompatActivity() {
                 break // Text fits within the current threshold
             }
             
-            // Reduce text size by 2sp for each level
-            currentSize -= 2f
+            // Reduce text size by 3sp for each level
+            currentSize -= 3f
             reductionCount++
         }
         
@@ -480,12 +562,12 @@ class MainActivity : AppCompatActivity() {
     private fun adjustSolutionTextSize() {
         val text = solutionTv.text.toString()
         if (text.isEmpty()) {
-            solutionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 45f)
+            solutionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 50f)
             return
         }
 
         val deviceWidth = resources.displayMetrics.widthPixels
-        val maxSize = 45f // Maximum text size in SP
+        val maxSize = 50f // Maximum text size in SP
         val minSize = 25f // Minimum text size in SP
         
         // Calculate available width (considering padding)
@@ -579,5 +661,92 @@ class MainActivity : AppCompatActivity() {
         }
         
         return true
+    }
+
+    private fun doubleToStringWithoutScientificNotation(number: Double): String {
+        return if (number >= 1e6 || number <= -1e6) {
+            String.format("%.0f", number)
+        } else {
+            number.toString().removeSuffix(".0")
+        }
+    }
+
+    private fun formatNumberWithCommas(number: String): String {
+        // Handle negative numbers
+        val isNegative = number.startsWith("-")
+        val absNumber = if (isNegative) number.substring(1) else number
+        
+        // Split into integer and decimal parts
+        val parts = absNumber.split(".")
+        val integerPart = parts[0]
+        val decimalPart = if (parts.size > 1) "." + parts[1] else ""
+        
+        // Don't format 4-digit numbers (1000-9999)
+        if (integerPart.length == 4) {
+            val result = integerPart + decimalPart
+            return if (isNegative) "-$result" else result
+        }
+        
+        // Apply Indian comma system: last 3 digits, then every 2 digits
+        val formattedInteger = StringBuilder()
+        val length = integerPart.length
+        
+        // For Indian system: group from right to left
+        // Last 3 digits, then every 2 digits
+        // Calculate comma positions from right to left
+        val commaPositions = mutableListOf<Int>()
+        var pos = length - 3 // Start after last 3 digits
+        
+        while (pos > 0) {
+            commaPositions.add(pos)
+            pos -= 2 // Every 2 digits
+        }
+        
+        // Build the formatted string
+        for (i in 0 until length) {
+            if (i in commaPositions) {
+                formattedInteger.append(",")
+            }
+            formattedInteger.append(integerPart[i])
+        }
+        
+        val result = formattedInteger.toString() + decimalPart
+        return if (isNegative) "-$result" else result
+    }
+
+    private fun formatExpressionWithCommas(expression: String): String {
+        // Format only the numbers in the expression, not operators
+        val numberPattern = Regex("\\d+(\\.\\d+)?")
+        return numberPattern.replace(expression) { matchResult ->
+            formatNumberWithCommas(matchResult.value)
+        }
+    }
+
+    private fun hasFunctionalButton(expression: String): Boolean {
+        val functionalButtons = setOf("+", "-", "×", "÷", "%", "^", "!", "√", "π", "e", "(", ")")
+        return functionalButtons.any { expression.contains(it) }
+    }
+
+    private fun updateSolutionVisibility() {
+        val expression = expressionTv.text.toString()
+        if (hasFunctionalButton(expression)) {
+            solutionTv.visibility = View.VISIBLE
+        } else {
+            solutionTv.visibility = View.GONE
+        }
+    }
+
+    private fun safeCalculate(expression: String): Double {
+        return try {
+            // Double-check that no commas remain
+            if (expression.contains(",")) {
+                throw IllegalArgumentException("Expression contains commas: $expression")
+            }
+            
+            Expression.calculate(expression)
+        } catch (e: Exception) {
+            println("Calculation error: ${e.message}")
+            throw e
+        }
     }
 }

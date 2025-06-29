@@ -47,7 +47,8 @@
             android:textColor="#FF9800"
             android:background="@android:color/transparent"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textAllCaps="false" />
     </LinearLayout>
 
     <!-- Output Display Area -->
@@ -77,14 +78,16 @@
             android:cursorVisible="true"
             android:gravity="end|center_vertical"
             android:scrollHorizontally="true"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textIsSelectable="false"
+            android:contextClickable="false"
+            android:layout_marginBottom="5dp"/>
 
         <!-- Solution text (2nd line) - shows live calculation results -->
         <TextView
             android:id="@+id/solution_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/_0"
             android:textAlignment="textEnd"
             android:textColor="@android:color/white"
             android:textSize="@dimen/display_text_size"

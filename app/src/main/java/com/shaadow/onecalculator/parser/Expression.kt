@@ -153,7 +153,20 @@ object Expression {
                     }
                     tokens.add(ch.toString())
                 }
-                else -> throw IllegalArgumentException("Invalid character: $ch")
+                ch == ',' -> {
+                    // Ignore commas - they should be removed before calculation
+                    // but handle them gracefully if they somehow reach here
+                    continue
+                }
+                ch.isWhitespace() -> {
+                    // Ignore whitespace
+                    continue
+                }
+                else -> {
+                    // Log the invalid character but don't crash
+                    println("Warning: Invalid character '$ch' in expression, ignoring")
+                    continue
+                }
             }
         }
         if (num.isNotEmpty()) tokens.add(num)
