@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 expressionTv.visibility = View.VISIBLE
-                solutionTv.textSize = 45f
+                adjustSolutionTextSize()
                 appendToExpression(input)
 
                 val expressionToEvaluate = convertSymbolsToOperators(expressionTv.text.toString())
@@ -102,11 +102,14 @@ class MainActivity : AppCompatActivity() {
                     try {
                         val result = Expression.calculate(expressionToEvaluate)
                         solutionTv.text = result.toString().removeSuffix(".0")
+                        adjustSolutionTextSize()
                     } catch (_: Exception) {
                         solutionTv.text = ""
+                        adjustSolutionTextSize()
                     }
                 } else {
                     solutionTv.text = ""
+                    adjustSolutionTextSize()
                 }
             }
         }
@@ -115,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             expressionTv.setText("")
             solutionTv.text = "0"
             expressionTv.visibility = View.VISIBLE
-            solutionTv.textSize = 45f
+            adjustSolutionTextSize()
             isResultShown = false
         }
 
@@ -146,11 +149,14 @@ class MainActivity : AppCompatActivity() {
                     try {
                         val result = Expression.calculate(expressionToEvaluate)
                         solutionTv.text = result.toString().removeSuffix(".0")
+                        adjustSolutionTextSize()
                     } catch (_: Exception) {
                         solutionTv.text = ""
+                        adjustSolutionTextSize()
                     }
                 } else {
                     solutionTv.text = ""
+                    adjustSolutionTextSize()
                 }
             }
         }
@@ -171,8 +177,10 @@ class MainActivity : AppCompatActivity() {
                     val db = HistoryDatabase.getInstance(this@MainActivity)
                     db.historyDao().insert(HistoryEntity(expression = expr, result = res))
                 }
+                adjustSolutionTextSize()
             } catch (_: Exception) {
                 solutionTv.text = getString(R.string.error_text)
+                adjustSolutionTextSize()
             }
         }
 
@@ -377,11 +385,14 @@ class MainActivity : AppCompatActivity() {
                         try {
                             val result = Expression.calculate(convertSymbolsToOperators(pasted))
                             solutionTv.text = result.toString().removeSuffix(".0")
+                            adjustSolutionTextSize()
                         } catch (_: Exception) {
                             solutionTv.text = getString(R.string.error_text)
+                            adjustSolutionTextSize()
                         }
                     } else {
                         Toast.makeText(this, "Invalid expression", Toast.LENGTH_SHORT).show()
+                        adjustSolutionTextSize()
                     }
                 }
                 popup.dismiss()
@@ -397,7 +408,7 @@ class MainActivity : AppCompatActivity() {
             expressionTv.setText(expression)
             solutionTv.text = result
             expressionTv.visibility = View.VISIBLE
-            solutionTv.textSize = 45f
+            adjustSolutionTextSize()
             isResultShown = false
         }
     }
@@ -410,13 +421,13 @@ class MainActivity : AppCompatActivity() {
     private fun adjustExpressionTextSize() {
         val text = expressionTv.text.toString()
         if (text.isEmpty()) {
-            expressionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.solution_text_size))
+            expressionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 55f)
             return
         }
 
         val deviceWidth = resources.displayMetrics.widthPixels
-        val maxSize = resources.getDimension(R.dimen.solution_text_size)
-        val minSize = 30f // Minimum text size before scrolling
+        val maxSize = 55f // Maximum text size in SP
+        val minSize = 30f // Minimum text size in SP
         
         // Calculate available width (considering padding)
         val availableWidth = deviceWidth - (expressionTv.paddingLeft + expressionTv.paddingRight) * 2
@@ -427,7 +438,7 @@ class MainActivity : AppCompatActivity() {
         var reductionCount = 0
         
         while (currentSize > minSize) {
-            paint.textSize = currentSize
+            paint.textSize = currentSize * resources.displayMetrics.scaledDensity
             val textWidth = paint.measureText(text)
             
             // Calculate the threshold for this reduction level
@@ -444,7 +455,7 @@ class MainActivity : AppCompatActivity() {
         
         // If we've reached minimum size and text still doesn't fit, make it scrollable
         if (currentSize <= minSize) {
-            paint.textSize = minSize
+            paint.textSize = minSize * resources.displayMetrics.scaledDensity
             val textWidth = paint.measureText(text)
             val maxThreshold = availableWidth + (availableWidth * 0.25f) // Final threshold
             
@@ -460,19 +471,22 @@ class MainActivity : AppCompatActivity() {
             expressionTv.isHorizontalScrollBarEnabled = false
         }
         
-        expressionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, currentSize)
+        expressionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, currentSize)
+        
+        // Debug logging
+        android.util.Log.d("TextSize", "Expression: '$text', Size: ${currentSize}sp, Width: ${paint.measureText(text)}px, Available: ${availableWidth}px")
     }
 
     private fun adjustSolutionTextSize() {
         val text = solutionTv.text.toString()
         if (text.isEmpty()) {
-            solutionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.solution_text_size))
+            solutionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 45f)
             return
         }
 
         val deviceWidth = resources.displayMetrics.widthPixels
-        val maxSize = resources.getDimension(R.dimen.solution_text_size)
-        val minSize = 30f // Minimum text size before scrolling
+        val maxSize = 45f // Maximum text size in SP
+        val minSize = 25f // Minimum text size in SP
         
         // Calculate available width (considering padding)
         val availableWidth = deviceWidth - (solutionTv.paddingLeft + solutionTv.paddingRight) * 2
@@ -483,7 +497,7 @@ class MainActivity : AppCompatActivity() {
         var reductionCount = 0
         
         while (currentSize > minSize) {
-            paint.textSize = currentSize
+            paint.textSize = currentSize * resources.displayMetrics.scaledDensity
             val textWidth = paint.measureText(text)
             
             // Calculate the threshold for this reduction level
@@ -500,7 +514,7 @@ class MainActivity : AppCompatActivity() {
         
         // If we've reached minimum size and text still doesn't fit, make it scrollable
         if (currentSize <= minSize) {
-            paint.textSize = minSize
+            paint.textSize = minSize * resources.displayMetrics.scaledDensity
             val textWidth = paint.measureText(text)
             val maxThreshold = availableWidth + (availableWidth * 0.25f) // Final threshold
             
@@ -516,7 +530,10 @@ class MainActivity : AppCompatActivity() {
             solutionTv.isHorizontalScrollBarEnabled = false
         }
         
-        solutionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, currentSize)
+        solutionTv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, currentSize)
+        
+        // Debug logging
+        android.util.Log.d("TextSize", "Solution: '$text', Size: ${currentSize}sp, Width: ${paint.measureText(text)}px, Available: ${availableWidth}px")
     }
 
     private fun isValidPastedExpression(expression: String): Boolean {

@@ -75,7 +75,9 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:cursorVisible="true"
-            android:gravity="end|center_vertical" />
+            android:gravity="end|center_vertical"
+            android:scrollHorizontally="true"
+            android:singleLine="true" />
 
         <!-- Solution text (2nd line) - shows live calculation results -->
         <TextView
@@ -88,7 +90,9 @@
             android:textSize="@dimen/display_text_size"
             android:longClickable="true"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/initial_result_text_description"/>
+            android:contentDescription="@string/initial_result_text_description"
+            android:scrollHorizontally="true"
+            android:singleLine="true" />
     </LinearLayout>
 
     <!-- Fragment container for swapping screens -->
