@@ -92,10 +92,10 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupGestureDetector() {
-        val rootView = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.history_root)
+        val rootView = findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)
         val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-                if (e1 == null || e2 == null) return false
+                if (e1 == null) return false
                 val deltaY = e2.y - e1.y
                 val deltaX = e2.x - e1.x
                 if (deltaY < -120 && Math.abs(deltaY) > Math.abs(deltaX)) {
@@ -109,7 +109,7 @@ class HistoryActivity : AppCompatActivity() {
                 return false
             }
             override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                if (e1 == null || e2 == null) return false
+                if (e1 == null) return false
                 val deltaY = e2.y - e1.y
                 val deltaX = e2.x - e1.x
                 if (deltaY < -200 && Math.abs(velocityY) > 800 && Math.abs(deltaY) > Math.abs(deltaX)) {
@@ -130,8 +130,8 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = HistorySectionAdapter { item, position ->
-            deleteHistoryItem(item, position)
+        adapter = HistorySectionAdapter { item, _ ->
+            deleteHistoryItem(item)
         }
         recyclerView.adapter = adapter
 
@@ -152,7 +152,7 @@ class HistoryActivity : AppCompatActivity() {
                     // Find the actual history item from the adapter
                     val item = adapter.getItemAt(pos)
                     if (item is HistoryItem.HistoryEntry) {
-                        deleteHistoryItem(item.entity, item.position)
+                        deleteHistoryItem(item.entity)
                     }
                 }
             }
@@ -160,7 +160,7 @@ class HistoryActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun deleteHistoryItem(item: HistoryEntity, position: Int) {
+    private fun deleteHistoryItem(item: HistoryEntity) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 db.historyDao().deleteById(item.id)
@@ -298,23 +298,7 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupNoHistoryText() {
-        val notFoundText = TextView(this).apply {
-            id = View.generateViewId()
-            text = "No history found"
-            setTextColor(Color.LTGRAY)
-            textSize = 18f
-            visibility = View.GONE
-        }
-        val layout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.history_root)
-        layout?.addView(notFoundText)
-        val params = notFoundText.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
-        params.width = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
-        params.height = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
-        params.topToBottom = R.id.search_bar_container
-        params.startToStart = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-        params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-        params.topMargin = 24
-        notFoundText.layoutParams = params
+        // No need to programmatically add the 'no history' text, it's already in the layout XML as @+id/no_history_found
     }
 
     private fun showNoHistory() {

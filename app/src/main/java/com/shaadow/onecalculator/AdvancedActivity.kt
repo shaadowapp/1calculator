@@ -39,7 +39,6 @@ class AdvancedActivity : AppCompatActivity() {
             val fab = findViewById<View>(R.id.fab_calculator)
 
             val categories = loadCategoriesFromJson()
-            var filteredCategories = categories
             val recentHistory = mutableListOf<HistoryEntity>()
             val allHistory = mutableListOf<HistoryEntity>()
             val searchResults = mutableListOf<SearchResultSection>()
@@ -127,6 +126,16 @@ class AdvancedActivity : AppCompatActivity() {
             findViewById<ExtendedFloatingActionButton>(R.id.fab_calculator).setOnClickListener { finish() }
             findViewById<Button>(R.id.btn_view_all_history).setOnClickListener {
                 startActivity(Intent(this, HistoryActivity::class.java))
+            }
+            
+            // Hot Apps button
+            findViewById<ImageButton>(R.id.btn_hot_apps).setOnClickListener {
+                Toast.makeText(this, "Hot Apps", Toast.LENGTH_SHORT).show()
+            }
+            
+            // Settings button
+            findViewById<ImageButton>(R.id.btn_settings).setOnClickListener {
+                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
             }
 
             // After loading categories, display all categories on home screen
@@ -235,7 +244,6 @@ class AdvancedActivity : AppCompatActivity() {
                     solView.setTextColor(android.graphics.Color.WHITE)
                     solView.textSize = 28f
                     solView.setPadding(0,15,0,0)
-                    solView.setTypeface(null, android.graphics.Typeface.BOLD)
                     solView.setSingleLine(true)
 
                     box.addView(exprView)

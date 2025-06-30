@@ -200,14 +200,13 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        findViewById<TextView>(R.id.basic_screen_name).text = getString(R.string.basic)
         findViewById<android.widget.ImageButton>(R.id.btn_menu).setOnClickListener {
             startActivity(Intent(this, AdvancedActivity::class.java))
         }
         findViewById<Button>(R.id.btn_history).setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
-
+        
         val outputArea = findViewById<LinearLayout>(R.id.output_display_area)
         gestureDetector = GestureDetector(this, object : GestureDetector.OnGestureListener {
             override fun onDown(e: MotionEvent): Boolean = true
@@ -216,7 +215,7 @@ class MainActivity : AppCompatActivity() {
             override fun onScroll(
                 e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float
             ): Boolean {
-                if (e1 == null || e2 == null) return false
+                if (e1 == null) return false
                 val deltaY = e2.y - e1.y
                 val deltaX = e2.x - e1.x
                 if (deltaY > 120 && Math.abs(deltaY) > Math.abs(deltaX)) {
@@ -233,7 +232,7 @@ class MainActivity : AppCompatActivity() {
             override fun onFling(
                 e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float
             ): Boolean {
-                if (e1 == null || e2 == null) return false
+                if (e1 == null) return false
                 val deltaY = e2.y - e1.y
                 val deltaX = e2.x - e1.x
                 if (deltaY > 200 && Math.abs(velocityY) > 800 && Math.abs(deltaY) > Math.abs(deltaX)) {
@@ -273,7 +272,7 @@ class MainActivity : AppCompatActivity() {
             
             // Calculate correct cursor position after formatting
             val newCursorPosition = calculateCursorPositionAfterFormatting(
-                beforeCursor, value, afterCursor, formattedText
+                beforeCursor, value, "", ""
             )
             expressionTv.setSelection(newCursorPosition)
         } else {
@@ -286,7 +285,7 @@ class MainActivity : AppCompatActivity() {
             
             // Calculate correct cursor position after formatting
             val newCursorPosition = calculateCursorPositionAfterFormatting(
-                beforeSelection, value, afterSelection, formattedText
+                beforeSelection, value, "", ""
             )
             expressionTv.setSelection(newCursorPosition)
         }
@@ -298,15 +297,8 @@ class MainActivity : AppCompatActivity() {
         afterText: String, 
         formattedText: String
     ): Int {
-        // Find where the inserted value should be in the formatted text
-        val targetText = beforeText + insertedValue + afterText
-        
-        // Find the position of the inserted value in the formatted text
-        // We need to find where the inserted value appears after formatting
-        val beforeFormatted = formatExpressionWithCommas(beforeText)
-        val beforePlusInsertedFormatted = formatExpressionWithCommas(beforeText + insertedValue)
-        
         // The cursor should be at the end of the formatted inserted value
+        val beforePlusInsertedFormatted = formatExpressionWithCommas(beforeText + insertedValue)
         return beforePlusInsertedFormatted.length
     }
 
@@ -520,7 +512,7 @@ class MainActivity : AppCompatActivity() {
         
         // Keep reducing until text fits or we reach minimum size
         while (currentSize > minSize) {
-            paint.textSize = currentSize * resources.displayMetrics.scaledDensity
+            paint.textSize = currentSize * resources.displayMetrics.density
             val textWidth = paint.measureText(text)
             
             // Calculate the threshold for this reduction level
@@ -537,7 +529,7 @@ class MainActivity : AppCompatActivity() {
         
         // If we've reached minimum size and text still doesn't fit, make it scrollable
         if (currentSize <= minSize) {
-            paint.textSize = minSize * resources.displayMetrics.scaledDensity
+            paint.textSize = minSize * resources.displayMetrics.density
             val textWidth = paint.measureText(text)
             val maxThreshold = availableWidth + (availableWidth * 0.25f) // Final threshold
             
@@ -579,7 +571,7 @@ class MainActivity : AppCompatActivity() {
         var reductionCount = 0
         
         while (currentSize > minSize) {
-            paint.textSize = currentSize * resources.displayMetrics.scaledDensity
+            paint.textSize = currentSize * resources.displayMetrics.density
             val textWidth = paint.measureText(text)
             
             // Calculate the threshold for this reduction level
@@ -596,7 +588,7 @@ class MainActivity : AppCompatActivity() {
         
         // If we've reached minimum size and text still doesn't fit, make it scrollable
         if (currentSize <= minSize) {
-            paint.textSize = minSize * resources.displayMetrics.scaledDensity
+            paint.textSize = minSize * resources.displayMetrics.density
             val textWidth = paint.measureText(text)
             val maxThreshold = availableWidth + (availableWidth * 0.25f) // Final threshold
             

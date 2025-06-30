@@ -54,7 +54,11 @@
     <string name="no_history_found_text">No history found</string>
     <string name="search_1calculator_text_placeholder">Search 1Calculator</string>
     <string name="menu_text_desc">Menu</string>
+    <string name="hot_apps_text_desc">Hot Apps</string>
+    <string name="settings_text_desc">Settings</string>
     <string name="delete_btn_desc">Delete</string>
     <string name="result_desc">Result</string>
     <string name="expression_desc">Expression</string>
+    <string name="hot_apps_button_description">Hot Apps</string>
+    <string name="settings_button_description">Settings</string>
 </resources>
