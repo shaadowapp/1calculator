@@ -17,4 +17,6 @@
     <color name="button_vlight_bg">#181818</color>
     <color name="button_function_bg">#2E2E2E</color>
     <color name="button_deep_bg">#333354</color>
+
+    <color name="subtle_text">#E3E7FF</color>
 </resources>
