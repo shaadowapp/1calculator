@@ -27,7 +27,7 @@
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
-        <receiver android:name=".CalculatorWidget" android:exported="false">
+        <receiver android:name=".CalculatorWidgetBlack" android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
