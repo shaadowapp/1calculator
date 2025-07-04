@@ -103,7 +103,7 @@ class HistoryActivity : AppCompatActivity() {
                     return true
                 }
                 if (deltaX > 120 && Math.abs(deltaX) > Math.abs(deltaY)) {
-                    startActivity(Intent(this@HistoryActivity, AdvancedActivity::class.java)) // Swipe right for home
+                    startActivity(Intent(this@HistoryActivity, HomeActivity::class.java)) // Swipe right for home
                     return true
                 }
                 return false
@@ -117,7 +117,7 @@ class HistoryActivity : AppCompatActivity() {
                     return true
                 }
                 if (deltaX > 200 && Math.abs(velocityX) > 800 && Math.abs(deltaX) > Math.abs(deltaY)) {
-                    startActivity(Intent(this@HistoryActivity, AdvancedActivity::class.java))
+                    startActivity(Intent(this@HistoryActivity, HomeActivity::class.java))
                     return true
                 }
                 return false

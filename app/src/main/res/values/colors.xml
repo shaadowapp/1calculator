@@ -13,6 +13,7 @@
     <color name="history_card_border">#333A42</color>
     <color name="history_card_highlight">#292929</color>
     <color name="brand_blue">#6f2cf3</color>
+    <color name="brand_color">#6f2cf3</color>
 
     <color name="button_vlight_bg">#181818</color>
     <color name="button_function_bg">#2E2E2E</color>

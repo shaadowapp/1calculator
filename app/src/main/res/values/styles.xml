@@ -30,4 +30,42 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="CalcButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/subtle_text</item>
+        <item name="android:backgroundTint">@color/button_vlight_bg</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <style name="ButtonCalcInline">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:backgroundTint">#333333</item>
+    </style>
+
+    <style name="WidgetCalcButton">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#333333</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
 </resources>

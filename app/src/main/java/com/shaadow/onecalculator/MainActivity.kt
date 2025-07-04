@@ -34,6 +34,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Show popup if in landscape (should not happen, but as a fallback)
+        if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+            android.widget.Toast.makeText(this, "Landscape mode is not supported.", android.widget.Toast.LENGTH_LONG).show()
+        }
+
         expressionTv = findViewById(R.id.expression_tv)
         solutionTv = findViewById(R.id.solution_tv)
 
@@ -201,7 +206,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<android.widget.ImageButton>(R.id.btn_menu).setOnClickListener {
-            startActivity(Intent(this, AdvancedActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
         }
         findViewById<Button>(R.id.btn_history).setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
@@ -223,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                     return true
                 }
                 if (deltaX > 120 && Math.abs(deltaX) > Math.abs(deltaY)) {
-                    startActivity(Intent(this@MainActivity, AdvancedActivity::class.java))
+                    startActivity(Intent(this@MainActivity, HomeActivity::class.java))
                     return true
                 }
                 return false
@@ -240,7 +245,7 @@ class MainActivity : AppCompatActivity() {
                     return true
                 }
                 if (deltaX > 200 && Math.abs(velocityX) > 800 && Math.abs(deltaX) > Math.abs(deltaY)) {
-                    startActivity(Intent(this@MainActivity, AdvancedActivity::class.java))
+                    startActivity(Intent(this@MainActivity, HomeActivity::class.java))
                     return true
                 }
                 return false

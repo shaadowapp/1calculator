@@ -11,7 +11,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,11 +20,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AdvancedActivity" />
+        <activity android:name=".HomeActivity" android:screenOrientation="portrait" />
         <activity 
             android:name=".HistoryActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait" />
+
+        <receiver android:name=".CalculatorWidget" android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/calculator_widget_info" />
+        </receiver>
 
     </application>
 

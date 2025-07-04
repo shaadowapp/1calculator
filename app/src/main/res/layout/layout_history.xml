@@ -29,8 +29,8 @@
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_back"
-                android:tint="@color/subtle_text"
-                android:contentDescription="@string/back_text" />
+                android:contentDescription="@string/back_text"
+                app:tint="@color/subtle_text" />
 
             <TextView
                 android:id="@+id/screen_name"
