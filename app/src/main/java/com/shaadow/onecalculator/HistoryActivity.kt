@@ -32,6 +32,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import android.app.Activity
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var adapter: HistoryAdapter
@@ -55,6 +57,7 @@ class HistoryActivity : AppCompatActivity() {
         setupClearAllButton()
         setupFloatingActionButton()
         setupSearch()
+        setupClickOutsideToClearFocus()
     }
 
     private fun setupRecyclerView() {
@@ -125,6 +128,25 @@ class HistoryActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupClickOutsideToClearFocus() {
+        // Set up click listener on the root view to clear focus when clicking outside
+        findViewById<View>(android.R.id.content).setOnClickListener {
+            val textInputLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
+            val searchInput = textInputLayout.editText
+            if (searchInput?.hasFocus() == true) {
+                searchInput.clearFocus()
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            }
+        }
+        
+        // Prevent the search bar from triggering the root click when clicked
+        val textInputLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
+        textInputLayout.setOnClickListener {
+            // Do nothing, just prevent event bubbling
+        }
+    }
+
     private fun setupSearch() {
         val textInputLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
         val searchInput = textInputLayout?.editText ?: return
@@ -137,6 +159,15 @@ class HistoryActivity : AppCompatActivity() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+        
+        // Handle clear button click
+        textInputLayout.setEndIconOnClickListener {
+            searchInput.text?.clear()
+            searchInput.clearFocus()
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            adapter.setSearchQuery("")
+        }
     }
 
     override fun onDestroy() {

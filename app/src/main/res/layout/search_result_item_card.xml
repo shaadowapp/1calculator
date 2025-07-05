@@ -6,8 +6,9 @@
     android:layout_margin="4dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#121212"
     android:foreground="?attr/selectableItemBackground">
 
     <LinearLayout
@@ -21,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="@color/subtle_text"
+            android:textColor="@color/text_primary"
             android:maxLines="2"
             android:ellipsize="end" />
 

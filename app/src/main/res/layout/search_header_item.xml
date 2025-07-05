@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:textColor="@color/category_grey"
+        android:textColor="@color/brand_blue"
         android:textSize="14sp"
         android:textStyle="bold" />
 

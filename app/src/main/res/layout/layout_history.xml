@@ -24,7 +24,8 @@
                 android:src="@drawable/ic_back"
                 android:contentDescription="@string/back_text"
                 app:tint="@color/subtle_text"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="4dp"
+                android:paddingHorizontal="4dp"/>
 
             <TextView
                 android:id="@+id/screen_name"

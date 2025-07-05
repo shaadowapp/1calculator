@@ -21,6 +21,8 @@ import android.content.Intent
 import com.google.android.material.transition.MaterialFadeThrough
 import androidx.transition.TransitionManager
 import com.shaadow.onecalculator.databinding.FragmentHomeBinding
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
 
 class HomeFragment : Fragment() {
     
@@ -45,9 +47,11 @@ class HomeFragment : Fragment() {
         
         setupAdapters()
         setupRecyclerViews()
+        loadHistoryData()
         setupSearchBar()
         setupCategoryButtons()
         setupFAB()
+        setupClickOutsideToClearFocus()
     }
     
     private fun setupAdapters() {
@@ -76,6 +80,35 @@ class HomeFragment : Fragment() {
         }
     }
     
+    private fun loadHistoryData() {
+        lifecycleScope.launch {
+            val db = HistoryDatabase.getInstance(requireContext())
+            db.historyDao().getAllHistory().collect { historyList: List<HistoryEntity> ->
+                allHistory.clear()
+                allHistory.addAll(historyList)
+            }
+        }
+    }
+    
+    private fun setupClickOutsideToClearFocus() {
+        // Set up click listener on the root view to clear focus when clicking outside
+        binding.root.setOnClickListener {
+            val textInputLayout = binding.root.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
+            val searchInput = textInputLayout.editText
+            if (searchInput?.hasFocus() == true) {
+                searchInput.clearFocus()
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            }
+        }
+        
+        // Prevent the search bar from triggering the root click when clicked
+        val textInputLayout = binding.root.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
+        textInputLayout.setOnClickListener {
+            // Do nothing, just prevent event bubbling
+        }
+    }
+    
     private fun setupSearchBar() {
         // Get search EditText from the TextInputLayout
         val textInputLayout = binding.root.findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
@@ -91,14 +124,15 @@ class HomeFragment : Fragment() {
             
             val categories = loadCategoriesFromJson()
             
-            // Group: All History
+            // Group: History
             val history = allHistory.filter {
                 it.expression.contains(query, true) || it.result.contains(query, true)
             }
             if (history.isNotEmpty()) {
-                searchResults.add(SearchResultSection("From All History", history.map { SearchResult.HistoryItem(it) }))
+                searchResults.add(SearchResultSection("From History", history.map { SearchResult.HistoryItem(it) }))
             }
-            // Group: Categories
+            
+            // Group: Unit Calculators
             for (cat in categories) {
                 val matches = cat.buttons.filter { it.contains(query, true) }
                 if (matches.isNotEmpty()) {
@@ -119,19 +153,26 @@ class HomeFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
         
+        // Handle clear button click
+        textInputLayout.setEndIconOnClickListener {
+            searchInput.text?.clear()
+            searchInput.clearFocus()
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            updateSearchResults("")
+        }
+        
         // Make search input focusable only after user taps it
         searchInput.setOnClickListener {
             if (!searchInput.isFocusable()) {
                 searchInput.setFocusable(true)
                 searchInput.setFocusableInTouchMode(true)
                 searchInput.requestFocus()
-                val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-                imm.showSoftInput(searchInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(searchInput, InputMethodManager.SHOW_IMPLICIT)
             }
         }
     }
-    
-
     
     private fun setupCategoryButtons() {
         val categories = loadCategoriesFromJson()
