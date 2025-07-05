@@ -34,6 +34,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -52,6 +56,8 @@ dependencies {
     kapt(libs.room.compiler)
     implementation(libs.lifecycle.runtime.ktx)
     implementation("androidx.transition:transition:1.6.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    implementation("androidx.window:window:1.2.0")
 }
 
 configurations.all {

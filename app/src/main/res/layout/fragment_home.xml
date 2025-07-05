@@ -1,14 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#222">
+    android:background="?attr/colorSurface">
 
-    <TextView
-        android:layout_gravity="center"
+    <!-- App Bar with Collapsing Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimary"
+            app:statusBarScrim="?attr/colorPrimary">
+
+            <!-- Include the search bar layout -->
+            <include
+                layout="@layout/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_collapseMode="pin" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Search results list, hidden by default -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_results_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:padding="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <!-- Main Content inside NestedScrollView -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/home_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingBottom="96dp">
+
+            <!-- Recent history section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/recent_calculations_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recent Calculations"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/subtle_text"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Recent history horizontal RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recent_history_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:clipToPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Algebra Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/algebra"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/algebra_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Geometry Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/geometry"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/geometry_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Finance Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/finance"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/finance_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Insurance Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Insurance"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/insurance_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Health Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Health"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/health_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Date & Time Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date &amp; Time"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/date_time_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Unit Converters Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unit Converters"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/unit_converters_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Others Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Others"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/category_grey"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/others_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="false" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_calculator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home Tab"
-        android:textColor="#fff"
-        android:textSize="24sp"/>
-</FrameLayout>
+        android:layout_margin="16dp"
+        android:contentDescription="@string/calculator_text"
+        android:text="@string/calculator_text"
+        android:textAllCaps="false"
+        android:textColor="@color/subtle_text"
+        app:backgroundTint="@color/brand_blue"
+        app:icon="@drawable/ic_calc_icon"
+        app:iconTint="@color/subtle_text"
+        app:layout_anchor="@id/home_scrollview"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

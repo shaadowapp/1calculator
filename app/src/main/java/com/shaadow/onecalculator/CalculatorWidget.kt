@@ -33,12 +33,30 @@ open class CalculatorWidget : AppWidgetProvider() {
         }
     }
 
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        super.onDeleted(context, appWidgetIds)
+        // Clear widget state when widget is removed
+        val prefs = context.getSharedPreferences("widget_prefs", Context.MODE_PRIVATE)
+        prefs.edit().clear().apply()
+    }
+
     open fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val prefs = context.getSharedPreferences("widget_prefs", Context.MODE_PRIVATE)
         val expression = prefs.getString(KEY_EXPRESSION, "") ?: ""
         val resultShown = prefs.getBoolean(KEY_RESULT_SHOWN, false)
         val views = RemoteViews(context.packageName, R.layout.widget_calculator_black)
-        views.setTextViewText(R.id.widget_expression, if (expression.isEmpty()) "0" else expression)
+        
+        // Display result if resultShown is true, otherwise show expression or "0"
+        val displayText = when {
+            resultShown -> expression
+            expression.isEmpty() -> "0"
+            else -> expression
+        }
+        
+        // Debug: Let's see what we're displaying
+        android.util.Log.d("WidgetDebug", "UpdateWidget - Expression: '$expression', ResultShown: $resultShown, DisplayText: '$displayText'")
+        
+        views.setTextViewText(R.id.widget_expression, displayText)
 
         // Set up button click handlers
         val buttons = listOf(
@@ -54,6 +72,8 @@ open class CalculatorWidget : AppWidgetProvider() {
                 views.setOnClickPendingIntent(buttonIds[i], getButtonIntent(context, btn))
             }
         }
+        // Add backspace button support
+        views.setOnClickPendingIntent(R.id.widget_btn_backspace, getButtonIntent(context, "⌫"))
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
@@ -69,51 +89,131 @@ open class CalculatorWidget : AppWidgetProvider() {
         var expression = prefs.getString(KEY_EXPRESSION, "") ?: ""
         var resultShown = prefs.getBoolean(KEY_RESULT_SHOWN, false)
         val button = action.removePrefix(ACTION_BUTTON_PREFIX)
+        
         if (resultShown && button != "=" && button != "C") {
             expression = ""
             resultShown = false
         }
+        
         when (button) {
             in "0".."9", ".", "+", "-", "×", "÷" -> {
-                expression += button
+                // Validate input before adding
+                if (isValidInput(expression, button)) {
+                    expression += button
+                }
             }
             "C" -> {
                 expression = ""
                 resultShown = false
             }
             "=" -> {
-                val result = safeCalculate(expression)
-                saveToHistory(context, expression, result)
-                expression = result
-                resultShown = true
+                if (expression.isNotEmpty() && !expression.endsWith("+") && !expression.endsWith("-") && 
+                    !expression.endsWith("×") && !expression.endsWith("÷")) {
+                    val result = safeCalculate(expression)
+                    // Debug: Let's see what we're getting
+                    android.util.Log.d("WidgetDebug", "Expression: '$expression', Result: '$result'")
+                    // Save to history in background
+                    CoroutineScope(Dispatchers.IO).launch {
+                        saveToHistory(context, expression, result)
+                    }
+                    expression = result
+                    resultShown = true
+                    android.util.Log.d("WidgetDebug", "After calculation - Expression: '$expression', ResultShown: $resultShown")
+                }
+            }
+            "⌫" -> {
+                if (expression.isNotEmpty()) {
+                    expression = expression.dropLast(1)
+                }
             }
         }
         prefs.edit().putString(KEY_EXPRESSION, expression).putBoolean(KEY_RESULT_SHOWN, resultShown).apply()
-        // Use the correct widget class to update
-        // Only the black widget is supported now
-        val widget = CalculatorWidgetBlack()
-        widget.updateAppWidget(context, appWidgetManager, appWidgetId)
+        
+        // Update widget immediately
+        updateAppWidget(context, appWidgetManager, appWidgetId)
+    }
+
+    private fun isValidInput(currentExpression: String, newValue: String): Boolean {
+        // Define operators
+        val operators = setOf("+", "-", "×", "÷")
+        
+        // Check for consecutive operators
+        val consecutiveOperators = listOf("++", "--", "××", "÷÷")
+        for (consecutive in consecutiveOperators) {
+            if ((currentExpression + newValue).contains(consecutive)) {
+                return false
+            }
+        }
+        
+        // Check for operator at the beginning (except minus for negative numbers and dot for decimals)
+        if (currentExpression.isEmpty() && newValue in operators && newValue != "-" && newValue != ".") {
+            return false
+        }
+        
+        // Check for operator after another operator (except minus after other operators for negative numbers)
+        if (currentExpression.isNotEmpty()) {
+            val lastChar = currentExpression.last().toString()
+            if (lastChar in operators && newValue in operators) {
+                // Allow minus after other operators (for negative numbers)
+                if (newValue != "-") {
+                    return false
+                }
+            }
+        }
+        
+        return true
     }
 
     private fun safeCalculate(expr: String): String {
         return try {
             val cleanExpr = expr.replace("×", "*").replace("÷", "/")
-            val result = com.shaadow.onecalculator.parser.Expression.calculate(cleanExpr)
+            // Use simple calculation instead of Expression.kt for debugging
+            val result = simpleCalculate(cleanExpr)
             if (result % 1.0 == 0.0) result.toLong().toString() else result.toString()
         } catch (e: Exception) {
             "Error"
         }
     }
 
-    private fun saveToHistory(context: Context, expression: String, result: String) {
+    private fun simpleCalculate(expr: String): Double {
+        // Simple calculation for basic operations: +, -, *, /
+        val tokens = expr.replace(" ", "").split(Regex("(?<=[-+*/])|(?=[-+*/])"))
+        if (tokens.size < 3) return 0.0
+        
+        var result = tokens[0].toDoubleOrNull() ?: return 0.0
+        var i = 1
+        
+        while (i < tokens.size - 1) {
+            val operator = tokens[i]
+            val nextNumber = tokens[i + 1].toDoubleOrNull() ?: return 0.0
+            
+            result = when (operator) {
+                "+" -> result + nextNumber
+                "-" -> result - nextNumber
+                "*" -> result * nextNumber
+                "/" -> {
+                    if (nextNumber == 0.0) return 0.0
+                    result / nextNumber
+                }
+                else -> return 0.0
+            }
+            i += 2
+        }
+        
+        return result
+    }
+
+    private suspend fun saveToHistory(context: Context, expression: String, result: String) {
         if (expression.isBlank() || result == "Error") return
-        runBlocking {
+        try {
             val db = HistoryDatabase.getInstance(context)
             val recent = db.historyDao().getRecentHistory()
             if (recent.isNotEmpty() && recent[0].expression == expression && recent[0].result == result && recent[0].source == "Widget") {
-                return@runBlocking
+                return
             }
             db.historyDao().insert(HistoryEntity(expression = expression, result = result, source = "Widget"))
+        } catch (e: Exception) {
+            android.util.Log.e("WidgetDebug", "Error saving to history: ${e.message}")
         }
     }
 

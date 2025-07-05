@@ -61,4 +61,7 @@
     <string name="expression_desc">Expression</string>
     <string name="hot_apps_button_description">Hot Apps</string>
     <string name="settings_button_description">Settings</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_voice">Voice</string>
+    <string name="tab_categories">Categories</string>
 </resources>

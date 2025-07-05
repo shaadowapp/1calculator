@@ -6,7 +6,15 @@ class CalculatorWidgetBlack : CalculatorWidget() {
         val expression = prefs.getString("widget_expression", "") ?: ""
         val resultShown = prefs.getBoolean("widget_result_shown", false)
         val views = android.widget.RemoteViews(context.packageName, R.layout.widget_calculator_black)
-        views.setTextViewText(R.id.widget_expression, expression.ifEmpty { "0" })
+        
+        // Display result if resultShown is true, otherwise show expression or "0"
+        val displayText = when {
+            resultShown -> expression
+            expression.isEmpty() -> "0"
+            else -> expression
+        }
+        views.setTextViewText(R.id.widget_expression, displayText)
+        
         val buttons = listOf(
             "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "+", "-", "×", "÷", "=", "C"
         )
@@ -20,6 +28,8 @@ class CalculatorWidgetBlack : CalculatorWidget() {
                 views.setOnClickPendingIntent(buttonIds[i], this.getButtonIntent(context, btn))
             }
         }
+        // Add backspace button support
+        views.setOnClickPendingIntent(R.id.widget_btn_backspace, this.getButtonIntent(context, "⌫"))
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 } 

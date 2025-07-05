@@ -68,6 +68,34 @@
     <dimen name="padding_large">16dp</dimen>
     <dimen name="padding_xlarge">20dp</dimen>
     
+    <!-- Corner Radius -->
+    <dimen name="corner_radius_small">4dp</dimen>
+    <dimen name="corner_radius_medium">8dp</dimen>
+    <dimen name="corner_radius_large">16dp</dimen>
+
+    <!-- Elevation -->
+    <dimen name="elevation_low">2dp</dimen>
+    <dimen name="elevation_medium">6dp</dimen>
+    <dimen name="elevation_high">12dp</dimen>
+
+    <!-- Spacing -->
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+
+    <!-- Typography Scale -->
+    <dimen name="text_headline_small">34sp</dimen>
+    <dimen name="text_body_medium">16sp</dimen>
+    <dimen name="text_button">14sp</dimen>
+
+    <!-- Grid Column Counts for Responsive Design -->
+    <integer name="grid_columns_compact">2</integer>
+    <integer name="grid_columns_medium">3</integer>
+    <integer name="grid_columns_expanded">4</integer>
+    
+    <!-- Default grid column count -->
+    <integer name="grid_columns">3</integer>
+    
     <!-- Default responsive dimensions (fallback for all devices) -->
     <dimen name="button_size">@dimen/button_size_large</dimen>
     <dimen name="special_button_size">@dimen/special_button_size_large</dimen>

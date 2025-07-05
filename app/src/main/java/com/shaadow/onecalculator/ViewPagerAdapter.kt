@@ -9,10 +9,10 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapte
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> BasicFragment()
-            1 -> HomeFragment()
-            2 -> HistoryFragment()
-            else -> BasicFragment()
+            0 -> HomeFragment()
+            1 -> VoiceFragment()
+            2 -> CategoriesFragment()
+            else -> HomeFragment()
         }
     }
 } 

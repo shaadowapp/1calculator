@@ -29,14 +29,30 @@ class HistorySectionAdapter(
         private const val TYPE_ITEM = 1
     }
 
+    /**
+     * Sets the text highlighter function for search query highlighting.
+     * The highlighter function is called during binding to highlight search terms.
+     *
+     * @param highlighter Function that takes (HistoryEntity, query, ViewHolder) and applies highlighting
+     */
     fun setHighlighter(highlighter: (HistoryEntity, String, HistoryViewHolder) -> Unit) {
         this.highlighter = highlighter
     }
 
+    /**
+     * Sets the click listener for history items.
+     *
+     * @param listener Function called when a history item is clicked
+     */
     fun setOnItemClickListener(listener: (HistoryEntity) -> Unit) {
         this.onItemClickListener = listener
     }
 
+    /**
+     * Sets the current search query for highlighting purposes.
+     *
+     * @param query The search query string to be highlighted in results
+     */
     fun setQuery(query: String) {
         currentQuery = query
     }
@@ -144,6 +160,14 @@ class HistorySectionAdapter(
         val btnDelete: ImageButton = itemView.findViewById(R.id.btn_delete)
         val tvSource: TextView = itemView.findViewById(R.id.tv_source)
         
+        /**
+         * Binds history entity data to the view elements.
+         * Applies text highlighting if a highlighter function is set, otherwise displays plain text.
+         * Shows source label for widget-originated calculations.
+         *
+         * @param item The HistoryEntity to display
+         * @param position The position in the original history list (for reference)
+         */
         fun bind(item: HistoryEntity, position: Int) {
             if (highlighter != null) {
                 highlighter?.invoke(item, currentQuery, this)
