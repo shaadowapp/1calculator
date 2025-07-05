@@ -18,12 +18,13 @@
 
             <ImageButton
                 android:id="@+id/btn_back"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_back"
                 android:contentDescription="@string/back_text"
-                app:tint="@color/subtle_text" />
+                app:tint="@color/subtle_text"
+                android:layout_marginStart="8dp"/>
 
             <TextView
                 android:id="@+id/screen_name"
