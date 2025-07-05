@@ -109,12 +109,13 @@ open class CalculatorWidget : AppWidgetProvider() {
             "=" -> {
                 if (expression.isNotEmpty() && !expression.endsWith("+") && !expression.endsWith("-") && 
                     !expression.endsWith("×") && !expression.endsWith("÷")) {
+                    val originalExpression = expression
                     val result = safeCalculate(expression)
                     // Debug: Let's see what we're getting
-                    android.util.Log.d("WidgetDebug", "Expression: '$expression', Result: '$result'")
+                    android.util.Log.d("WidgetDebug", "Expression: '$originalExpression', Result: '$result'")
                     // Save to history in background
                     CoroutineScope(Dispatchers.IO).launch {
-                        saveToHistory(context, expression, result)
+                        saveToHistory(context, originalExpression, result)
                     }
                     expression = result
                     resultShown = true
@@ -211,6 +212,7 @@ open class CalculatorWidget : AppWidgetProvider() {
             if (recent.isNotEmpty() && recent[0].expression == expression && recent[0].result == result && recent[0].source == "Widget") {
                 return
             }
+            // Save the original expression and calculated result properly
             db.historyDao().insert(HistoryEntity(expression = expression, result = result, source = "Widget"))
         } catch (e: Exception) {
             android.util.Log.e("WidgetDebug", "Error saving to history: ${e.message}")
