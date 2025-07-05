@@ -34,6 +34,12 @@ class HomeActivity : AppCompatActivity() {
                 bottomNav.menu.getItem(position).isChecked = true
             }
         })
+
+        // Check if we should navigate to history tab
+        if (intent.getBooleanExtra("navigate_to_history", false)) {
+            viewPager.currentItem = 2 // History tab (categories tab)
+            bottomNav.menu.getItem(2).isChecked = true
+            }
             
             // Hot Apps button
             findViewById<ImageButton>(R.id.btn_hot_apps).setOnClickListener {

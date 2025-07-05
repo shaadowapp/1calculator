@@ -5,11 +5,56 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
+        <!-- Top bar with back, title, and clear all -->
+        <LinearLayout
+            android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:background="#000"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+        android:paddingEnd="18dp">
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_back"
+                android:contentDescription="@string/back_text"
+                app:tint="@color/subtle_text" />
+
+            <TextView
+                android:id="@+id/screen_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/history"
+                android:textColor="#E7E7E7"
+                android:textSize="20sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/btn_clear_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_all"
+                android:textColor="@color/brand_blue"
+                android:background="@android:color/transparent"
+                android:textSize="14sp"
+                android:paddingEnd="0dp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
     <!-- App Bar with Collapsing Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -57,22 +102,22 @@
             android:paddingBottom="96dp">
 
             <!-- History items will be added here dynamically -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/history_recycler"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false" />
 
-            <TextView
-                android:id="@+id/no_history_found"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/no_history_found_text"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="18sp"
-                android:visibility="gone"
+        <TextView
+            android:id="@+id/no_history_found"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_history_found_text"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:visibility="gone"
                 android:layout_gravity="center"
-                android:layout_marginTop="24dp"/>
+            android:layout_marginTop="24dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
