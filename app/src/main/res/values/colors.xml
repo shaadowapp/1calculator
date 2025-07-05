@@ -26,6 +26,17 @@
 
     <!-- Light Theme Text Color -->
     <color name="subtle_text">#424242</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+    
+    <!-- Surface variants for light theme -->
+    <color name="surface_variant">#F5F5F5</color>
+    <color name="on_surface_variant">#424242</color>
+    
+    <!-- Accent colors for light theme -->
+    <color name="accent_primary">#5D2DC8</color>
+    <color name="accent_secondary">#7C4DFF</color>
     
     <!-- Missing brand colors -->
     <color name="brand_color">#5D2DC8</color>

@@ -64,8 +64,7 @@ class RecentHistoryAdapter(
      * @param itemView The root view of the history item
      */
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvExpression: TextView = itemView.findViewById(R.id.tv_expression)
-        private val tvResult: TextView = itemView.findViewById(R.id.tv_result)
+        private val textView: TextView = itemView.findViewById(R.id.recent_history_item)
 
         /**
          * Binds the history entity data to the view elements and sets up click handling.
@@ -73,8 +72,8 @@ class RecentHistoryAdapter(
          * @param item The HistoryEntity to display
          */
         fun bind(item: HistoryEntity) {
-            tvExpression.text = item.expression
-            tvResult.text = item.result
+            // Display expression and result in a single TextView
+            textView.text = "${item.expression}\n= ${item.result}"
 
             itemView.setOnClickListener {
                 onItemClick(item)

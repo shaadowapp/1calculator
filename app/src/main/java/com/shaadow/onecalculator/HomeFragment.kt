@@ -27,9 +27,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     
-    private lateinit var recentHistoryAdapter: RecentHistoryAdapter
     private lateinit var searchAdapter: SearchResultsAdapter
-    private val recentHistory = mutableListOf<HistoryEntity>()
     private val allHistory = mutableListOf<HistoryEntity>()
     private val searchResults = mutableListOf<SearchResultSection>()
     
@@ -48,19 +46,11 @@ class HomeFragment : Fragment() {
         setupAdapters()
         setupRecyclerViews()
         setupSearchBar()
-        loadHistory()
         setupCategoryButtons()
+        setupFAB()
     }
     
     private fun setupAdapters() {
-        // Setup recent history adapter
-        recentHistoryAdapter = RecentHistoryAdapter { historyEntity ->
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            intent.putExtra("expression", historyEntity.expression)
-            intent.putExtra("result", historyEntity.result)
-            startActivity(intent)
-        }
-        
         // Setup search adapter
         searchAdapter = SearchResultsAdapter(searchResults) { result ->
             when (result) {
@@ -79,12 +69,6 @@ class HomeFragment : Fragment() {
     }
     
     private fun setupRecyclerViews() {
-        // Setup recent history recycler
-        binding.recentHistoryRecycler.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = recentHistoryAdapter
-        }
-        
         // Setup search results recycler
         binding.searchResultsRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -107,13 +91,6 @@ class HomeFragment : Fragment() {
             
             val categories = loadCategoriesFromJson()
             
-            // Group: Recent Calculations
-            val recent = recentHistory.filter {
-                it.expression.contains(query, true) || it.result.contains(query, true)
-            }
-            if (recent.isNotEmpty()) {
-                searchResults.add(SearchResultSection("From Recent Calculations", recent.map { SearchResult.HistoryItem(it) }))
-            }
             // Group: All History
             val history = allHistory.filter {
                 it.expression.contains(query, true) || it.result.contains(query, true)
@@ -154,26 +131,7 @@ class HomeFragment : Fragment() {
         }
     }
     
-    private fun loadHistory() {
-        // Load history from DB
-        lifecycleScope.launch {
-            try {
-                val db = HistoryDatabase.getInstance(requireContext())
-                db.historyDao().getAllHistory().collect { all ->
-                    allHistory.clear()
-                    allHistory.addAll(all)
-                }
-                val recent = db.historyDao().getRecentHistory()
-                recentHistory.clear()
-                recentHistory.addAll(recent)
-                
-                // Update recent history adapter
-                recentHistoryAdapter.submitList(recentHistory)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
+
     
     private fun setupCategoryButtons() {
         val categories = loadCategoriesFromJson()
@@ -296,18 +254,24 @@ class HomeFragment : Fragment() {
             val button = TextView(requireContext())
             button.text = buttonText
             button.setTextColor(resources.getColor(R.color.subtle_text, null))
-            button.textSize = 14f
-            button.setPadding(8, 12, 8, 12)
+            button.textSize = 16f  // Increased text size
+            button.setPadding(12, 16, 12, 16)  // Increased padding
             button.background = resources.getDrawable(R.drawable.bg_button_rounded, null)
             button.isClickable = true
             button.isFocusable = true
             
-            // Apply GridLayout specific attributes for 3-column layout
+            // Apply GridLayout specific attributes for 3-column layout with square buttons
             val params = GridLayout.LayoutParams()
             params.width = 0
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            // Convert 120dp to pixels for proper square buttons
+            val heightInDp = 120
+            val heightInPx = (heightInDp * resources.displayMetrics.density).toInt()
+            params.height = heightInPx
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
-            params.setMargins(4, 4, 4, 4)
+            // Convert 8dp to pixels for proper margins
+            val marginInDp = 8
+            val marginInPx = (marginInDp * resources.displayMetrics.density).toInt()
+            params.setMargins(marginInPx, marginInPx, marginInPx, marginInPx)
             button.layoutParams = params
             
             // Apply the required button attributes
@@ -324,4 +288,11 @@ class HomeFragment : Fragment() {
             gridLayout.addView(button)
         }
     }
-} 
+    
+    private fun setupFAB() {
+        binding.fabCalculator.setOnClickListener {
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+        }
+    }
+}

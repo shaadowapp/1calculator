@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="#000000">
 
     <!-- App Bar with Collapsing Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -20,13 +20,22 @@
             app:contentScrim="?attr/colorPrimary"
             app:statusBarScrim="?attr/colorPrimary">
 
-            <!-- Include the search bar layout -->
-            <include
-                layout="@layout/search_bar"
+            <!-- Parent container with padding for search box -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:layout_collapseMode="pin" />
+                android:orientation="vertical"
+                android:background="#000000"
+                android:padding="16dp">
+
+                <!-- Include the search bar layout -->
+                <include
+                    layout="@layout/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_collapseMode="pin" />
+
+            </LinearLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -56,35 +65,16 @@
             android:padding="16dp"
             android:paddingBottom="96dp">
 
-            <!-- Recent history section -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/recent_calculations_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Recent Calculations"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                android:textColor="@color/subtle_text"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp" />
 
-            <!-- Recent history horizontal RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recent_history_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:clipToPadding="false"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:layout_marginBottom="16dp" />
 
             <!-- Algebra Section -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/algebra"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp" />
 
@@ -100,8 +90,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/geometry"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
             <GridLayout
@@ -116,8 +107,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/finance"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
             <GridLayout
@@ -132,8 +124,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Insurance"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
             <GridLayout
@@ -148,8 +141,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Health"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
             <GridLayout
@@ -164,8 +158,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date &amp; Time"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
             <GridLayout
@@ -180,8 +175,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Unit Converters"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
             <GridLayout
@@ -196,8 +192,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Others"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/category_grey"
+                android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
             <GridLayout
@@ -219,6 +216,7 @@
         android:text="@string/calculator_text"
         android:textAllCaps="false"
         android:textColor="@color/subtle_text"
+        android:textSize="18sp"
         app:backgroundTint="@color/brand_blue"
         app:icon="@drawable/ic_calc_icon"
         app:iconTint="@color/subtle_text"

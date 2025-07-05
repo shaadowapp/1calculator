@@ -4,6 +4,7 @@
     android:id="@+id/textInputLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#000000"
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     app:boxCornerRadiusBottomEnd="24dp"
     app:boxCornerRadiusBottomStart="24dp"
@@ -11,16 +12,17 @@
     app:boxCornerRadiusTopStart="24dp"
     app:endIconMode="clear_text"
     app:endIconDrawable="@drawable/ic_clear"
-    app:hintTextColor="?attr/colorOnSurface"
-    app:boxStrokeColor="?attr/colorPrimary"
+    app:hintTextColor="@color/category_grey"
+    app:boxStrokeColor="@color/category_grey"
     app:boxStrokeWidth="1dp"
-    android:hint="Search...">
+    app:boxBackgroundColor="#121212"
+    android:hint="Search 1Calculator">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/search_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:inputType="text"
         android:maxLines="1"

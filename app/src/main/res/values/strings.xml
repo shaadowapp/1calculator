@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">1Calculator</string>
     <string name="basic">Basic</string>
-    <string name="advance">Home</string>
+    <string name="advance">1Calculator</string>
     <string name="history">History</string>
     <string name="_0">0</string>
     <string name="_7">7</string>
@@ -62,6 +62,6 @@
     <string name="hot_apps_button_description">Hot Apps</string>
     <string name="settings_button_description">Settings</string>
     <string name="tab_home">Home</string>
-    <string name="tab_voice">Voice</string>
+    <string name="tab_voice">Ask <b>Mathly</b></string>
     <string name="tab_categories">Categories</string>
 </resources>

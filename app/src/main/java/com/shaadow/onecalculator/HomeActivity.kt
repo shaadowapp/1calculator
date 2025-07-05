@@ -34,9 +34,6 @@ class HomeActivity : AppCompatActivity() {
                 bottomNav.menu.getItem(position).isChecked = true
             }
         })
-
-        // Back button
-            findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
             
             // Hot Apps button
             findViewById<ImageButton>(R.id.btn_hot_apps).setOnClickListener {
