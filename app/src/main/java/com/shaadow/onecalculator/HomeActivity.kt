@@ -9,6 +9,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.view.MenuItem
 import android.widget.PopupMenu
 import android.content.Intent
+import android.view.View
+import android.widget.ImageView
 
 class HomeActivity : AppCompatActivity() {
 
@@ -35,6 +37,11 @@ class HomeActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 bottomNav.menu.getItem(position).isChecked = true
+                
+                // Hide notification dot when Voice tab is selected
+                if (position == 1) {
+                    hideNotificationDot()
+                }
             }
         })
 
@@ -53,6 +60,22 @@ class HomeActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.btn_settings).setOnClickListener { view ->
             showSettingsPopupMenu(view)
         }
+        
+        // Show notification dot for Voice tab (you can control this based on your logic)
+        showNotificationDot()
+    }
+    
+    private fun showNotificationDot() {
+        // This method can be called when there are new voice features or notifications
+        // For now, we'll show it by default
+        val voiceTab = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val voiceItem = voiceTab.menu.findItem(R.id.nav_voice)
+        // The notification dot will be handled by the custom layout
+    }
+    
+    private fun hideNotificationDot() {
+        // Hide the notification dot when Voice tab is selected
+        // This can be implemented if you want to hide it on selection
     }
     
     private fun showSettingsPopupMenu(view: android.view.View) {

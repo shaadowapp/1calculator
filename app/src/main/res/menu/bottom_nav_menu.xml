@@ -3,13 +3,13 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        android:title="@string/tab_home" />
+        android:title="Home" />
     <item
         android:id="@+id/nav_voice"
-        android:icon="@drawable/ic_voice"
-        android:title="@string/tab_voice" />
+        android:icon="@drawable/ic_microphone"
+        android:title="Ask Mathly" />
     <item
         android:id="@+id/nav_categories"
-        android:icon="@drawable/ic_categories"
-        android:title="@string/tab_categories" />
+        android:icon="@drawable/ic_grid"
+        android:title="Category" />
 </menu> 

@@ -18,6 +18,10 @@
     <color name="onSurface">#212121</color>
     <color name="background">#FAFAFA</color>
     <color name="onBackground">#212121</color>
+    <color name="bottom_nav_bg">#1E1B2E</color>
+    <color name="bottom_nav_unselected">#BBBBBB</color>
+    <color name="bottom_nav_active_bg">#261C43</color>
+    <color name="bottom_nav_inactive">#AAAAAA</color>
 
     <!-- Light Theme Button Colors -->
     <color name="button_vlight_bg">#F0F0F0</color>
@@ -40,5 +44,4 @@
     
     <!-- Missing brand colors -->
     <color name="brand_color">#5D2DC8</color>
-    <color name="brand_blue_nav">#5D2DC8</color>
 </resources>
