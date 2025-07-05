@@ -33,7 +33,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 
 class HistoryActivity : AppCompatActivity() {
-    private lateinit var adapter: HistorySectionAdapter
+    private lateinit var adapter: HistoryAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var db: HistoryDatabase
     private var allItems = mutableListOf<HistoryEntity>() // for search
@@ -130,34 +130,18 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = HistorySectionAdapter { item, _ ->
-            deleteHistoryItem(item)
-        }
-        recyclerView.adapter = adapter
-
-        // Add click listener for history items
-        adapter.setOnItemClickListener { historyEntity ->
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("expression", historyEntity.expression)
-            intent.putExtra("result", historyEntity.result)
-            startActivity(intent)
-        }
-
-        // Swipe to delete (LEFT)
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
-            override fun onSwiped(vh: RecyclerView.ViewHolder, dir: Int) {
-                val pos = vh.bindingAdapterPosition
-                if (pos != RecyclerView.NO_POSITION) {
-                    // Find the actual history item from the adapter
-                    val item = adapter.getItemAt(pos)
-                    if (item is HistoryItem.HistoryEntry) {
-                        deleteHistoryItem(item.entity)
-                    }
-                }
+        adapter = HistoryAdapter(
+            onItemClick = { historyEntity ->
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("expression", historyEntity.expression)
+                intent.putExtra("result", historyEntity.result)
+                startActivity(intent)
+            },
+            onDeleteClick = { historyEntity ->
+                deleteHistoryItem(historyEntity)
             }
-        })
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+        )
+        recyclerView.adapter = adapter
     }
 
     private fun deleteHistoryItem(item: HistoryEntity) {
@@ -166,7 +150,7 @@ class HistoryActivity : AppCompatActivity() {
                 db.historyDao().deleteById(item.id)
                 withContext(Dispatchers.Main) {
                     allItems.remove(item)
-                    adapter.updateHistory(allItems)
+                    adapter.submitList(allItems)
                     if (allItems.isEmpty()) showNoHistory()
                 }
             } catch (e: Exception) {
@@ -178,33 +162,15 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupSearch() {
-        val searchInput = findViewById<EditText>(R.id.search_input) ?: return
-
-        // Search logic with highlight
-        fun highlightMatch(text: String, query: String): SpannableString {
-            if (query.isBlank()) return SpannableString(text)
-            val lowerText = text.lowercase()
-            val lowerQuery = query.lowercase()
-            val start = lowerText.indexOf(lowerQuery)
-            return if (start >= 0) {
-                val end = start + query.length
-                val spannable = SpannableString(text)
-                spannable.setSpan(
-                    BackgroundColorSpan(Color.YELLOW),
-                    start, end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                spannable
-            } else {
-                SpannableString(text)
-            }
-        }
+        // Get search EditText from the TextInputLayout
+        val textInputLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
+        val searchInput = textInputLayout?.editText ?: return
 
         fun filterHistory(query: String) {
             val filtered = if (query.isBlank()) allItems else allItems.filter {
                 it.expression.contains(query, ignoreCase = true) || it.result.contains(query, ignoreCase = true)
             }
-            adapter.updateHistory(filtered)
+            adapter.submitList(filtered)
             val notFoundText = findViewById<TextView>(R.id.no_history_found)
             notFoundText?.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
         }
@@ -213,17 +179,10 @@ class HistoryActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s?.toString() ?: ""
-                adapter.setQuery(query)
                 filterHistory(query)
             }
             override fun afterTextChanged(s: Editable?) {}
         })
-
-        // Highlight in adapter
-        adapter.setHighlighter { item, query, holder ->
-            holder.tvExpression.text = highlightMatch(item.expression, query)
-            holder.tvResult.text = highlightMatch(item.result, query)
-        }
 
         // Make search input focusable only after user taps it
         searchInput.setOnClickListener {
@@ -245,7 +204,7 @@ class HistoryActivity : AppCompatActivity() {
                         try {
                             allItems.clear()
                             allItems.addAll(allHistory)
-                            adapter.updateHistory(allItems)
+                            adapter.submitList(allItems)
                             if (allItems.isEmpty()) showNoHistory()
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -264,14 +223,6 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        findViewById<Button>(R.id.btn_clear_all)?.setOnClickListener {
-            clearAllHistory()
-        }
-
-        findViewById<android.widget.ImageButton>(R.id.btn_back)?.setOnClickListener {
-            finish()
-        }
-        
         findViewById<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>(R.id.fab_calculator)?.setOnClickListener {
             finish()
         }
@@ -285,7 +236,7 @@ class HistoryActivity : AppCompatActivity() {
                 db.historyDao().clearAll()
                 withContext(Dispatchers.Main) {
                     allItems.clear()
-                    adapter.updateHistory(allItems)
+                    adapter.submitList(allItems)
                     showNoHistory()
                     Toast.makeText(this@HistoryActivity, R.string.clear_all, Toast.LENGTH_SHORT).show()
                 }
@@ -305,12 +256,12 @@ class HistoryActivity : AppCompatActivity() {
         try {
             allItems.clear()
             allItems.add(HistoryEntity(expression = getString(R.string.no_history), result = ""))
-            adapter.updateHistory(allItems)
+            adapter.submitList(allItems)
         } catch (e: Exception) {
             // Fallback if string resource is not available
             allItems.clear()
             allItems.add(HistoryEntity(expression = "No history yet", result = ""))
-            adapter.updateHistory(allItems)
+            adapter.submitList(allItems)
         }
     }
 
