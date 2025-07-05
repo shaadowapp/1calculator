@@ -53,6 +53,8 @@ class HistoryActivity : AppCompatActivity() {
         loadHistory()
         setupBackButton()
         setupClearAllButton()
+        setupFloatingActionButton()
+        setupSearch()
     }
 
     private fun setupRecyclerView() {
@@ -72,7 +74,8 @@ class HistoryActivity : AppCompatActivity() {
                         id = it.id.toLong(),
                         expression = it.expression,
                         result = it.result,
-                        timestamp = it.timestamp
+                        timestamp = it.timestamp,
+                        source = it.source
                     )
                 }
                 if (items.isEmpty()) {
@@ -110,6 +113,30 @@ class HistoryActivity : AppCompatActivity() {
                 db.historyDao().clearAll()
             }
         }
+    }
+
+    private fun setupFloatingActionButton() {
+        val fabCalculator = findViewById<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>(R.id.fab_calculator)
+        fabCalculator.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun setupSearch() {
+        val textInputLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.textInputLayout)
+        val searchInput = textInputLayout?.editText ?: return
+
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString() ?: ""
+                adapter.setSearchQuery(query)
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     override fun onDestroy() {

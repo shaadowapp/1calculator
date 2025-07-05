@@ -18,8 +18,8 @@
 
             <ImageButton
                 android:id="@+id/btn_back"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_back"
                 android:contentDescription="@string/back_text"
@@ -41,10 +41,10 @@
                 android:id="@+id/btn_clear_all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/clear_all"
+                android:text="Clear all"
                 android:textColor="@color/brand_blue"
                 android:background="@android:color/transparent"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:paddingEnd="0dp"
                 android:textAllCaps="false"/>
         </LinearLayout>
@@ -75,7 +75,7 @@
 
                 <!-- Include the search bar layout -->
                 <include
-                    layout="@layout/search_bar"
+                    layout="@layout/search_bar_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_collapseMode="pin" />
@@ -127,7 +127,7 @@
         android:id="@+id/fab_calculator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="32dp"
         android:contentDescription="@string/calculator_text"
         android:text="@string/calculator_text"
         android:textAllCaps="false"
