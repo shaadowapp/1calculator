@@ -5,171 +5,218 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <!-- App Bar -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Header -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_microphone"
-                    android:background="@drawable/circle_background"
-                    android:padding="12dp"
-                    app:tint="@color/brand_blue" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ask Mathly"
-                        android:textColor="@color/white"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Your AI Math Assistant"
-                        android:textColor="@color/category_grey"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Voice Input Section -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="24dp"
-                app:cardBackgroundColor="@color/voice_card_bg"
-                app:cardElevation="4dp"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ask me anything about math!"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="16dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_voice_input"
-                            android:layout_width="0dp"
-                            android:layout_height="56dp"
-                            android:layout_weight="1"
-                            android:text="Tap to speak"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_microphone"
-                            app:iconTint="@color/white"
-                            app:iconSize="24dp"
-                            app:cornerRadius="28dp"
-                            app:backgroundTint="@color/brand_blue"
-                            android:layout_marginEnd="12dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_text_input"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:text="Aa"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            app:cornerRadius="28dp"
-                            app:backgroundTint="@color/category_grey" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Chat Messages -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <!-- Empty State -->
+    <!-- Permission Dialog Container -->
     <LinearLayout
-        android:id="@+id/empty_state"
+        android:id="@+id/permission_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
         android:padding="32dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@color/voice_permission_bg"
+        android:visibility="gone">
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/ic_microphone"
             android:background="@drawable/circle_background"
-            android:padding="24dp"
-            app:tint="@color/brand_blue"
+            android:padding="20dp"
+            app:tint="@color/voice_mic_primary"
             android:layout_marginBottom="24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start a conversation"
-            android:textColor="@color/white"
+            android:text="@string/voice_permission_title"
+            android:textColor="@color/voice_text_primary"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ask Mathly anything about mathematics, calculations, or problem-solving"
-            android:textColor="@color/category_grey"
+            android:text="@string/voice_permission_message"
+            android:textColor="@color/voice_text_secondary"
             android:textSize="16sp"
             android:gravity="center"
-            android:maxLines="3" />
+            android:layout_marginBottom="32dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/grant_permission_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/voice_permission_grant"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/voice_mic_primary"
+            app:cornerRadius="24dp"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/skip_permission_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/voice_permission_skip"
+            android:textColor="@color/voice_text_secondary"
+            app:backgroundTint="@android:color/transparent"
+            app:strokeColor="@color/voice_text_secondary"
+            app:strokeWidth="1dp"
+            app:cornerRadius="24dp" />
+
+    </LinearLayout>
+
+    <!-- Ask Mathly Screen Container -->
+    <LinearLayout
+        android:id="@+id/ask_mathly_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="32dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_title"
+                android:textColor="@color/voice_text_primary"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_subtitle"
+                android:textColor="@color/voice_text_secondary"
+                android:textSize="16sp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Center Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- Mic Button Container with Wave Animation -->
+            <FrameLayout
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginBottom="32dp"
+                android:gravity="center">
+
+                <!-- Wave Animation Container -->
+                <FrameLayout
+                    android:id="@+id/wave_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:gravity="center">
+
+                    <!-- Wave Circle 1 -->
+                    <View
+                        android:id="@+id/wave_circle_1"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/voice_wave_circle"
+                        android:alpha="0.9" />
+
+                    <!-- Wave Circle 2 -->
+                    <View
+                        android:id="@+id/wave_circle_2"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/voice_wave_circle"
+                        android:alpha="0.7" />
+
+                    <!-- Wave Circle 3 -->
+                    <View
+                        android:id="@+id/wave_circle_3"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/voice_wave_circle"
+                        android:alpha="0.5" />
+
+                </FrameLayout>
+
+                <!-- Mic Button -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/mic_button"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_microphone"
+                    app:fabSize="normal"
+                    app:backgroundTint="@color/voice_mic_primary"
+                    app:tint="@color/white"
+                    app:elevation="8dp"
+                    app:maxImageSize="60dp"
+                    android:contentDescription="@string/voice_tap_to_speak" />
+
+            </FrameLayout>
+
+            <!-- Status Text -->
+            <TextView
+                android:id="@+id/status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_tap_to_speak"
+                android:textColor="@color/voice_text_primary"
+                android:textSize="18sp"
+                android:layout_marginTop="24dp"
+                android:gravity="center" />
+
+            <!-- Result Container -->
+            <LinearLayout
+                android:id="@+id/result_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="32dp"
+                android:visibility="gone">
+
+                <!-- Expression -->
+                <TextView
+                    android:id="@+id/expression_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/voice_text_primary"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Result -->
+                <TextView
+                    android:id="@+id/result_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/voice_mic_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

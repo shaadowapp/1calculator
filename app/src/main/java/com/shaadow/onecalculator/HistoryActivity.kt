@@ -54,9 +54,7 @@ class HistoryActivity : AppCompatActivity() {
         setupRecyclerView()
         loadHistory()
         setupBackButton()
-        setupClearAllButton()
         setupFloatingActionButton()
-        setupSearch()
         setupClickOutsideToClearFocus()
     }
 
@@ -100,22 +98,9 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupBackButton() {
-        val btnBack = findViewById<ImageButton>(R.id.btn_back)
-        btnBack.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            startActivity(intent)
-            finish()
-        }
-    }
-
-    private fun setupClearAllButton() {
-        val btnClearAll = findViewById<Button>(R.id.btn_clear_all)
-        btnClearAll.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                db.historyDao().clearAll()
-            }
-        }
+        // Remove the back button reference since it was removed from layout
+        // val btnBack = findViewById<ImageButton>(R.id.btn_back)
+        // btnBack.setOnClickListener { finish() }
     }
 
     private fun setupFloatingActionButton() {

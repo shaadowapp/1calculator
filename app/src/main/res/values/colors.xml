@@ -61,4 +61,14 @@
     <color name="history_text_primary">#E7E7E7</color>
     <color name="history_text_secondary">#B0B0B0</color>
     <color name="history_text_tertiary">#666666</color>
+    
+    <!-- Voice Feature Colors -->
+    <color name="voice_mic_primary">#7B1FA2</color>
+    <color name="voice_mic_secondary">#9C27B0</color>
+    <color name="voice_wave_primary">#7B1FA2</color>
+    <color name="voice_wave_secondary">#9C27B0</color>
+    <color name="voice_wave_tertiary">#BA68C8</color>
+    <color name="voice_text_primary">#F5E9F7</color>
+    <color name="voice_text_secondary">#B0B0B0</color>
+    <color name="voice_permission_bg">#1E1B2E</color>
 </resources>

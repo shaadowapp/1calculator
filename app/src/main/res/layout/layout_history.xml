@@ -5,58 +5,11 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-        <!-- Top bar with back, title, and clear all -->
-        <LinearLayout
-            android:id="@+id/top_bar"
-        android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal"
-            android:background="#000"
-            android:gravity="center_vertical"
-            android:paddingStart="10dp"
-        android:paddingEnd="18dp">
-
-            <ImageButton
-                android:id="@+id/btn_back"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_back"
-                android:contentDescription="@string/back_text"
-                app:tint="@color/white"
-                android:layout_marginStart="4dp"
-                android:paddingHorizontal="4dp"/>
-
-            <TextView
-                android:id="@+id/screen_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/history"
-                                        android:textColor="@color/history_text_primary"
-                android:textSize="20sp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:textStyle="bold"/>
-
-            <Button
-                android:id="@+id/btn_clear_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Clear all"
-                android:textColor="@color/brand_blue"
-                android:background="@android:color/transparent"
-                android:textSize="16sp"
-                android:paddingEnd="0dp"
-                android:textAllCaps="false"/>
-        </LinearLayout>
-
     <!-- App Bar with Collapsing Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout

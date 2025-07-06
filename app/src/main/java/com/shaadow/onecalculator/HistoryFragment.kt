@@ -23,8 +23,6 @@ class HistoryFragment : Fragment() {
     private lateinit var historyAdapter: HistoryAdapter
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var noHistoryFound: TextView
-    private lateinit var btnBack: ImageButton
-    private lateinit var btnClearAll: Button
     private lateinit var db: HistoryDatabase
 
     override fun onCreateView(
@@ -44,14 +42,9 @@ class HistoryFragment : Fragment() {
         // Initialize views
         historyRecyclerView = view.findViewById(R.id.history_recycler)
         noHistoryFound = view.findViewById(R.id.no_history_found)
-        btnBack = view.findViewById(R.id.btn_back)
-        btnClearAll = view.findViewById(R.id.btn_clear_all)
 
         // Setup RecyclerView
         setupRecyclerView()
-
-        // Setup click listeners
-        setupClickListeners()
 
         // Load history data
         loadHistoryData()
@@ -74,17 +67,6 @@ class HistoryFragment : Fragment() {
         historyRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = historyAdapter
-        }
-    }
-
-    private fun setupClickListeners() {
-        btnBack.setOnClickListener {
-            // Navigate back
-            requireActivity().finish()
-        }
-
-        btnClearAll.setOnClickListener {
-            clearAllHistory()
         }
     }
 
@@ -142,16 +124,6 @@ class HistoryFragment : Fragment() {
                 db.historyDao().deleteById(historyItem.id.toInt())
             }
             // Reload the list after deletion
-            loadHistoryData()
-        }
-    }
-
-    private fun clearAllHistory() {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                db.historyDao().clearAll()
-            }
-            // Reload the list after clearing
             loadHistoryData()
         }
     }

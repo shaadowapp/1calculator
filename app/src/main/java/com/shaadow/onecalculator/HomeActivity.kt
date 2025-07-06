@@ -7,8 +7,11 @@ import android.widget.ImageButton
 import androidx.viewpager2.widget.ViewPager2
 import android.widget.PopupMenu
 import android.content.Intent
+import android.view.View
 
 class HomeActivity : AppCompatActivity() {
+
+    private lateinit var topBar: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +20,7 @@ class HomeActivity : AppCompatActivity() {
 
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
         val bottomNav = findViewById<ModernBottomNavigationView>(R.id.bottom_navigation)
+        topBar = findViewById(R.id.top_bar)
         val adapter = ViewPagerAdapter(this)
         viewPager.adapter = adapter
         viewPager.isUserInputEnabled = false // Disable swipe if you want only tab click
@@ -24,6 +28,7 @@ class HomeActivity : AppCompatActivity() {
         // Set up bottom navigation listener
         bottomNav.setOnTabSelectedListener { position ->
             viewPager.currentItem = position
+            updateTopBarVisibility(position)
         }
 
         // Set up ViewPager page change callback
@@ -31,6 +36,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 bottomNav.setSelectedItem(position)
+                updateTopBarVisibility(position)
             }
         })
 
@@ -49,6 +55,11 @@ class HomeActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.btn_settings).setOnClickListener { view ->
             showSettingsPopupMenu(view)
         }
+    }
+    
+    private fun updateTopBarVisibility(position: Int) {
+        // Show top bar only on home tab (position 0)
+        topBar.visibility = if (position == 0) View.VISIBLE else View.GONE
     }
     
     private fun showSettingsPopupMenu(view: android.view.View) {

@@ -83,4 +83,23 @@
     <string name="expression_desc">Expression</string>
     <string name="hot_apps_button_description">Hot Apps</string>
     <string name="settings_button_description">Settings</string>
+    
+    <!-- Voice Feature Strings -->
+    <string name="voice_title">Ask Mathly</string>
+    <string name="voice_subtitle">Your AI Math Assistant</string>
+    <string name="voice_tap_to_speak">Tap to speak</string>
+    <string name="voice_listening">Listening...</string>
+    <string name="voice_processing">Processing...</string>
+    <string name="voice_wake_phrase">Hey Mathly</string>
+    <string name="voice_permission_title">Enable Voice Assistant</string>
+    <string name="voice_permission_message">Allow microphone access to use voice commands for math calculations</string>
+    <string name="voice_permission_grant">Grant Permission</string>
+    <string name="voice_permission_skip">Skip for now</string>
+    <string name="voice_feature_description">Ask Mathly can solve complex mathematical expressions, equations, and calculations using just your voice. Simply say \"Hey Mathly\" followed by your math problem.</string>
+    <string name="voice_example_1">\"Hey Mathly, what is 15 plus 27?\"</string>
+    <string name="voice_example_2">\"Hey Mathly, solve 2x + 5 = 15\"</string>
+    <string name="voice_example_3">\"Hey Mathly, calculate the square root of 144\"</string>
+    <string name="voice_no_permission">Microphone permission required</string>
+    <string name="voice_error_listening">Error listening to voice</string>
+    <string name="voice_no_speech">No speech detected</string>
 </resources>
