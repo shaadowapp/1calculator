@@ -4,7 +4,7 @@
     android:id="@+id/textInputLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#000000"
+            android:background="@color/black"
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     app:boxCornerRadiusBottomEnd="24dp"
     app:boxCornerRadiusBottomStart="24dp"

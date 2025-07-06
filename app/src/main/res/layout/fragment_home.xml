@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="@color/black">
 
     <!-- App Bar with Collapsing Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#000000"
+                android:background="@color/black"
                 android:padding="16dp">
 
                 <!-- Include the search bar layout -->
@@ -221,11 +221,11 @@
         android:contentDescription="@string/calculator_text"
         android:text="@string/calculator_text"
         android:textAllCaps="false"
-        android:textColor="@color/subtle_text"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:backgroundTint="@color/brand_blue"
         app:icon="@drawable/ic_calc_icon"
-        app:iconTint="@color/subtle_text"
+        app:iconTint="@color/white"
         app:layout_anchor="@id/home_scrollview"
         app:layout_anchorGravity="bottom|end"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />

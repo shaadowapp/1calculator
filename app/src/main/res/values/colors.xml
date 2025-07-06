@@ -1,52 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Material Design Colors -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="muted_border">#333A42</color>
-    <!-- Light Theme Improved Colors -->
-    <color name="category_grey">#757575</color>
-    <color name="history_card_bg">#F5F5F5</color>
-    <color name="history_card_border">#E0E0E0</color>
-    <color name="history_card_highlight">#EEEEEE</color>
-    <color name="brand_blue">#5D2DC8</color>
-    <color name="surface">#FFFFFF</color>
-    <color name="onSurface">#212121</color>
+    
+    <!-- Base Colors -->
+    <color name="black">#050105</color>
+    <color name="white">#F5E9F7</color>
+    
+    <!-- Brand Colors -->
+    <color name="brand_color">#7B1FA2</color>
+    <color name="brand_blue">#7B1FA2</color>
+    <color name="accent_primary">#7B1FA2</color>
+    <color name="accent_secondary">#9C27B0</color>
+    
+    <!-- Background Colors -->
     <color name="background">#FAFAFA</color>
-    <color name="onBackground">#212121</color>
-
-    <!-- Bottom Navigation Colors -->
-    <color name="bottom_nav_active_bg">#E8E0FF</color>
-    <color name="bottom_nav_pressed_bg">#D0C0FF</color>
-    <color name="bottom_nav_active_icon">#5D2DC8</color>
-    <color name="bottom_nav_inactive_icon">#757575</color>
-    <color name="bottom_nav_active_text">#5D2DC8</color>
-    <color name="bottom_nav_inactive_text">#757575</color>
-    <color name="bottom_nav_border">#2A2A2A</color>
-
-    <!-- Light Theme Button Colors -->
-    <color name="button_vlight_bg">#F0F0F0</color>
-    <color name="button_function_bg">#E8E8E8</color>
-    <color name="button_deep_bg">#D0D0F0</color>
-
-    <!-- Light Theme Text Color -->
-    <color name="subtle_text">#424242</color>
+    <color name="dark_background">#121212</color>
+    <color name="navbar_background">#080209</color>
+    <color name="surface">#F5E9F7</color>
+    <color name="surface_variant">#F5F5F5</color>
+    
+    <!-- Text Colors -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="text_hint">#9E9E9E</color>
-    
-    <!-- Surface variants for light theme -->
-    <color name="surface_variant">#F5F5F5</color>
+    <color name="subtle_text">#424242</color>
+    <color name="onSurface">#212121</color>
+    <color name="onBackground">#212121</color>
     <color name="on_surface_variant">#424242</color>
     
-    <!-- Accent colors for light theme -->
-    <color name="accent_primary">#5D2DC8</color>
-    <color name="accent_secondary">#7C4DFF</color>
+    <!-- UI Element Colors -->
+    <color name="category_grey">#757575</color>
+    <color name="muted_border">#333A42</color>
+    <color name="popup_background">#343434</color>
+    <color name="voice_card_bg">#1E1B2E</color>
+    <color name="delete_icon_tint">#FF6B6B</color>
     
-    <!-- Missing brand colors -->
-    <color name="brand_color">#5D2DC8</color>
+    <!-- Button Colors -->
+    <color name="button_vlight_bg">#F0F0F0</color>
+    <color name="button_function_bg">#E8E8E8</color>
+    <color name="button_deep_bg">#E8D5F2</color>
+    
+    <!-- Bottom Navigation Colors -->
+    <color name="bottom_nav_active_bg">#FDFAFF</color>
+    <color name="bottom_nav_pressed_bg">#F0E5F8</color>
+    <color name="bottom_nav_active_icon">#050105</color>
+    <color name="bottom_nav_inactive_icon">#757575</color>
+    <color name="bottom_nav_active_text">#F5E9F7</color>
+    <color name="bottom_nav_inactive_text">#757575</color>
+    <color name="bottom_nav_border">#2A2A2A</color>
+    
+    <!-- History Colors -->
+    <color name="history_card_bg">#F5F5F5</color>
+    <color name="history_card_border">#E0E0E0</color>
+    <color name="history_card_highlight">#EEEEEE</color>
+    <color name="history_text_primary">#E7E7E7</color>
+    <color name="history_text_secondary">#B0B0B0</color>
+    <color name="history_text_tertiary">#666666</color>
 </resources>

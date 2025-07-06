@@ -15,7 +15,7 @@
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/onSurface</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">#000000</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
 
     </style>
 </resources>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#121212">
+    android:background="@color/dark_background">
 
         <!-- Top bar with back and search -->
         <LinearLayout
@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:orientation="horizontal"
-            android:background="#121212"
+            android:background="@color/navbar_background"
             android:gravity="center_vertical"
             android:paddingStart="10dp"
             android:paddingEnd="10dp">
@@ -39,7 +39,7 @@
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_hot_apps"
-                app:tint="@color/subtle_text"
+                app:tint="@color/white"
                 android:contentDescription="@string/hot_apps_text_desc" />
 
             <ImageButton
@@ -48,7 +48,7 @@
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_settings"
-                app:tint="@color/subtle_text"
+                app:tint="@color/white"
                 android:contentDescription="@string/settings_text_desc" />
         </LinearLayout>
 

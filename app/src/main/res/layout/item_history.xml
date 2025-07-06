@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="#121212"
+            app:cardBackgroundColor="@color/dark_background"
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp">
 
@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="2 + 3 × 4"
-                android:textColor="#E7E7E7"
+                                        android:textColor="@color/history_text_primary"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:gravity="start"
@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="= 14"
-                android:textColor="#B0B0B0"
+                                        android:textColor="@color/history_text_secondary"
                 android:textSize="18sp"
                 android:gravity="start"
                 android:fontFamily="monospace" />
@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2 hours ago"
-                    android:textColor="#666666"
+                                            android:textColor="@color/history_text_tertiary"
                     android:textSize="12sp" />
 
                 <TextView
@@ -68,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="From Widget"
-                    android:textColor="#FFFFFF"
+                                            android:textColor="@color/white"
                     android:textSize="10sp"
                     android:textStyle="bold"
                     android:background="@drawable/widget_label_background"
@@ -89,7 +89,7 @@
             android:background="@drawable/circle_background"
             android:src="@drawable/ic_delete"
             android:contentDescription="@string/delete_text"
-            app:tint="#FF6B6B"
+                                app:tint="@color/delete_icon_tint"
             android:padding="6dp" />
 
     </LinearLayout>

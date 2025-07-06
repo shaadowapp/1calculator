@@ -1,20 +1,61 @@
 <resources>
+    <!-- App Information -->
     <string name="app_name">1Calculator</string>
-    <string name="basic">Basic</string>
     <string name="advance">1Calculator</string>
+    <string name="calculator_text">Calculator</string>
+    
+    <!-- Navigation -->
     <string name="history">History</string>
+    <string name="back_text">Back</string>
+    <string name="search_text">Search</string>
+    <string name="view_all">View All</string>
+    
+    <!-- Calculator Numbers -->
     <string name="_0">0</string>
-    <string name="_7">7</string>
-    <string name="_8">8</string>
-    <string name="_9">9</string>
-    <string name="_4">4</string>
-    <string name="_5">5</string>
-    <string name="_6">6</string>
     <string name="_1">1</string>
     <string name="_2">2</string>
     <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    
+    <!-- Calculator Operations -->
     <string name="ac">AC</string>
-    <!-- Add descriptions for your icon buttons -->
+    <string name="basic">Basic</string>
+    <string name="error_text">Error</string>
+    <string name="expression_append">%1$s%2$s</string>
+    
+    <!-- Calculator Categories -->
+    <string name="algebra">Algebra</string>
+    <string name="geometry">Geometry</string>
+    <string name="finance">Finance</string>
+    <string name="health">Health</string>
+    <string name="date_time">Date &amp; Time</string>
+    <string name="other_units">Other Units</string>
+    
+    <!-- Tab Labels -->
+    <string name="tab_home">Home</string>
+    <string name="tab_voice">Ask <b>Mathly</b></string>
+    <string name="tab_categories">Categories</string>
+    
+    <!-- History -->
+    <string name="clear_all">Clear All</string>
+    <string name="delete">Delete</string>
+    <string name="delete_text">Delete</string>
+    <string name="delete_history_item">Delete history item</string>
+    <string name="no_history">No history yet</string>
+    <string name="no_history_found_text">No history found</string>
+    <string name="search_history_text_placeholder">Search history...</string>
+    <string name="search_1calculator_text_placeholder">Search 1Calculator</string>
+    
+    <!-- Actions -->
+    <string name="copy_text">Copy</string>
+    <string name="paste_text">Paste</string>
+    
+    <!-- Button Descriptions -->
     <string name="square_root_button_description">Square root</string>
     <string name="power_button_description">Power</string>
     <string name="pi_button_description">Pi</string>
@@ -28,32 +69,12 @@
     <string name="equals_button_description">Equal</string>
     <string name="plus_button_description">Plus</string>
     <string name="dot_button_description">Dot</string>
-    <string name="initial_result_text_description">Result</string>
-    <string name="btn_0_text_description">0</string>
-    <string name="error_text">Error</string>
     <string name="e_button_description">e</string>
-    <string name="expression_append">%1$s%2$s</string>
-    <string name="copy_text">Copy</string>
-    <string name="paste_text">Paste</string>
-    <string name="back_text">Back</string>
-    <string name="search_text">Search</string>
-    <string name="calculator_text">Calculator</string>
-    <string name="algebra">Algebra</string>
-    <string name="geometry">Geometry</string>
-    <string name="finance">Finance</string>
-    <string name="health">Health</string>
-    <string name="date_time">Date &amp; Time</string>
-    <string name="other_units">Other Units</string>
-    <string name="view_all">View All</string>
     <string name="ac_button_description">AC</string>
-    <string name="clear_all">Clear All</string>
-    <string name="delete">Delete</string>
-    <string name="delete_text">Delete</string>
-    <string name="delete_history_item">Delete history item</string>
-    <string name="no_history">No history yet</string>
-    <string name="search_history_text_placeholder">Search history...</string>
-    <string name="no_history_found_text">No history found</string>
-    <string name="search_1calculator_text_placeholder">Search 1Calculator</string>
+    <string name="btn_0_text_description">0</string>
+    <string name="initial_result_text_description">Result</string>
+    
+    <!-- Menu Items -->
     <string name="menu_text_desc">Menu</string>
     <string name="hot_apps_text_desc">Hot Apps</string>
     <string name="settings_text_desc">Settings</string>
@@ -62,7 +83,4 @@
     <string name="expression_desc">Expression</string>
     <string name="hot_apps_button_description">Hot Apps</string>
     <string name="settings_button_description">Settings</string>
-    <string name="tab_home">Home</string>
-    <string name="tab_voice">Ask <b>Mathly</b></string>
-    <string name="tab_categories">Categories</string>
 </resources>
