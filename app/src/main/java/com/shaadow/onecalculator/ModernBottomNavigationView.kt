@@ -1,6 +1,8 @@
 package com.shaadow.onecalculator
 
 import android.content.Context
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import android.graphics.Typeface
 
 class ModernBottomNavigationView @JvmOverloads constructor(
     context: Context,
@@ -84,7 +87,9 @@ class ModernBottomNavigationView @JvmOverloads constructor(
 
         // Voice tab
         voiceIcon.setImageResource(R.drawable.ic_microphone)
-        voiceLabel.text = "Ask Mathly"
+        val askMathlyText = SpannableString("Ask Mathly")
+        askMathlyText.setSpan(StyleSpan(Typeface.BOLD), 4, 10, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        voiceLabel.text = askMathlyText
 
         // Category tab
         categoryIcon.setImageResource(R.drawable.ic_grid)
