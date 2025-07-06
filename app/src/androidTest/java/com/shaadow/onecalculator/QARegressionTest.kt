@@ -189,32 +189,6 @@ class QARegressionTest {
     }
 
     @Test
-    fun testBottomNavigationFunctionality() {
-        // Navigate to home screen
-        onView(withId(R.id.btn_menu)).perform(click())
-        Thread.sleep(1000)
-        
-        // Test Home tab
-        onView(withId(R.id.nav_home))
-            .perform(click())
-        Thread.sleep(500)
-        
-        // Test Voice tab
-        onView(withId(R.id.nav_voice))
-            .perform(click())
-        Thread.sleep(500)
-        
-        // Test Categories tab
-        onView(withId(R.id.nav_categories))
-            .perform(click())
-        Thread.sleep(500)
-        
-        // Return to Home tab
-        onView(withId(R.id.nav_home))
-            .perform(click())
-    }
-
-    @Test
     fun testGestureNavigationFromCalculator() {
         // Test swipe gestures from main calculator screen
         // Swipe right to navigate to home

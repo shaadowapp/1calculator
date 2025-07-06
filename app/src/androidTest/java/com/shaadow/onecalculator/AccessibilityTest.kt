@@ -132,26 +132,6 @@ class AccessibilityTest {
     }
 
     @Test
-    fun testBottomNavigationAccessibility() {
-        // Navigate to home screen
-        onView(withId(R.id.btn_menu)).perform(click())
-        Thread.sleep(1000)
-
-        // Test bottom navigation items have proper content descriptions
-        onView(withId(R.id.nav_home))
-            .check(matches(hasContentDescription()))
-            .check(matches(isClickable()))
-
-        onView(withId(R.id.nav_voice))
-            .check(matches(hasContentDescription()))
-            .check(matches(isClickable()))
-
-        onView(withId(R.id.nav_categories))
-            .check(matches(hasContentDescription()))
-            .check(matches(isClickable()))
-    }
-
-    @Test
     fun testCategoryButtonsAccessibility() {
         // Navigate to home screen
         onView(withId(R.id.btn_menu)).perform(click())

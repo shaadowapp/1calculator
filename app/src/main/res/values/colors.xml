@@ -18,10 +18,14 @@
     <color name="onSurface">#212121</color>
     <color name="background">#FAFAFA</color>
     <color name="onBackground">#212121</color>
-    <color name="bottom_nav_bg">#1E1B2E</color>
-    <color name="bottom_nav_unselected">#BBBBBB</color>
-    <color name="bottom_nav_active_bg">#261C43</color>
-    <color name="bottom_nav_inactive">#AAAAAA</color>
+
+    <!-- Bottom Navigation Colors -->
+    <color name="bottom_nav_active_bg">#E8E0FF</color>
+    <color name="bottom_nav_pressed_bg">#D0C0FF</color>
+    <color name="bottom_nav_active_icon">#5D2DC8</color>
+    <color name="bottom_nav_inactive_icon">#757575</color>
+    <color name="bottom_nav_active_text">#5D2DC8</color>
+    <color name="bottom_nav_inactive_text">#757575</color>
 
     <!-- Light Theme Button Colors -->
     <color name="button_vlight_bg">#F0F0F0</color>

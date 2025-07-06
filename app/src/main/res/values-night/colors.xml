@@ -20,8 +20,14 @@
     <color name="onSurface">#F0F0F0</color>
     <color name="background">#121212</color>
     <color name="onBackground">#FFFFFF</color>
-    <color name="bottom_nav_bg">#1E1B2E</color>
-    <color name="bottom_nav_unselected">#BBBBBB</color>
+
+    <!-- Bottom Navigation Colors - Dark Theme -->
+    <color name="bottom_nav_active_bg">#2A1B4A</color>
+    <color name="bottom_nav_pressed_bg">#3A2B5A</color>
+    <color name="bottom_nav_active_icon">#8A5CF6</color>
+    <color name="bottom_nav_inactive_icon">#CCCCCC</color>
+    <color name="bottom_nav_active_text">#8A5CF6</color>
+    <color name="bottom_nav_inactive_text">#CCCCCC</color>
 
     <!-- Button colors for dark theme -->
     <color name="button_vlight_bg">#2E2E2E</color>

@@ -93,21 +93,4 @@
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="ModernBottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
-        <item name="itemIconSize">24dp</item>
-        <item name="itemTextAppearanceActive">@style/BottomNavigationTextAppearance</item>
-        <item name="itemTextAppearanceInactive">@style/BottomNavigationTextAppearance</item>
-        <item name="android:elevation">0dp</item>
-        <item name="android:background">#121212</item>
-    </style>
-
-    <style name="BottomNavigationTextAppearance" parent="TextAppearance.MaterialComponents.Caption">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/bottom_nav_unselected</item>
-    </style>
-
 </resources>
