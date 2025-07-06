@@ -28,7 +28,7 @@
     <color name="bottom_nav_inactive_icon">#CCCCCC</color>
     <color name="bottom_nav_active_text">#8A5CF6</color>
     <color name="bottom_nav_inactive_text">#CCCCCC</color>
-    <color name="bottom_nav_border">#444444</color>
+    <color name="bottom_nav_border">#1A1A1A</color>
 
     <!-- Button colors for dark theme -->
     <color name="button_vlight_bg">#2E2E2E</color>

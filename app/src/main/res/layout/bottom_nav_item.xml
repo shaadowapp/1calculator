@@ -11,15 +11,15 @@
     <!-- Icon Container - 3:1.5 Rectangular with Rounded Corners -->
     <FrameLayout
         android:id="@+id/icon_container"
-        android:layout_width="55dp"
-        android:layout_height="35dp"
+        android:layout_width="60dp"
+        android:layout_height="29dp"
         android:background="@drawable/bottom_nav_item_background"
         android:gravity="center">
 
         <ImageView
             android:id="@+id/tab_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_home"
             app:tint="@color/bottom_nav_icon_color"
@@ -34,9 +34,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Home"
-        android:textSize="11sp"
+        android:textSize="15sp"
         android:textColor="@color/bottom_nav_text_color"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="2dp"
         android:gravity="center"
         android:maxLines="1"
         android:ellipsize="end" />
