@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import com.shaadow.onecalculator.R
 import java.util.Locale
 import kotlin.math.min
+import android.content.res.Configuration
 
 class MathlyFragment : Fragment() {
 
@@ -33,6 +34,7 @@ class MathlyFragment : Fragment() {
     private lateinit var tvAnswer: TextView
     private lateinit var btnStop: Button
     private lateinit var listeningAnimation: View
+    private lateinit var btnConfirm: Button
 
     private var isListening = false
     private var isMathlyActive = false
@@ -47,7 +49,11 @@ class MathlyFragment : Fragment() {
     private val rmsQuietThreshold = 2f
     private val rmsNoiseThreshold = 8f
     private val rmsCounterLimit = 30 // about 3s if onRmsChanged called every 100ms
-    private val restartDelayMs = 2000L // 2 seconds
+    private val restartDelayMs = 4000L // 4 seconds
+
+    private var isRecognizerActive = false
+    private var consecutiveErrors = 0
+    private val errorTipThreshold = 3
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 100
@@ -59,6 +65,8 @@ class MathlyFragment : Fragment() {
         tvAnswer = root.findViewById(R.id.tvAnswer)
         btnStop = root.findViewById(R.id.btnStop)
         listeningAnimation = root.findViewById(R.id.listeningAnimation)
+        btnConfirm = root.findViewById(R.id.btnConfirm)
+        btnConfirm.visibility = View.GONE
         return root
     }
 
@@ -108,7 +116,7 @@ class MathlyFragment : Fragment() {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(requireContext())
         recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, getDeviceLanguage())
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
         }
@@ -118,42 +126,68 @@ class MathlyFragment : Fragment() {
                 animatePulse(true)
                 quietCounter = 0
                 noiseCounter = 0
+                isRecognizerActive = true
             }
             override fun onResults(results: Bundle?) {
+                isRecognizerActive = false
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 val spokenText = matches?.firstOrNull().orEmpty()
                 tvTranscription.text = spokenText
-                if (spokenText.isNotBlank()) {
-                    Handler(Looper.getMainLooper()).postDelayed({
+                if (spokenText.count { it.isLetterOrDigit() } >= 2) {
+                    btnConfirm.visibility = View.VISIBLE
+                    btnConfirm.text = "Confirm: $spokenText"
+                    btnConfirm.setOnClickListener {
+                        btnConfirm.visibility = View.GONE
+                        consecutiveErrors = 0
                         handleTranscription(spokenText)
-                        if (isListening) startListening()
-                    }, restartDelayMs)
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            if (isListening && !isRecognizerActive) startListening()
+                        }, restartDelayMs)
+                    }
                 } else {
-                    tvAnswer.text = ""
+                    val msg = "Sorry, I didn't get that. Please try again."
+                    tvAnswer.text = msg
+                    speak(msg)
+                    consecutiveErrors++
+                    if (consecutiveErrors >= errorTipThreshold) {
+                        tvAnswer.text = "Tip: Try speaking slowly and clearly."
+                    }
                     Handler(Looper.getMainLooper()).postDelayed({
-                        if (isListening) startListening()
+                        if (isListening && !isRecognizerActive) startListening()
                     }, restartDelayMs)
                 }
             }
             override fun onError(error: Int) {
-                tvAnswer.text = "" // Clear answer field on error
-                when (error) {
-                    SpeechRecognizer.ERROR_NO_MATCH, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> {
-                        tvTranscription.text = "Didn't catch that. Try again. (code: $error)"
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            if (isListening) startListening()
-                        }, restartDelayMs)
-                    }
-                    else -> {
-                        tvTranscription.text = "Error occurred (code: $error). Tap to retry."
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            if (isListening) startListening()
-                        }, restartDelayMs)
-                    }
+                isRecognizerActive = false
+                tvAnswer.text = ""
+                consecutiveErrors++
+                val msg = when (error) {
+                    SpeechRecognizer.ERROR_CLIENT -> "Internal error (code: 5). Please wait a moment and try again."
+                    7 -> "No internet connection (code: 7). Please check your network."
+                    SpeechRecognizer.ERROR_NO_MATCH, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Didn't catch that. Try again. (code: $error)"
+                    else -> "Error occurred (code: $error). Tap to retry."
                 }
+                tvTranscription.text = msg
+                speak(msg)
+                if (error == 7) {
+                    // Pause listening until network is restored
+                    return
+                }
+                if (error == SpeechRecognizer.ERROR_CLIENT || error == 7) {
+                    recreateSpeechRecognizer()
+                }
+                if (consecutiveErrors >= errorTipThreshold) {
+                    tvAnswer.text = "Tip: Try speaking slowly and clearly."
+                }
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (isListening && !isRecognizerActive) startListening()
+                }, restartDelayMs)
             }
             override fun onBeginningOfSpeech() {
                 cancelSilenceTimer()
+                tvTranscription.text = "Listening..."
+                tvAnswer.text = ""
+                btnConfirm.visibility = View.GONE
             }
             override fun onBufferReceived(buffer: ByteArray?) {}
             override fun onEndOfSpeech() {
@@ -168,7 +202,9 @@ class MathlyFragment : Fragment() {
             override fun onPartialResults(partialResults: Bundle?) {
                 val partial = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 val partialText = partial?.firstOrNull().orEmpty()
-                tvTranscription.text = partialText
+                if (partialText.isNotBlank()) {
+                    tvTranscription.text = "Heard: $partialText"
+                }
             }
             override fun onRmsChanged(rmsdB: Float) {
                 // Clamp rmsdB to a reasonable range for animation
@@ -202,7 +238,9 @@ class MathlyFragment : Fragment() {
     }
 
     private fun startListening() {
+        if (isRecognizerActive) return
         isListening = true
+        isRecognizerActive = true
         speechRecognizer.startListening(recognizerIntent)
         animatePulse(true)
     }
@@ -229,6 +267,29 @@ class MathlyFragment : Fragment() {
         }
     }
 
+    private fun recreateSpeechRecognizer() {
+        try { speechRecognizer.destroy() } catch (_: Exception) {}
+        setupSpeechRecognizer()
+    }
+
+    private fun soundex(word: String): String {
+        val map = mapOf(
+            'b' to '1', 'f' to '1', 'p' to '1', 'v' to '1',
+            'c' to '2', 'g' to '2', 'j' to '2', 'k' to '2', 'q' to '2', 's' to '2', 'x' to '2', 'z' to '2',
+            'd' to '3', 't' to '3',
+            'l' to '4',
+            'm' to '5', 'n' to '5',
+            'r' to '6'
+        )
+        val w = word.lowercase(Locale.getDefault()).filter { it.isLetter() }
+        if (w.isEmpty()) return ""
+        val first = w[0]
+        val tail = w.drop(1).map { map[it] ?: '0' }
+        val filtered = (listOf(first) + tail).filterIndexed { i, c -> i == 0 || c != tail.getOrNull(i - 1) }
+        val code = filtered.joinToString("").padEnd(4, '0').take(4)
+        return code
+    }
+
     private fun isSimilarToMathly(word: String): Boolean {
         val target = "mathly"
         val w = word.lowercase(Locale.getDefault())
@@ -245,7 +306,9 @@ class MathlyFragment : Fragment() {
             }
             return dp[a.length][b.length]
         }
-        return levenshtein(w, target) <= 2
+        // Soundex phonetic match
+        val soundexMatch = soundex(w) == soundex(target)
+        return levenshtein(w, target) <= 2 || soundexMatch
     }
 
     private fun handleTranscription(text: String) {
@@ -362,5 +425,10 @@ class MathlyFragment : Fragment() {
         stopListening()
         tts.shutdown()
         speechRecognizer.destroy()
+    }
+
+    private fun getDeviceLanguage(): String {
+        val locale = resources.configuration.locales.get(0)
+        return locale.toLanguageTag()
     }
 } 

@@ -45,4 +45,14 @@
         android:background="@drawable/bg_button_rounded"
         android:textColor="@color/voice_text_primary"/>
 
+    <Button
+        android:id="@+id/btnConfirm"
+        android:text="Confirm"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_button_rounded"
+        android:textColor="@color/voice_text_primary"
+        android:visibility="gone"/>
+
 </LinearLayout> 
