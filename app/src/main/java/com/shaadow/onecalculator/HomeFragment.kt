@@ -331,7 +331,7 @@ class HomeFragment : Fragment() {
     }
     
     private fun setupFAB() {
-        binding.fabCalculator.setOnClickListener {
+        binding.fabCalculator?.setOnClickListener {
             val intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
         }

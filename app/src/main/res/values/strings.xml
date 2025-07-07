@@ -102,4 +102,20 @@
     <string name="voice_no_permission">Microphone permission required</string>
     <string name="voice_error_listening">Error listening to voice</string>
     <string name="voice_no_speech">No speech detected</string>
+    
+    <!-- Enhanced Voice Feature Strings -->
+    <string name="voice_always_listening">Always listening for \"Hi Mathly\"...</string>
+    <string name="voice_mathly_inactive">Mathly: Inactive</string>
+    <string name="voice_mathly_active">Mathly: Active</string>
+    <string name="voice_live_transcription">Live Transcription</string>
+    <string name="voice_say_hi_mathly">Say \"Hi Mathly\" to activate...</string>
+    <string name="voice_hello_response">Hello dear! I\'m listening. I\'m here to solve your basic math problems.</string>
+    <string name="voice_goodbye_response">Goodbye! Say \"Hi Mathly\" to activate again.</string>
+    <string name="voice_solution_response">The solution will be %1$s! for your problem %2$s</string>
+    <string name="voice_cant_understand">I couldn\'t understand the math expression. Please try again.</string>
+    <string name="voice_cant_solve">Sorry, I couldn\'t solve that expression.</string>
+    <string name="voice_solved">Solved!</string>
+    <string name="voice_stopped_listening">Stopped listening</string>
+    <string name="voice_stop_listening">Stop Listening</string>
+    <string name="voice_tap_to_start">Tap the mic to start listening</string>
 </resources>

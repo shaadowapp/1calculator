@@ -12,7 +12,7 @@ android {
         applicationId = "com.shaadow.onecalculator"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.transition:transition:1.6.0")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
     implementation("androidx.window:window:1.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
 
 configurations.all {

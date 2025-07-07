@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.GestureDetector.SimpleOnGestureListener
+import androidx.viewpager2.widget.ViewPager2
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var expressionTv: EditText
     private lateinit var solutionTv: TextView
     private lateinit var gestureDetector: GestureDetector
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -254,6 +256,14 @@ class MainActivity : AppCompatActivity() {
         outputArea.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
             true
+        }
+
+        // Setup ViewPager reference
+        viewPager = findViewById(R.id.view_pager)
+
+        // Mic dot click opens Mathly tab
+        findViewById<View>(R.id.mic_dot).setOnClickListener {
+            viewPager.currentItem = 1 // Mathly tab
         }
     }
 

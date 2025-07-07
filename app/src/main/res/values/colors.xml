@@ -71,4 +71,6 @@
     <color name="voice_text_primary">#F5E9F7</color>
     <color name="voice_text_secondary">#B0B0B0</color>
     <color name="voice_permission_bg">#1E1B2E</color>
+    <color name="voice_background">#1E1B2E</color>
+    <color name="mathly_bg">#18181C</color>
 </resources>

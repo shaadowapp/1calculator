@@ -90,9 +90,9 @@
             android:singleLine="true" />
     </LinearLayout>
 
-    <!-- Fragment container for swapping screens -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <!-- ViewPager2 for tab navigation -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_below="@id/output_display_area"
@@ -519,5 +519,20 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <!-- Mic Dot Overlay (global, top right) -->
+    <ImageView
+        android:id="@+id/mic_dot"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_microphone"
+        android:background="@drawable/circle_background"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Mathly is listening"
+        android:elevation="16dp"
+        android:visibility="visible" />
 
 </RelativeLayout>

@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="32dp">
+            android:layout_marginBottom="24dp">
 
             <!-- Title -->
             <TextView
@@ -106,6 +106,85 @@
 
         </LinearLayout>
 
+        <!-- Version and Disclaimer Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <!-- Version Text -->
+            <TextView
+                android:id="@+id/version_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mathly v1.0.0"
+                android:textColor="@color/voice_mic_primary"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Disclaimer Text -->
+            <TextView
+                android:id="@+id/disclaimer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remember: Mathly can make mistakes, so double check it"
+                android:textColor="@color/voice_text_secondary"
+                android:textSize="10sp"
+                android:gravity="center"
+                android:alpha="0.8" />
+
+        </LinearLayout>
+
+        <!-- Error Code Display -->
+        <TextView
+            android:id="@+id/error_code_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Error 0: No Error"
+            android:textColor="@color/voice_text_secondary"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:visibility="visible" />
+
+        <!-- Live Transcription Container -->
+        <LinearLayout
+            android:id="@+id/transcription_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/transcription_background"
+            android:padding="20dp"
+            android:layout_marginBottom="24dp"
+            android:visibility="visible">
+
+            <!-- Transcription Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_live_transcription"
+                android:textColor="@color/voice_text_secondary"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Live Transcription Text -->
+            <TextView
+                android:id="@+id/live_transcription_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_say_hi_mathly"
+                android:textColor="@color/voice_text_primary"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:minHeight="60dp"
+                android:background="@drawable/transcription_text_background"
+                android:padding="16dp" />
+
+        </LinearLayout>
+
         <!-- Center Content -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -116,9 +195,9 @@
 
             <!-- Mic Button Container with Wave Animation -->
             <FrameLayout
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_marginBottom="32dp"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_marginBottom="24dp"
                 android:gravity="center">
 
                 <!-- Wave Animation Container -->
@@ -126,51 +205,51 @@
                     android:id="@+id/wave_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:gravity="center">
 
                     <!-- Wave Circle 1 -->
                     <View
                         android:id="@+id/wave_circle_1"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
                         android:background="@drawable/voice_wave_circle"
-                        android:alpha="0.9" />
+                        android:alpha="0.8" />
 
                     <!-- Wave Circle 2 -->
                     <View
                         android:id="@+id/wave_circle_2"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
+                        android:layout_width="170dp"
+                        android:layout_height="170dp"
                         android:layout_gravity="center"
                         android:background="@drawable/voice_wave_circle"
-                        android:alpha="0.7" />
+                        android:alpha="0.6" />
 
                     <!-- Wave Circle 3 -->
                     <View
                         android:id="@+id/wave_circle_3"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
                         android:layout_gravity="center"
                         android:background="@drawable/voice_wave_circle"
-                        android:alpha="0.5" />
+                        android:alpha="0.4" />
 
                 </FrameLayout>
 
                 <!-- Mic Button -->
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/mic_button"
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_microphone"
                     app:fabSize="normal"
                     app:backgroundTint="@color/voice_mic_primary"
                     app:tint="@color/white"
-                    app:elevation="8dp"
-                    app:maxImageSize="60dp"
-                    android:contentDescription="@string/voice_tap_to_speak" />
+                    app:elevation="12dp"
+                    app:maxImageSize="70dp"
+                    android:contentDescription="Voice Assistant" />
 
             </FrameLayout>
 
@@ -179,42 +258,116 @@
                 android:id="@+id/status_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/voice_tap_to_speak"
+                android:text="@string/voice_always_listening"
                 android:textColor="@color/voice_text_primary"
                 android:textSize="18sp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center" />
 
-            <!-- Result Container -->
-            <LinearLayout
-                android:id="@+id/result_container"
+            <!-- Stop Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/stop_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_stop_listening"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/delete_icon_tint"
+                app:cornerRadius="20dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone" />
+
+            <!-- Mathly Status Indicator -->
+            <TextView
+                android:id="@+id/mathly_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_mathly_inactive"
+                android:textColor="@color/voice_text_secondary"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:background="@drawable/mathly_status_background"
+                android:padding="8dp" />
+
+            <!-- Speaking Indicator -->
+            <TextView
+                android:id="@+id/speaking_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎤 Mathly is speaking..."
+                android:textColor="@color/voice_mic_primary"
+                android:textSize="12sp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="@drawable/speaking_indicator_background"
+                android:padding="6dp" />
+
+        </LinearLayout>
+
+        <!-- Debug Info Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/debug_info_background"
+            android:padding="12dp"
+            android:layout_marginTop="16dp"
+            android:visibility="visible">
+
+            <!-- Debug Info Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Debug Info"
+                android:textColor="@color/voice_text_secondary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Debug Info Text -->
+            <TextView
+                android:id="@+id/debug_info_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="32dp"
-                android:visibility="gone">
+                android:text="Engine: Google STT\nSession: 0\nErrors: 0\nActive: false\nListening: false\nLast Success: Never"
+                android:textColor="@color/voice_text_secondary"
+                android:textSize="10sp"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="2dp" />
 
-                <!-- Expression -->
-                <TextView
-                    android:id="@+id/expression_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/voice_text_primary"
-                    android:textSize="20sp"
-                    android:gravity="center"
-                    android:layout_marginBottom="8dp" />
+        </LinearLayout>
 
-                <!-- Result -->
-                <TextView
-                    android:id="@+id/result_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/voice_mic_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:gravity="center" />
+        <!-- Result Container -->
+        <LinearLayout
+            android:id="@+id/result_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:background="@drawable/result_background"
+            android:padding="20dp">
 
-            </LinearLayout>
+            <!-- Expression -->
+            <TextView
+                android:id="@+id/expression_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/voice_text_primary"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Result -->
+            <TextView
+                android:id="@+id/result_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/voice_mic_primary"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center" />
 
         </LinearLayout>
 
