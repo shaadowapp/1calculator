@@ -10,10 +10,10 @@
     <!-- Top bar for Basic screen -->
     <LinearLayout
         android:id="@+id/basic_navbar"
-            android:layout_width="match_parent"
-    android:layout_height="@dimen/navbar_height"
-    android:background="@color/navbar_background"
-    android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navbar_height"
+        android:background="@color/navbar_background"
+        android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="12dp"
         android:paddingEnd="8dp">
@@ -26,6 +26,23 @@
             android:src="@drawable/ic_menu"
             android:contentDescription="@string/menu_text_desc"
             app:tint="@color/white"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Mic Dot Centered -->
+        <ImageView
+            android:id="@+id/mic_dot"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_microphone"
+            android:background="@drawable/circle_background"
+            android:layout_gravity="center"
+            android:contentDescription="Mathly is listening"
+            android:elevation="16dp"
+            android:visibility="visible" />
 
         <View
             android:layout_width="0dp"
@@ -519,20 +536,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <!-- Mic Dot Overlay (global, top right) -->
-    <ImageView
-        android:id="@+id/mic_dot"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_microphone"
-        android:background="@drawable/circle_background"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="Mathly is listening"
-        android:elevation="16dp"
-        android:visibility="visible" />
 
 </RelativeLayout>

@@ -23,6 +23,8 @@ import com.shaadow.onecalculator.R
 import java.util.Locale
 import kotlin.math.min
 import android.content.res.Configuration
+import android.widget.Switch
+import android.widget.EditText
 
 class MathlyFragment : Fragment() {
 
@@ -35,6 +37,9 @@ class MathlyFragment : Fragment() {
     private lateinit var btnStop: Button
     private lateinit var listeningAnimation: View
     private lateinit var btnConfirm: Button
+    private lateinit var btnEdit: Button
+    private lateinit var editCorrection: EditText
+    private lateinit var switchLearn: Switch
 
     private var isListening = false
     private var isMathlyActive = false
@@ -55,6 +60,11 @@ class MathlyFragment : Fragment() {
     private var consecutiveErrors = 0
     private val errorTipThreshold = 3
 
+    private val correctionMap = mutableMapOf<String, String>()
+    private var lastRecognized: String = ""
+
+    private var recognizerErrorState: Int? = null
+
     companion object {
         private const val PERMISSION_REQUEST_CODE = 100
     }
@@ -66,7 +76,12 @@ class MathlyFragment : Fragment() {
         btnStop = root.findViewById(R.id.btnStop)
         listeningAnimation = root.findViewById(R.id.listeningAnimation)
         btnConfirm = root.findViewById(R.id.btnConfirm)
+        btnEdit = root.findViewById(R.id.btnEdit)
+        editCorrection = root.findViewById(R.id.editCorrection)
+        switchLearn = root.findViewById(R.id.switchLearn)
         btnConfirm.visibility = View.GONE
+        btnEdit.visibility = View.GONE
+        editCorrection.visibility = View.GONE
         return root
     }
 
@@ -79,10 +94,17 @@ class MathlyFragment : Fragment() {
 
         checkPermission()
 
+        updateStopButton()
         btnStop.setOnClickListener {
-            stopListening()
-            tvTranscription.text = "Stopped. Tap to restart."
-            animatePulse(false)
+            if (isListening) {
+                stopListening()
+            } else {
+                recognizerErrorState = null
+                tvTranscription.text = "Listening..."
+                tvAnswer.text = ""
+                startListening()
+            }
+            updateStopButton()
         }
 
         tvTranscription.setOnClickListener {
@@ -132,14 +154,39 @@ class MathlyFragment : Fragment() {
                 isRecognizerActive = false
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 val spokenText = matches?.firstOrNull().orEmpty()
+                lastRecognized = spokenText
                 tvTranscription.text = spokenText
                 if (spokenText.count { it.isLetterOrDigit() } >= 2) {
                     btnConfirm.visibility = View.VISIBLE
+                    btnEdit.visibility = View.VISIBLE
                     btnConfirm.text = "Confirm: $spokenText"
+                    btnEdit.text = "Edit"
+                    btnEdit.setOnClickListener {
+                        editCorrection.visibility = View.VISIBLE
+                        editCorrection.setText("")
+                        btnEdit.visibility = View.GONE
+                        btnConfirm.text = "Save Correction"
+                        btnConfirm.setOnClickListener {
+                            val correction = editCorrection.text.toString().trim()
+                            if (correction.isNotBlank() && switchLearn.isChecked) {
+                                correctionMap[spokenText] = correction
+                            }
+                            btnConfirm.visibility = View.GONE
+                            editCorrection.visibility = View.GONE
+                            btnEdit.visibility = View.GONE
+                            handleTranscription(correction.ifBlank { spokenText })
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                if (isListening && !isRecognizerActive) startListening()
+                            }, restartDelayMs)
+                        }
+                    }
                     btnConfirm.setOnClickListener {
                         btnConfirm.visibility = View.GONE
+                        btnEdit.visibility = View.GONE
+                        editCorrection.visibility = View.GONE
                         consecutiveErrors = 0
-                        handleTranscription(spokenText)
+                        val corrected = correctionMap[spokenText] ?: spokenText
+                        handleTranscription(corrected)
                         Handler(Looper.getMainLooper()).postDelayed({
                             if (isListening && !isRecognizerActive) startListening()
                         }, restartDelayMs)
@@ -162,25 +209,31 @@ class MathlyFragment : Fragment() {
                 tvAnswer.text = ""
                 consecutiveErrors++
                 val msg = when (error) {
-                    SpeechRecognizer.ERROR_CLIENT -> "Internal error (code: 5). Please wait a moment and try again."
-                    7 -> "No internet connection (code: 7). Please check your network."
+                    SpeechRecognizer.ERROR_CLIENT -> {
+                        recognizerErrorState = 5
+                        "Internal error (code: 5). Tap Start to try again."
+                    }
+                    7 -> {
+                        recognizerErrorState = 7
+                        "No internet connection (code: 7). Tap Start to retry."
+                    }
                     SpeechRecognizer.ERROR_NO_MATCH, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Didn't catch that. Try again. (code: $error)"
-                    else -> "Error occurred (code: $error). Tap to retry."
+                    else -> "Error occurred (code: $error). Tap Start to retry."
                 }
                 tvTranscription.text = msg
                 speak(msg)
-                if (error == 7) {
-                    // Pause listening until network is restored
-                    return
-                }
                 if (error == SpeechRecognizer.ERROR_CLIENT || error == 7) {
-                    recreateSpeechRecognizer()
+                    try { speechRecognizer.destroy() } catch (_: Exception) {}
+                    isRecognizerActive = false
+                    isListening = false
+                    updateStopButton()
+                    return
                 }
                 if (consecutiveErrors >= errorTipThreshold) {
                     tvAnswer.text = "Tip: Try speaking slowly and clearly."
                 }
                 Handler(Looper.getMainLooper()).postDelayed({
-                    if (isListening && !isRecognizerActive) startListening()
+                    if (isListening && !isRecognizerActive && recognizerErrorState == null) startListening()
                 }, restartDelayMs)
             }
             override fun onBeginningOfSpeech() {
@@ -191,12 +244,13 @@ class MathlyFragment : Fragment() {
             }
             override fun onBufferReceived(buffer: ByteArray?) {}
             override fun onEndOfSpeech() {
-                // Start silence timer
-                startSilenceTimer()
-                // Add a 2s delay before restarting listening (if needed)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (isListening) startListening()
-                }, restartDelayMs)
+                // Only start silence timer if not editing/correcting
+                if (!isCorrectionActive()) {
+                    startSilenceTimer()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if (isListening && !isRecognizerActive && recognizerErrorState == null) startListening()
+                    }, restartDelayMs)
+                }
             }
             override fun onEvent(eventType: Int, params: Bundle?) {}
             override fun onPartialResults(partialResults: Bundle?) {
@@ -238,17 +292,28 @@ class MathlyFragment : Fragment() {
     }
 
     private fun startListening() {
-        if (isRecognizerActive) return
+        if (isRecognizerActive || recognizerErrorState != null) return
         isListening = true
         isRecognizerActive = true
+        setupSpeechRecognizer()
         speechRecognizer.startListening(recognizerIntent)
         animatePulse(true)
+        updateStopButton()
     }
 
     private fun stopListening() {
         isListening = false
-        speechRecognizer.stopListening()
+        isRecognizerActive = false
+        try { speechRecognizer.stopListening() } catch (_: Exception) {}
+        try { speechRecognizer.destroy() } catch (_: Exception) {}
         animatePulse(false)
+        Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
+        btnConfirm.visibility = View.GONE
+        btnEdit.visibility = View.GONE
+        editCorrection.visibility = View.GONE
+        tvTranscription.text = "Stopped. Tap Start to listen."
+        tvAnswer.text = ""
+        updateStopButton()
     }
 
     private fun animatePulse(active: Boolean) {
@@ -312,7 +377,8 @@ class MathlyFragment : Fragment() {
     }
 
     private fun handleTranscription(text: String) {
-        val lower = text.lowercase(Locale.getDefault())
+        val corrected = if (switchLearn.isChecked && correctionMap.containsKey(text)) correctionMap[text]!! else text
+        val lower = corrected.lowercase(Locale.getDefault())
         val mathlyVariants = listOf(
             "mathly", "matly", "matlee", "mathlee", "matli", "mathli", "matlii", "mathlii",
             "maithali", "maithly", "mathali", "mathily", "maithily", "maithalee", "maithalee"
@@ -335,22 +401,19 @@ class MathlyFragment : Fragment() {
                 speak("Goodbye!")
             }
             isMathlyActive -> {
-                val answer = MathlyUtils.solveMath(text)
+                val answer = MathlyUtils.solveMath(corrected)
                 when (answer) {
                     "__OPEN_HISTORY__" -> {
                         tvAnswer.text = "Opening history... (navigation not implemented)"
                         speak("Opening history")
-                        // TODO: Implement navigation to history screen
                     }
                     "__OPEN_CALCULATOR__" -> {
                         tvAnswer.text = "Opening calculator... (navigation not implemented)"
                         speak("Opening calculator")
-                        // TODO: Implement navigation to calculator screen
                     }
                     "__OPEN_SETTINGS__" -> {
                         tvAnswer.text = "Opening settings... (navigation not implemented)"
                         speak("Opening settings")
-                        // TODO: Implement navigation to settings screen
                     }
                     "__CLEAR__" -> {
                         tvTranscription.text = ""
@@ -374,12 +437,13 @@ class MathlyFragment : Fragment() {
     }
 
     private fun startSilenceTimer() {
+        if (isCorrectionActive()) return // Don't start timer if editing
         cancelSilenceTimer()
         silenceHandler = Handler(Looper.getMainLooper())
         silenceRunnable = Runnable {
             // Stop listening after 5 seconds of silence
             stopListening()
-            tvTranscription.text = "Stopped due to silence. Tap to restart."
+            tvTranscription.text = "Stopped due to silence. Tap Start to listen."
             animatePulse(false)
         }
         silenceHandler?.postDelayed(silenceRunnable!!, silenceTimeoutMs)
@@ -387,6 +451,10 @@ class MathlyFragment : Fragment() {
 
     private fun cancelSilenceTimer() {
         silenceHandler?.removeCallbacks(silenceRunnable!!)
+    }
+
+    private fun isCorrectionActive(): Boolean {
+        return editCorrection.visibility == View.VISIBLE
     }
 
     override fun onPause() {
@@ -430,5 +498,9 @@ class MathlyFragment : Fragment() {
     private fun getDeviceLanguage(): String {
         val locale = resources.configuration.locales.get(0)
         return locale.toLanguageTag()
+    }
+
+    private fun updateStopButton() {
+        btnStop.text = if (isListening) "Stop" else "Start"
     }
 } 

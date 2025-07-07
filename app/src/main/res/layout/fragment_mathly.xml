@@ -45,6 +45,15 @@
         android:background="@drawable/bg_button_rounded"
         android:textColor="@color/voice_text_primary"/>
 
+    <Switch
+        android:id="@+id/switchLearn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mathly learns from mistakes"
+        android:layout_gravity="center"
+        android:checked="false"
+        android:layout_marginBottom="16dp"/>
+
     <Button
         android:id="@+id/btnConfirm"
         android:text="Confirm"
@@ -52,6 +61,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_button_rounded"
+        android:textColor="@color/voice_text_primary"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnEdit"
+        android:text="Edit"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_button_rounded"
+        android:textColor="@color/voice_text_primary"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/editCorrection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type the correct phrase..."
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_input_rounded"
         android:textColor="@color/voice_text_primary"
         android:visibility="gone"/>
 
