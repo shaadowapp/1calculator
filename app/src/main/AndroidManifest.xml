@@ -13,23 +13,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OneCalculator">
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
-
+        <activity android:name=".LauncherActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" />
         <activity android:name=".HomeActivity" android:screenOrientation="portrait" />
         <activity 
             android:name=".HistoryActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".OnboardingActivity" />
+
+        <activity android:name=".BasicActivity" />
 
         <receiver android:name=".CalculatorWidgetBlack" android:exported="false">
             <intent-filter>
@@ -38,6 +39,10 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/calculator_widget_info" />
         </receiver>
+
+        <service
+            android:name=".FloatingMicService"
+            android:exported="false" />
 
     </application>
 

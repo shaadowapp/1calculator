@@ -47,7 +47,9 @@ class MathlyFragment : Fragment() {
 
     private var silenceHandler: Handler? = null
     private var silenceRunnable: Runnable? = null
-    private val silenceTimeoutMs = 5000L // 5 seconds
+    private val defaultSilenceTimeoutMs = 5000L // 5 seconds
+    private val trainingSilenceTimeoutMs = 15000L // 15 seconds
+    private var silenceTimeoutMs = defaultSilenceTimeoutMs
 
     private var quietCounter = 0
     private var noiseCounter = 0
@@ -502,5 +504,9 @@ class MathlyFragment : Fragment() {
 
     private fun updateStopButton() {
         btnStop.text = if (isListening) "Stop" else "Start"
+    }
+
+    fun setTrainingMode(enabled: Boolean) {
+        silenceTimeoutMs = if (enabled) trainingSilenceTimeoutMs else defaultSilenceTimeoutMs
     }
 } 

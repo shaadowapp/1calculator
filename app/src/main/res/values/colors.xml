@@ -16,6 +16,9 @@
     <color name="brand_blue">#7B1FA2</color>
     <color name="accent_primary">#7B1FA2</color>
     <color name="accent_secondary">#9C27B0</color>
+    <color name="brand_green">#4CAF50</color>
+    <color name="brand_purple">#9C27B0</color>
+    <color name="brand_orange">#FF9800</color>
     
     <!-- Background Colors -->
     <color name="background">#FAFAFA</color>
@@ -73,4 +76,6 @@
     <color name="voice_permission_bg">#1E1B2E</color>
     <color name="voice_background">#1E1B2E</color>
     <color name="mathly_bg">#18181C</color>
+    <color name="mic_on">#4CAF50</color>
+    <color name="mic_off">#B0BEC5</color>
 </resources>

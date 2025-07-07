@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@android:color/transparent"
+    android:padding="32dp">
+
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@mipmap/ic_launcher_round"
+        android:contentDescription="App Logo"
+        android:layout_marginBottom="24dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_greeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to 1Calculator!"
+        android:textColor="@color/brand_blue"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your all-in-one calculator for voice, scan, and more."
+        android:textColor="@color/subtle_text"
+        android:textSize="16sp"
+        android:gravity="center" />
+
+</LinearLayout> 

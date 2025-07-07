@@ -78,6 +78,15 @@ class VoiceFragment : Fragment() {
     private var lastRestartTime = 0L
     private var coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
+    private val micDotReceiver = object : android.content.BroadcastReceiver() {
+        override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            if (intent?.action == "com.shaadow.onecalculator.ACTION_TOGGLE_MATHLY_LISTENING") {
+                val shouldListen = intent.getBooleanExtra("is_listening", false)
+                if (shouldListen) startListening() else stopListening()
+            }
+        }
+    }
+
     companion object {
         private const val PERMISSION_REQUEST_CODE = 123
         private const val MAX_PERMISSION_DENIALS = 2
@@ -166,7 +175,7 @@ class VoiceFragment : Fragment() {
             speechRecognizer?.destroy()
             speechRecognizer = null
         } catch (e: Exception) {
-            Log.d("Mathly", "Speech recognizer cleanup error: ${e.message}")
+            // Ignore cleanup errors
         }
         
         try {
@@ -174,8 +183,19 @@ class VoiceFragment : Fragment() {
             textToSpeech?.shutdown()
             textToSpeech = null
         } catch (e: Exception) {
-            Log.d("Mathly", "Text-to-speech cleanup error: ${e.message}")
+            // Ignore cleanup errors
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val filter = android.content.IntentFilter("com.shaadow.onecalculator.ACTION_TOGGLE_MATHLY_LISTENING")
+        requireContext().registerReceiver(micDotReceiver, filter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireContext().unregisterReceiver(micDotReceiver)
     }
 
     private fun initializeViews(view: View) {
@@ -252,7 +272,7 @@ class VoiceFragment : Fragment() {
                 delay(ERROR_RESET_THRESHOLD)
                 if (consecutiveErrors > 0 && System.currentTimeMillis() - lastSuccessfulRecognition > ERROR_RESET_THRESHOLD) {
                     consecutiveErrors = 0
-                    Log.d("Mathly", "Reset consecutive error count")
+                    // Log.d("Mathly", "Reset consecutive error count")
                 }
             }
         }
@@ -272,7 +292,7 @@ class VoiceFragment : Fragment() {
     }
     
     private fun testSpeechRecognition() {
-        Log.d("Mathly", "Testing speech recognition...")
+        // Log.d("Mathly", "Testing speech recognition...")
         updateAllUI("Testing speech recognition...", "", isMathlyActive)
         
         if (!SpeechRecognizer.isRecognitionAvailable(requireContext())) {
@@ -303,7 +323,7 @@ class VoiceFragment : Fragment() {
 
     private fun logError(message: String, errorCode: Int) {
         currentErrorCode = errorCode
-        Log.e("Mathly", "Error $errorCode: $message")
+        // Log.e("Mathly", "Error $errorCode: $message")
         updateErrorDisplay()
     }
 
@@ -415,12 +435,12 @@ class VoiceFragment : Fragment() {
             
             speechRecognizer?.setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {
-                    Log.d("Mathly", "Ready for speech")
+                    // Log.d("Mathly", "Ready for speech")
                     updateAllUI("Listening...", currentTranscription, isMathlyActive)
                     startWaveAnimation()
                 }
                 override fun onBeginningOfSpeech() {
-                    Log.d("Mathly", "Beginning of speech detected")
+                    // Log.d("Mathly", "Beginning of speech detected")
                     updateAllUI("I hear you...", currentTranscription, isMathlyActive)
                 }
                 override fun onRmsChanged(rmsdB: Float) {
@@ -428,27 +448,27 @@ class VoiceFragment : Fragment() {
                     updateWaveIntensity(rmsdB)
                 }
                 override fun onBufferReceived(buffer: ByteArray?) {
-                    Log.d("Mathly", "Buffer received")
+                    // Log.d("Mathly", "Buffer received")
                 }
                 override fun onEndOfSpeech() {
-                    Log.d("Mathly", "End of speech")
+                    // Log.d("Mathly", "End of speech")
                     updateAllUI("Processing...", currentTranscription, isMathlyActive)
                     stopWaveAnimation()
                 }
                 override fun onError(error: Int) {
-                    Log.d("Mathly", "Speech recognition error: $error")
+                    // Log.d("Mathly", "Speech recognition error: $error")
                     handleSpeechError(error)
                 }
                 override fun onResults(results: Bundle?) {
-                    Log.d("Mathly", "Speech recognition results received")
+                    // Log.d("Mathly", "Speech recognition results received")
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     val spokenText = matches?.firstOrNull()?.lowercase(Locale.getDefault()) ?: ""
-                    Log.d("Mathly", "Recognized text: '$spokenText'")
-                    Log.d("Mathly", "All matches: ${matches?.joinToString(", ")}")
+                    // Log.d("Mathly", "Recognized text: '$spokenText'")
+                    // Log.d("Mathly", "All matches: ${matches?.joinToString(", ")}")
                     
                     // If final result is empty but we have partial results, use the last partial result
                     val finalText = if (spokenText.isEmpty() && currentTranscription.isNotEmpty()) {
-                        Log.d("Mathly", "Using partial result as final: '$currentTranscription'")
+                        // Log.d("Mathly", "Using partial result as final: '$currentTranscription'")
                         currentTranscription
                     } else {
                         spokenText
@@ -463,19 +483,19 @@ class VoiceFragment : Fragment() {
                     val partialMatches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     val partialText = partialMatches?.firstOrNull() ?: ""
                     if (partialText.isNotEmpty()) {
-                        Log.d("Mathly", "Partial result: '$partialText'")
+                        // Log.d("Mathly", "Partial result: '$partialText'")
                         processRecognitionEvent(partialText, isFinal = false)
                     }
                 }
                 override fun onEvent(eventType: Int, params: Bundle?) {
-                    Log.d("Mathly", "Speech recognition event: $eventType")
+                    // Log.d("Mathly", "Speech recognition event: $eventType")
                 }
             })
             
-            Log.d("Mathly", "Speech recognizer setup completed successfully")
+            // Log.d("Mathly", "Speech recognizer setup completed successfully")
         } catch (e: Exception) {
             logError("Speech recognizer setup failed: ${e.message}", 16)
-            Log.e("Mathly", "Speech recognizer setup exception", e)
+            // Log.e("Mathly", "Speech recognizer setup exception", e)
         }
     }
 
@@ -497,7 +517,7 @@ class VoiceFragment : Fragment() {
                 consecutiveNoMatchCount++
                 // Don't log this as an error in debug mode, it's normal during continuous listening
                 if (debugMode) {
-                    Log.d("Mathly", "No speech match detected (normal during listening) - Count: $consecutiveNoMatchCount")
+                    // Log.d("Mathly", "No speech match detected (normal during listening) - Count: $consecutiveNoMatchCount")
                 } else {
                     logError("No speech match detected", 6)
                 }
@@ -506,7 +526,7 @@ class VoiceFragment : Fragment() {
             SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> {
                 // Don't count timeouts as consecutive errors during continuous listening
                 if (debugMode) {
-                    Log.d("Mathly", "Speech timeout (normal during listening)")
+                    // Log.d("Mathly", "Speech timeout (normal during listening)")
                 } else {
                     logError("Speech timeout", 7)
                 }
@@ -589,7 +609,7 @@ class VoiceFragment : Fragment() {
             // Ensure minimum time between restarts
             val finalDelay = maxOf(adjustedDelay, 3000L - timeSinceLastRestart)
             
-            Log.d("Mathly", "Smart restart: consecutiveNoMatch=$consecutiveNoMatchCount, delay=${finalDelay}ms")
+            // Log.d("Mathly", "Smart restart: consecutiveNoMatch=$consecutiveNoMatchCount, delay=${finalDelay}ms")
             restartListeningWithDelay(finalDelay)
             lastRestartTime = currentTime
         } else {
@@ -892,7 +912,7 @@ class VoiceFragment : Fragment() {
                     null
                 }
             } catch (e: Exception) {
-                Log.e("Mathly", "AI math solving failed: ${e.message}")
+                // Log.e("Mathly", "AI math solving failed: ${e.message}")
                 null
             }
         }
@@ -952,7 +972,7 @@ class VoiceFragment : Fragment() {
         if (!isAppActive || isManualStop) return
         
         if (speechRecognizer == null) {
-            Log.e("Mathly", "Speech recognizer is null, cannot start listening")
+            // Log.e("Mathly", "Speech recognizer is null, cannot start listening")
             updateAllUI("Speech recognizer not initialized", "", isMathlyActive)
             setupSpeechRecognizer()
             return
@@ -961,7 +981,7 @@ class VoiceFragment : Fragment() {
         // Smart approach: Only start if we haven't started recently
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastRestartTime < 3000) {
-            Log.d("Mathly", "Skipping restart - too soon since last attempt")
+            // Log.d("Mathly", "Skipping restart - too soon since last attempt")
             return
         }
         
@@ -980,7 +1000,7 @@ class VoiceFragment : Fragment() {
                 putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, false)
             }
             
-            Log.d("Mathly", "Starting speech recognition...")
+            // Log.d("Mathly", "Starting speech recognition...")
             speechRecognizer?.startListening(intent)
             isListening = true
             lastRestartTime = currentTime
@@ -990,13 +1010,13 @@ class VoiceFragment : Fragment() {
             // Shorter session duration to prevent client errors
             micButton.postDelayed({
                 if (isListening && !isManualStop && isAppActive) {
-                    Log.d("Mathly", "Session timeout, restarting listening")
+                    // Log.d("Mathly", "Session timeout, restarting listening")
                     restartListeningWithDelay()
                 }
             }, 20000) // Reduced from 30s to 20s
             
         } catch (e: Exception) {
-            Log.e("Mathly", "Error starting speech recognition", e)
+            // Log.e("Mathly", "Error starting speech recognition", e)
             updateAllUI("Error starting speech recognition", "", isMathlyActive)
             logError("Speech recognition start error: ${e.message}", 20)
             handleClientError()

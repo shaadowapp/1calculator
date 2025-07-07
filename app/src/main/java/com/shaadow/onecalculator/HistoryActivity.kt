@@ -34,6 +34,8 @@ import kotlinx.coroutines.flow.collectLatest
 import android.app.Activity
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
+import android.os.Handler
+import android.widget.ImageView
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var adapter: HistoryAdapter
@@ -56,6 +58,7 @@ class HistoryActivity : AppCompatActivity() {
         setupBackButton()
         setupFloatingActionButton()
         setupClickOutsideToClearFocus()
+        setupClearAllButton()
     }
 
     private fun setupRecyclerView() {
@@ -98,9 +101,13 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setupBackButton() {
-        // Remove the back button reference since it was removed from layout
-        // val btnBack = findViewById<ImageButton>(R.id.btn_back)
-        // btnBack.setOnClickListener { finish() }
+        val btnBack = findViewById<ImageButton>(R.id.btn_back)
+        btnBack.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun setupFloatingActionButton() {
@@ -152,6 +159,23 @@ class HistoryActivity : AppCompatActivity() {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
             adapter.setSearchQuery("")
+        }
+    }
+
+    private fun setupClearAllButton() {
+        findViewById<View>(R.id.btn_clear_all).setOnClickListener {
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Clear All History")
+                .setMessage("Are you sure you want to delete all history?")
+                .setPositiveButton("Yes") { _, _ ->
+                    val db = HistoryDatabase.getInstance(this)
+                    lifecycleScope.launch {
+                        db.historyDao().clearAll()
+                        runOnUiThread { recreate() }
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
     }
 

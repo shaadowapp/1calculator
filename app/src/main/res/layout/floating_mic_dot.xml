@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="30dp"
+    android:layout_height="30dp">
+
+    <ImageView
+        android:id="@+id/floating_mic_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_microphone"
+        android:background="@drawable/mic_dot_toggle_selector"
+        android:contentDescription="Mathly is listening"
+        android:scaleType="centerInside"
+        android:layout_gravity="center" />
+
+    <View
+        android:id="@+id/mic_pulse"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@android:color/transparent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout> 
