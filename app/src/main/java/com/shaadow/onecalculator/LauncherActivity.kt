@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 class LauncherActivity : AppCompatActivity() {
     companion object {
         // Set to true for dev/test mode, false for production
-        const val DEV_ONBOARDING_ALWAYS = true
+        const val DEV_ONBOARDING_ALWAYS = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

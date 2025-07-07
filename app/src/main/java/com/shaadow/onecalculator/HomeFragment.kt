@@ -23,6 +23,9 @@ import androidx.transition.TransitionManager
 import com.shaadow.onecalculator.databinding.FragmentHomeBinding
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
+import android.view.MenuItem
+import android.widget.PopupMenu
+import android.widget.ImageView
 
 class HomeFragment : Fragment() {
     
@@ -52,6 +55,28 @@ class HomeFragment : Fragment() {
         setupCategoryButtons()
         setupFAB()
         setupClickOutsideToClearFocus()
+        val btnSettings = binding.root.findViewById<ImageView>(R.id.btn_settings)
+        btnSettings.setOnClickListener { v ->
+            val popup = PopupMenu(requireContext(), v)
+            popup.menu.add(0, 1, 0, "History")
+            popup.menu.add(0, 2, 1, "Settings")
+            popup.setOnMenuItemClickListener { item: MenuItem ->
+                when (item.itemId) {
+                    1 -> {
+                        val intent = Intent(requireContext(), HistoryActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
+                    2 -> {
+                        val intent = Intent(requireContext(), SettingsActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
     }
     
     private fun setupAdapters() {

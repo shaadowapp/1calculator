@@ -12,4 +12,7 @@ interface PreferenceDao {
 
     @Query("DELETE FROM preference")
     suspend fun clearAllPreferences()
+
+    @Query("DELETE FROM preference WHERE key = :key")
+    suspend fun deletePreference(key: String)
 } 

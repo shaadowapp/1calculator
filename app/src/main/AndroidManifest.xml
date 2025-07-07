@@ -32,6 +32,10 @@
 
         <activity android:name=".BasicActivity" />
 
+        <activity android:name=".SettingsActivity" android:screenOrientation="portrait" />
+
+        <activity android:name=".MainTabActivity" android:screenOrientation="portrait" />
+
         <receiver android:name=".CalculatorWidgetBlack" android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

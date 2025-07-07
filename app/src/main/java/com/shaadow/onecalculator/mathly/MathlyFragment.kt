@@ -23,7 +23,7 @@ import com.shaadow.onecalculator.R
 import java.util.Locale
 import kotlin.math.min
 import android.content.res.Configuration
-import android.widget.Switch
+import com.google.android.material.switchmaterial.SwitchMaterial
 import android.widget.EditText
 
 class MathlyFragment : Fragment() {
@@ -39,7 +39,7 @@ class MathlyFragment : Fragment() {
     private lateinit var btnConfirm: Button
     private lateinit var btnEdit: Button
     private lateinit var editCorrection: EditText
-    private lateinit var switchLearn: Switch
+    private lateinit var switchLearn: SwitchMaterial
 
     private var isListening = false
     private var isMathlyActive = false

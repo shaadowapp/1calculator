@@ -74,7 +74,8 @@ class HomeActivity : AppCompatActivity() {
                     true
                 }
                 R.id.menu_settings -> {
-                    Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.menu_about -> {

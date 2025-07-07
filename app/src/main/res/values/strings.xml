@@ -124,4 +124,8 @@
     <string name="desc_mic_camera">Mic and Camera</string>
     <string name="permissions_needed">Permissions Needed</string>
     <string name="permissions_explanation">Enable mic and camera for full experience.</string>
+    
+    <!-- New strings -->
+    <string name="hot_apps">Hot Apps</string>
+    <string name="settings">Settings</string>
 </resources>
