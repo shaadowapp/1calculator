@@ -49,84 +49,218 @@ class DynamicCalculatorFragment : DialogFragment() {
         val calcId = arguments?.getString(ARG_CALC_ID) ?: return
         config = loadConfigForCalculator(requireContext(), calcId)
 
-        // Set title
-        view.findViewById<TextView>(R.id.dialog_title).text = config.name
-        // Set formula/info
-        val formulaView = view.findViewById<TextView>(R.id.dialog_formula)
-        if (!config.formula.isNullOrEmpty()) {
-            formulaView.text = config.formula
-            formulaView.visibility = View.VISIBLE
+        // Ensure heading is always first, formula/method always second
+        val titleView = view.findViewById<TextView>(R.id.dialog_title)
+        val inputContainer = view.findViewById<LinearLayout>(R.id.input_container)
+        inputContainer.removeAllViews()
+        val parentLayout = inputContainer.parent as? LinearLayout
+        parentLayout?.let {
+            // Remove any previous formula/example/heading views
+            for (i in it.childCount - 1 downTo 0) {
+                val v = it.getChildAt(i)
+                if (v.tag == "formula_example" || v.id == R.id.dialog_title) it.removeViewAt(i)
+            }
+            // Add heading as first child, ensuring no parent conflict
+            titleView.text = config.name
+            titleView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+            titleView.setTextColor(resources.getColor(R.color.brand_color, null))
+            titleView.setPadding(0, 0, 0, boxPadding)
+            (titleView.parent as? ViewGroup)?.removeView(titleView)
+            it.addView(titleView, 0)
+            // Add formula view as second child if present
+            config.formula?.takeIf { it.isNotBlank() }?.let { formula ->
+                val formulaText = TextView(requireContext())
+                formulaText.text = "Method/Formula: $formula"
+                formulaText.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
+                formulaText.setPadding(0, 0, 0, boxPadding)
+                formulaText.tag = "formula_example"
+                it.addView(formulaText, 1)
+            }
         }
         // Add input fields dynamically
-        val inputContainer = view.findViewById<LinearLayout>(R.id.input_container)
-        for (input in config.inputs) {
-            val row = LinearLayout(requireContext())
-            row.orientation = LinearLayout.HORIZONTAL
-            row.layoutParams = LinearLayout.LayoutParams(
+        if (config.id == "algb01sys01" && config.inputs.size == 6 &&
+            config.inputs.map { it.id } == listOf("a1", "b1", "c1", "a2", "b2", "c2")) {
+            // Special 2x3 grid for System of Equations
+            val row1 = LinearLayout(requireContext())
+            row1.orientation = LinearLayout.HORIZONTAL
+            row1.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { setMargins(0, boxPadding, 0, 0) }
-            row.gravity = android.view.Gravity.CENTER_VERTICAL
-            row.setPadding(boxPadding, 0, boxPadding, 0)
-
-            // Input field (Material filled, rounded, no border)
-            val inputLayout = TextInputLayout(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_FilledBox)
-            inputLayout.layoutParams = LinearLayout.LayoutParams(0, boxHeight, 2f).apply {
-                setMargins(0, 0, boxPadding / 2, 0)
-            }
-            inputLayout.hint = input.label
-            inputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_FILLED)
-            inputLayout.boxBackgroundColor = fillColor
-            inputLayout.boxStrokeWidth = 0
-            val editText = TextInputEditText(requireContext())
-            editText.inputType = if (input.type == "number")
-                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            else InputType.TYPE_CLASS_TEXT
-            editText.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
-            editText.background = null
-            editText.minHeight = boxHeight
-            editText.maxHeight = boxHeight
-            editText.setPadding(boxPadding, 0, boxPadding, 0)
-            inputLayout.addView(editText)
-            row.addView(inputLayout)
-
-            var unitDropdown: MaterialAutoCompleteTextView? = null
-            if (input.unit != null) {
-                val hasLongUnit = input.unit.any { it.length > 4 }
-                val allShortUnits = input.unit.all { it.length <= 4 }
-                val unitWeight = if (hasLongUnit) 1.5f else 1f
-                val unitMaxWidth = if (allShortUnits) (120 * resources.displayMetrics.density).toInt() else (180 * resources.displayMetrics.density).toInt()
-                val unitLayout = TextInputLayout(
-                    requireContext(), null,
-                    com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_FilledBox_ExposedDropdownMenu
-                )
-                unitLayout.layoutParams = LinearLayout.LayoutParams(0, boxHeight, unitWeight)
-                unitLayout.hint = "Unit"
-                unitLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_FILLED)
-                unitLayout.boxBackgroundColor = fillColor
-                unitLayout.boxStrokeWidth = 0
-                unitLayout.setEndIconMode(TextInputLayout.END_ICON_DROPDOWN_MENU)
-                unitDropdown = MaterialAutoCompleteTextView(requireContext())
-                unitDropdown.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, input.unit))
-                if (input.unit.isNotEmpty()) {
-                    unitDropdown.setText(input.unit[0], false)
+            row1.gravity = android.view.Gravity.CENTER_VERTICAL
+            row1.setPadding(boxPadding, 0, boxPadding, 0)
+            val row2 = LinearLayout(requireContext())
+            row2.orientation = LinearLayout.HORIZONTAL
+            row2.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, boxPadding, 0, 0) }
+            row2.gravity = android.view.Gravity.CENTER_VERTICAL
+            row2.setPadding(boxPadding, 0, boxPadding, 0)
+            val rowInputs = listOf(
+                Triple(row1, config.inputs[0], "a1"),
+                Triple(row1, config.inputs[1], "b1"),
+                Triple(row1, config.inputs[2], "c1"),
+                Triple(row2, config.inputs[3], "a2"),
+                Triple(row2, config.inputs[4], "b2"),
+                Triple(row2, config.inputs[5], "c2")
+            )
+            for ((row, input, id) in rowInputs) {
+                val inputLayout = TextInputLayout(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_FilledBox)
+                inputLayout.layoutParams = LinearLayout.LayoutParams(0, boxHeight, 1f).apply {
+                    setMargins(boxPadding / 2, 0, boxPadding / 2, 0)
                 }
-                unitDropdown.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
-                unitDropdown.background = null
-                unitDropdown.minHeight = boxHeight
-                unitDropdown.maxHeight = boxHeight
-                unitDropdown.setPadding(boxPadding, 0, boxPadding, 0)
-                unitDropdown.maxLines = 1
-                unitDropdown.ellipsize = android.text.TextUtils.TruncateAt.END
-                unitDropdown.minWidth = (64 * resources.displayMetrics.density).toInt()
-                unitDropdown.maxWidth = unitMaxWidth
-                unitLayout.addView(unitDropdown)
-                row.addView(unitLayout)
+                inputLayout.hint = input.label
+                inputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_FILLED)
+                inputLayout.boxBackgroundColor = fillColor
+                inputLayout.boxStrokeWidth = 0
+                val editText = TextInputEditText(requireContext())
+                editText.inputType = if (input.type == "number")
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                else InputType.TYPE_CLASS_TEXT
+                editText.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
+                editText.background = null
+                editText.minHeight = boxHeight
+                editText.maxHeight = boxHeight
+                editText.setPadding(boxPadding, 0, boxPadding, 0)
+                inputLayout.addView(editText)
+                row.addView(inputLayout)
+                inputViews[id] = Pair(editText, null)
             }
-            inputViews[input.id] = Pair(editText, unitDropdown)
-            inputContainer.addView(row)
+            inputContainer.addView(row1)
+            inputContainer.addView(row2)
+        } else if (config.inputs.size > 2) {
+            // Compact grid: 2 input boxes per row
+            var i = 0
+            while (i < config.inputs.size) {
+                val row = LinearLayout(requireContext())
+                row.orientation = LinearLayout.HORIZONTAL
+                row.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, boxPadding, 0, 0) }
+                row.gravity = android.view.Gravity.CENTER_VERTICAL
+                row.setPadding(boxPadding, 0, boxPadding, 0)
+                for (j in 0 until 2) {
+                    if (i + j < config.inputs.size) {
+                        val input = config.inputs[i + j]
+                        val inputLayout = TextInputLayout(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_FilledBox)
+                        inputLayout.layoutParams = LinearLayout.LayoutParams(0, boxHeight, 1f).apply {
+                            setMargins(boxPadding / 2, 0, boxPadding / 2, 0)
+                        }
+                        inputLayout.hint = input.label
+                        inputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_FILLED)
+                        inputLayout.boxBackgroundColor = fillColor
+                        inputLayout.boxStrokeWidth = 0
+                        val editText = TextInputEditText(requireContext())
+                        editText.inputType = if (input.type == "number")
+                            InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                        else InputType.TYPE_CLASS_TEXT
+                        editText.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
+                        editText.background = null
+                        editText.minHeight = boxHeight
+                        editText.maxHeight = boxHeight
+                        editText.setPadding(boxPadding, 0, boxPadding, 0)
+                        inputLayout.addView(editText)
+                        row.addView(inputLayout)
+                        inputViews[input.id] = Pair(editText, null)
+                    } else {
+                        // Add empty space for alignment if odd number of fields
+                        val spacer = View(requireContext())
+                        spacer.layoutParams = LinearLayout.LayoutParams(0, boxHeight, 1f)
+                        row.addView(spacer)
+                    }
+                }
+                inputContainer.addView(row)
+                i += 2
+            }
+        } else {
+            // Default layout for 1 or 2 fields
+            for (input in config.inputs) {
+                val row = LinearLayout(requireContext())
+                row.orientation = LinearLayout.HORIZONTAL
+                row.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, boxPadding, 0, 0) }
+                row.gravity = android.view.Gravity.CENTER_VERTICAL
+                row.setPadding(boxPadding, 0, boxPadding, 0)
+
+                // Input field (Material filled, rounded, no border)
+                val inputLayout = TextInputLayout(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_FilledBox)
+                inputLayout.layoutParams = LinearLayout.LayoutParams(0, boxHeight, 2f).apply {
+                    setMargins(0, 0, boxPadding / 2, 0)
+                }
+                inputLayout.hint = input.label
+                inputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_FILLED)
+                inputLayout.boxBackgroundColor = fillColor
+                inputLayout.boxStrokeWidth = 0
+                val editText = TextInputEditText(requireContext())
+                editText.inputType = if (input.type == "number")
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                else InputType.TYPE_CLASS_TEXT
+                editText.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
+                editText.background = null
+                editText.minHeight = boxHeight
+                editText.maxHeight = boxHeight
+                editText.setPadding(boxPadding, 0, boxPadding, 0)
+                inputLayout.addView(editText)
+                row.addView(inputLayout)
+
+                var unitDropdown: MaterialAutoCompleteTextView? = null
+                if (input.unit != null) {
+                    val hasLongUnit = input.unit.any { it.length > 4 }
+                    val allShortUnits = input.unit.all { it.length <= 4 }
+                    val unitWeight = if (hasLongUnit) 1.5f else 1f
+                    val unitMaxWidth = if (allShortUnits) (120 * resources.displayMetrics.density).toInt() else (180 * resources.displayMetrics.density).toInt()
+                    val unitLayout = TextInputLayout(
+                        requireContext(), null,
+                        com.google.android.material.R.style.Widget_MaterialComponents_TextInputLayout_FilledBox_ExposedDropdownMenu
+                    )
+                    unitLayout.layoutParams = LinearLayout.LayoutParams(0, boxHeight, unitWeight)
+                    unitLayout.hint = "Unit"
+                    unitLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_FILLED)
+                    unitLayout.boxBackgroundColor = fillColor
+                    unitLayout.boxStrokeWidth = 0
+                    unitLayout.setEndIconMode(TextInputLayout.END_ICON_DROPDOWN_MENU)
+                    unitDropdown = MaterialAutoCompleteTextView(requireContext())
+                    unitDropdown.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, input.unit))
+                    if (input.unit.isNotEmpty()) {
+                        unitDropdown.setText(input.unit[0], false)
+                    }
+                    unitDropdown.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
+                    unitDropdown.background = null
+                    unitDropdown.minHeight = boxHeight
+                    unitDropdown.maxHeight = boxHeight
+                    unitDropdown.setPadding(boxPadding, 0, boxPadding, 0)
+                    unitDropdown.maxLines = 1
+                    unitDropdown.ellipsize = android.text.TextUtils.TruncateAt.END
+                    unitDropdown.minWidth = (64 * resources.displayMetrics.density).toInt()
+                    unitDropdown.maxWidth = unitMaxWidth
+                    unitLayout.addView(unitDropdown)
+                    row.addView(unitLayout)
+                }
+                inputViews[input.id] = Pair(editText, unitDropdown)
+                inputContainer.addView(row)
+            }
+        }
+        // Ensure example is always after input area and before calculate button
+        val btnCalculate = view.findViewById<MaterialButton>(R.id.btn_calculate)
+        parentLayout?.let {
+            // Remove any previous example views
+            for (i in it.childCount - 1 downTo 0) {
+                val v = it.getChildAt(i)
+                if (v.tag == "example_text") it.removeViewAt(i)
+            }
+            config.example?.takeIf { it.isNotBlank() }?.let { example ->
+                val exampleText = TextView(requireContext())
+                exampleText.text = "Example: $example"
+                exampleText.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
+                exampleText.setPadding(0, boxPadding, 0, boxPadding)
+                exampleText.setTextColor(0xFFAAAAAA.toInt())
+                exampleText.tag = "example_text"
+                // Place example just before calculate button
+                it.addView(exampleText, it.indexOfChild(btnCalculate))
+            }
         }
         // Calculate button
-        view.findViewById<MaterialButton>(R.id.btn_calculate).setOnClickListener {
+        btnCalculate.setOnClickListener {
             val inputValues = mutableMapOf<String, Double>()
             val inputUnits = mutableMapOf<String, String>()
             for ((id, pair) in inputViews) {
@@ -207,6 +341,7 @@ class DynamicCalculatorFragment : DialogFragment() {
                         id = calc.getString("id"),
                         name = calc.getString("name"),
                         formula = calc.optString("formula", null),
+                        example = calc.optString("example", null),
                         inputs = inputs,
                         calculateButton = ButtonConfig(calc.getJSONObject("calculateButton").getString("label")),
                         result = ResultConfig(calc.getJSONObject("result").getString("label")),
@@ -223,6 +358,7 @@ class DynamicCalculatorFragment : DialogFragment() {
         val id: String,
         val name: String,
         val formula: String? = null,
+        val example: String? = null,
         val inputs: List<InputField>,
         val calculateButton: ButtonConfig,
         val result: ResultConfig,

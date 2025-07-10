@@ -15,7 +15,8 @@
           "calculateButton": { "label": "Solve" },
           "result": { "label": "x" },
           "logic": "solveLinearEquation",
-          "formula": "ax + b = c"
+          "formula": "ax + b = c\nx = (c - b) / a",
+          "example": "a=2, b=3, c=7 → x = (7-3)/2 = 2"
         },
         {
           "id": "algb01qua01",
@@ -28,7 +29,8 @@
           "calculateButton": { "label": "Solve" },
           "result": { "label": "x₁, x₂" },
           "logic": "solveQuadraticEquation",
-          "formula": "ax² + bx + c = 0"
+          "formula": "ax² + bx + c = 0\nx = [-b ± sqrt(b²-4ac)] / 2a",
+          "example": "a=1, b=-3, c=2 → x₁=2, x₂=1"
         },
         {
           "id": "algb01sys01",
@@ -44,7 +46,8 @@
           "calculateButton": { "label": "Solve" },
           "result": { "label": "x, y" },
           "logic": "solveSystemOfEquations",
-          "formula": "a₁x + b₁y = c₁\na₂x + b₂y = c₂"
+          "formula": "a₁x + b₁y = c₁\na₂x + b₂y = c₂\nx = (c₁b₂ - c₂b₁)/(a₁b₂ - a₂b₁)\ny = (a₁c₂ - a₂c₁)/(a₁b₂ - a₂b₁)",
+          "example": "a₁=2, b₁=3, c₁=8; a₂=1, b₂=-4, c₂=-2 → x=2, y=1"
         },
         {
           "id": "algb01pol01",
@@ -55,7 +58,8 @@
           "calculateButton": { "label": "Factor" },
           "result": { "label": "Factored Form" },
           "logic": "factorPolynomial",
-          "formula": "Enter coefficients for polynomial"
+          "formula": "Enter coefficients for polynomial. The calculator will construct the polynomial and factor it.",
+          "example": "coefficients: 1, -3, 2 → (x-1)(x-2)"
         },
         {
           "id": "algb01fac01",
@@ -66,7 +70,8 @@
           "calculateButton": { "label": "Factor" },
           "result": { "label": "Prime Factors" },
           "logic": "factorNumber",
-          "formula": "Prime factorization"
+          "formula": "Prime factorization of a number",
+          "example": "number: 12 → 2 × 2 × 3"
         },
         {
           "id": "algb01com01",
@@ -78,7 +83,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Polar/Rectangular" },
           "logic": "convertComplexNumber",
-          "formula": "z = a + bi"
+          "formula": "z = a + bi\nPolar: r = sqrt(a²+b²), θ = atan2(b,a)",
+          "example": "real=3, imag=4 → r=5, θ=53.13°"
         }
       ]
     },
@@ -96,7 +102,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Area" },
           "logic": "calculateArea",
-          "formula": "Area = Length × Width"
+          "formula": "Area = Length × Width",
+          "example": "length=5m, width=3m → area=15m²"
         },
         {
           "id": "geom01per01",
@@ -108,7 +115,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Perimeter" },
           "logic": "calculatePerimeter",
-          "formula": "Perimeter = 2 × (Length + Width)"
+          "formula": "Perimeter = 2 × (Length + Width)",
+          "example": "length=5m, width=3m → perimeter=16m"
         },
         {
           "id": "geom01vol01",
@@ -121,7 +129,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Volume" },
           "logic": "calculateVolume",
-          "formula": "Volume = Length × Width × Height"
+          "formula": "Volume = Length × Width × Height",
+          "example": "length=5m, width=3m, height=2m → volume=30m³"
         },
         {
           "id": "geom01sur01",
@@ -134,7 +143,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Surface Area" },
           "logic": "calculateSurfaceArea",
-          "formula": "Surface Area = 2 × (L×W + L×H + W×H)"
+          "formula": "Surface Area = 2 × (L×W + L×H + W×H)",
+          "example": "length=5m, width=3m, height=2m → surface area=62m²"
         },
         {
           "id": "geom01pyt01",
@@ -146,7 +156,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "c" },
           "logic": "calculatePythagorean",
-          "formula": "c = √(a² + b²)"
+          "formula": "c = √(a² + b²)",
+          "example": "a=3m, b=4m → c=5m"
         },
         {
           "id": "geom01tri01",
@@ -158,7 +169,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Result" },
           "logic": "calculateTrigonometry",
-          "formula": "Depends on function (sin, cos, tan, etc.)"
+          "formula": "Depends on function (sin, cos, tan, etc.)",
+          "example": "angle=30°, side=10m → result=5m"
         }
       ]
     },
@@ -177,7 +189,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Simple Interest" },
           "logic": "calculateSimpleInterest",
-          "formula": "SI = (Principal × Rate × Time) / 100"
+          "formula": "SI = (Principal × Rate × Time) / 100",
+          "example": "principal=1000₹, rate=5%, time=2years → simple interest=100₹"
         },
         {
           "id": "finc01com01",
@@ -191,7 +204,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Compound Interest" },
           "logic": "calculateCompoundInterest",
-          "formula": "CI = Principal × (1 + Rate/(100×n))^(n×Time) - Principal"
+          "formula": "CI = Principal × (1 + Rate/(100×n))^(n×Time) - Principal",
+          "example": "principal=1000₹, rate=5%, time=2years, frequency=1 → compound interest=102.50₹"
         },
         {
           "id": "finc01loa01",
@@ -204,7 +218,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Monthly Payment" },
           "logic": "calculateLoanPayment",
-          "formula": "EMI = [P × r × (1+r)^n] / [(1+r)^n – 1]"
+          "formula": "EMI = [P × r × (1+r)^n] / [(1+r)^n – 1]",
+          "example": "amount=100000₹, rate=10%, term=5years → monthly payment=2107.14₹"
         },
         {
           "id": "finc01mor01",
@@ -217,7 +232,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Monthly Payment" },
           "logic": "calculateMortgagePayment",
-          "formula": "EMI = [P × r × (1+r)^n] / [(1+r)^n – 1]"
+          "formula": "EMI = [P × r × (1+r)^n] / [(1+r)^n – 1]",
+          "example": "amount=2000000₹, rate=8%, term=20years → monthly payment=14902.95₹"
         },
         {
           "id": "finc01inv01",
@@ -231,7 +247,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Future Value" },
           "logic": "calculateInvestment",
-          "formula": "FV = ... (depends on compounding and contributions)"
+          "formula": "FV = ... (depends on compounding and contributions)",
+          "example": "initial=100000₹, rate=10%, years=5, contribution=10000₹ → future value=161051₹"
         },
         {
           "id": "finc01tax01",
@@ -243,7 +260,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Tax Amount" },
           "logic": "calculateTax",
-          "formula": "Tax = Income × Tax Rate / 100"
+          "formula": "Tax = Income × Tax Rate / 100",
+          "example": "income=500000₹, taxrate=30% → tax amount=150000₹"
         }
       ]
     },
@@ -262,7 +280,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Premium" },
           "logic": "calculateLifeInsurancePremium",
-          "formula": "Premium = f(Age, Sum Assured, Term)"
+          "formula": "Premium = f(Age, Sum Assured, Term)",
+          "example": "age=30, sum_assured=1000000₹, term=20years → premium=12000₹"
         },
         {
           "id": "insr01hea01",
@@ -275,7 +294,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Premium" },
           "logic": "calculateHealthInsurancePremium",
-          "formula": "Premium = f(Age, Sum Assured, Members)"
+          "formula": "Premium = f(Age, Sum Assured, Members)",
+          "example": "age=40, sum_assured=500000₹, members=2 → premium=15000₹"
         },
         {
           "id": "insr01aut01",
@@ -288,7 +308,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Premium" },
           "logic": "calculateAutoInsurancePremium",
-          "formula": "Premium = f(Car Value, Car Age, Driver Age)"
+          "formula": "Premium = f(Car Value, Car Age, Driver Age)",
+          "example": "car_value=500000₹, car_age=3years, driver_age=35 → premium=20000₹"
         },
         {
           "id": "insr01hom01",
@@ -301,7 +322,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Premium" },
           "logic": "calculateHomeInsurancePremium",
-          "formula": "Premium = f(Home Value, Area, Year Built)"
+          "formula": "Premium = f(Home Value, Area, Year Built)",
+          "example": "home_value=1000000₹, area=2000sq ft, year_built=2000 → premium=15000₹"
         },
         {
           "id": "insr01pre01",
@@ -314,7 +336,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Premium" },
           "logic": "calculatePremium",
-          "formula": "Premium = (Sum Assured × Rate × Term) / 100"
+          "formula": "Premium = (Sum Assured × Rate × Term) / 100",
+          "example": "sum_assured=1000000₹, term=10years, rate=5% → premium=50000₹"
         },
         {
           "id": "insr01cov01",
@@ -327,7 +350,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Coverage Needed" },
           "logic": "calculateCoverage",
-          "formula": "Coverage = f(Income, Liabilities, Expenses)"
+          "formula": "Coverage = f(Income, Liabilities, Expenses)",
+          "example": "income=1000000₹, liabilities=500000₹, expenses=200000₹ → coverage needed=300000₹"
         }
       ]
     },
@@ -345,7 +369,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "BMI" },
           "logic": "calculateBMI",
-          "formula": "BMI = Weight / (Height × Height)"
+          "formula": "BMI = Weight / (Height × Height)",
+          "example": "weight=70kg, height=170cm → bmi=24.22"
         },
         {
           "id": "hlth01cal01",
@@ -360,7 +385,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Calories Needed" },
           "logic": "calculateCalories",
-          "formula": "Calories = f(Age, Weight, Height, Gender, Activity)"
+          "formula": "Calories = f(Age, Weight, Height, Gender, Activity)",
+          "example": "age=25, weight=60kg, height=170cm, gender=Male, activity=Moderate → calories=2500"
         },
         {
           "id": "hlth01bmr01",
@@ -374,7 +400,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "BMR" },
           "logic": "calculateBMR",
-          "formula": "BMR = f(Age, Weight, Height, Gender)"
+          "formula": "BMR = f(Age, Weight, Height, Gender)",
+          "example": "age=30, weight=70kg, height=170cm, gender=Male → bmr=1600"
         },
         {
           "id": "hlth01bod01",
@@ -388,7 +415,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Body Fat %" },
           "logic": "calculateBodyFat",
-          "formula": "Body Fat % = f(Age, Weight, Waist, Gender)"
+          "formula": "Body Fat % = f(Age, Weight, Waist, Gender)",
+          "example": "age=28, weight=65kg, waist=80cm, gender=Male → body fat=15%"
         },
         {
           "id": "hlth01ide01",
@@ -400,7 +428,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Ideal Weight" },
           "logic": "calculateIdealWeight",
-          "formula": "Ideal Weight = f(Height, Gender)"
+          "formula": "Ideal Weight = f(Height, Gender)",
+          "example": "height=170cm, gender=Male → ideal weight=65kg"
         },
         {
           "id": "hlth01sco01",
@@ -414,7 +443,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Health Score" },
           "logic": "calculateHealthScore",
-          "formula": "Health Score = f(Age, Weight, Height, Activity)"
+          "formula": "Health Score = f(Age, Weight, Height, Activity)",
+          "example": "age=35, weight=70kg, height=170cm, activity=Moderate → health score=70"
         }
       ]
     },
@@ -432,7 +462,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Days Between" },
           "logic": "calculateDateDifference",
-          "formula": "Days = End Date - Start Date"
+          "formula": "Days = End Date - Start Date",
+          "example": "start_date=2023-01-01, end_date=2023-01-10 → days=9"
         },
         {
           "id": "date01tim01",
@@ -444,7 +475,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Time Difference" },
           "logic": "calculateTimeDifference",
-          "formula": "Time = End Time - Start Time"
+          "formula": "Time = End Time - Start Time",
+          "example": "start_time=10:00, end_time=12:30 → time=2.5 hours"
         },
         {
           "id": "date01age01",
@@ -455,7 +487,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Age" },
           "logic": "calculateAge",
-          "formula": "Age = Today - DOB"
+          "formula": "Age = Today - DOB",
+          "example": "dob=1990-01-01 → age=33 years"
         },
         {
           "id": "date01cou01",
@@ -467,7 +500,8 @@
           "calculateButton": { "label": "Start" },
           "result": { "label": "Time Left" },
           "logic": "calculateCountdown",
-          "formula": "Time Left = Target Date/Time - Now"
+          "formula": "Time Left = Target Date/Time - Now",
+          "example": "target_date=2024-12-31, target_time=12:00 → time left=365 days"
         },
         {
           "id": "date01zon01",
@@ -480,7 +514,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Converted Time" },
           "logic": "convertTimeZone",
-          "formula": "Converted = Time in To Zone"
+          "formula": "Converted = Time in To Zone",
+          "example": "time=10:00, from_zone=UTC, to_zone=IST → converted_time=15:30"
         },
         {
           "id": "date01cal01",
@@ -491,7 +526,8 @@
           "calculateButton": { "label": "Check" },
           "result": { "label": "Info" },
           "logic": "calculateCalendarInfo",
-          "formula": "Info = f(Date)"
+          "formula": "Info = f(Date)",
+          "example": "date=2023-10-27 → info=It's a Friday"
         }
       ]
     },
@@ -510,7 +546,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Converted Value" },
           "logic": "convertLength",
-          "formula": "Value (From) → Value (To)"
+          "formula": "Value (From) → Value (To)",
+          "example": "value=1000, from_unit=cm, to_unit=m → converted_value=10"
         },
         {
           "id": "unit01wei01",
@@ -523,7 +560,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Converted Value" },
           "logic": "convertWeight",
-          "formula": "Value (From) → Value (To)"
+          "formula": "Value (From) → Value (To)",
+          "example": "value=1000, from_unit=g, to_unit=kg → converted_value=1"
         },
         {
           "id": "unit01tem01",
@@ -536,7 +574,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Converted Value" },
           "logic": "convertTemperature",
-          "formula": "Value (From) → Value (To)"
+          "formula": "Value (From) → Value (To)",
+          "example": "value=100, from_unit=°C, to_unit=°F → converted_value=212"
         },
         {
           "id": "unit01are01",
@@ -549,7 +588,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Converted Value" },
           "logic": "convertArea",
-          "formula": "Value (From) → Value (To)"
+          "formula": "Value (From) → Value (To)",
+          "example": "value=1000, from_unit=m², to_unit=cm² → converted_value=100000000"
         },
         {
           "id": "unit01vol01",
@@ -562,7 +602,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Converted Value" },
           "logic": "convertVolume",
-          "formula": "Value (From) → Value (To)"
+          "formula": "Value (From) → Value (To)",
+          "example": "value=1000, from_unit=l, to_unit=ml → converted_value=1000000"
         },
         {
           "id": "unit01spe01",
@@ -575,7 +616,8 @@
           "calculateButton": { "label": "Convert" },
           "result": { "label": "Converted Value" },
           "logic": "convertSpeed",
-          "formula": "Value (From) → Value (To)"
+          "formula": "Value (From) → Value (To)",
+          "example": "value=100, from_unit=km/h, to_unit=m/s → converted_value=27.78"
         }
       ]
     },
@@ -593,7 +635,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Result" },
           "logic": "calculatePercentage",
-          "formula": "Result = Value × Percent / 100"
+          "formula": "Result = Value × Percent / 100",
+          "example": "value=100, percent=20% → result=20"
         },
         {
           "id": "othr01rat01",
@@ -606,7 +649,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Ratio Result" },
           "logic": "calculateRatio",
-          "formula": "A : B = ? (given total)"
+          "formula": "A : B = ? (given total)",
+          "example": "a=10, b=5, total=15 → ratio result=2:1"
         },
         {
           "id": "othr01sta01",
@@ -617,7 +661,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Mean, Median, Mode" },
           "logic": "calculateStatistics",
-          "formula": "Enter values separated by commas"
+          "formula": "Enter values separated by commas",
+          "example": "values: 1, 2, 3, 4, 5 → mean=3, median=3, mode=1"
         },
         {
           "id": "othr01pro01",
@@ -629,7 +674,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Probability" },
           "logic": "calculateProbability",
-          "formula": "Probability = Favorable / Total"
+          "formula": "Probability = Favorable / Total",
+          "example": "favorable=5, total=10 → probability=0.5"
         },
         {
           "id": "othr01sci01",
@@ -640,7 +686,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Result" },
           "logic": "calculateScientific",
-          "formula": "Enter any valid expression"
+          "formula": "Evaluates mathematical expressions using standard operator precedence, parentheses, and scientific functions (e.g., +, -, ×, ÷, ^, sin, cos, tan, log, exp, sqrt, etc.).",
+          "example": "expression: 2 + 3 * (4 - 1) → result=11"
         },
         {
           "id": "othr01mat01",
@@ -652,7 +699,8 @@
           "calculateButton": { "label": "Calculate" },
           "result": { "label": "Matrix Result" },
           "logic": "calculateMatrix",
-          "formula": "Enter matrices as rows;cols (e.g., 1,2;3,4)"
+          "formula": "Enter matrices as rows;cols (e.g., 1,2;3,4)",
+          "example": "matrix_a: 1,2;3,4, matrix_b: 5,6;7,8 → matrix_result: 19,22;43,50"
         }
       ]
     }
