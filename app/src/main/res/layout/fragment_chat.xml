@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <!-- Left edge gesture zone -->
+    <View
+        android:id="@+id/left_edge_gesture"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/transparent"
+        android:importantForAccessibility="no"/>
+    <!-- Right edge gesture zone -->
+    <View
+        android:id="@+id/right_edge_gesture"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@android:color/transparent"
+        android:importantForAccessibility="no"/>
+
+    <TextView
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat Tab"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="24sp"/>
+</FrameLayout> 

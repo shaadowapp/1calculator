@@ -25,22 +25,22 @@ class ModernBottomNavigationView @JvmOverloads constructor(
     // Tab views
     private lateinit var homeTab: View
     private lateinit var voiceTab: View
-    private lateinit var categoryTab: View
+    private lateinit var chatTab: View // Renamed from categoryTab
 
     // Tab icons
     private lateinit var homeIcon: ImageView
     private lateinit var voiceIcon: ImageView
-    private lateinit var categoryIcon: ImageView
+    private lateinit var chatIcon: ImageView // Renamed from categoryIcon
 
     // Tab labels
     private lateinit var homeLabel: TextView
     private lateinit var voiceLabel: TextView
-    private lateinit var categoryLabel: TextView
+    private lateinit var chatLabel: TextView // Renamed from categoryLabel
 
     // Tab containers
     private lateinit var homeContainer: FrameLayout
     private lateinit var voiceContainer: FrameLayout
-    private lateinit var categoryContainer: FrameLayout
+    private lateinit var chatContainer: FrameLayout // Renamed from categoryContainer
 
     init {
         setupBottomNavigation()
@@ -53,22 +53,22 @@ class ModernBottomNavigationView @JvmOverloads constructor(
         // Initialize tab views
         homeTab = findViewById(R.id.home_tab)
         voiceTab = findViewById(R.id.voice_tab)
-        categoryTab = findViewById(R.id.category_tab)
+        chatTab = findViewById(R.id.category_tab) // Using same id for now
 
         // Initialize icon views
         homeIcon = homeTab.findViewById(R.id.tab_icon)
         voiceIcon = voiceTab.findViewById(R.id.tab_icon)
-        categoryIcon = categoryTab.findViewById(R.id.tab_icon)
+        chatIcon = chatTab.findViewById(R.id.tab_icon)
 
         // Initialize label views
         homeLabel = homeTab.findViewById(R.id.tab_label)
         voiceLabel = voiceTab.findViewById(R.id.tab_label)
-        categoryLabel = categoryTab.findViewById(R.id.tab_label)
+        chatLabel = chatTab.findViewById(R.id.tab_label)
 
         // Initialize container views
         homeContainer = homeTab.findViewById(R.id.icon_container)
         voiceContainer = voiceTab.findViewById(R.id.icon_container)
-        categoryContainer = categoryTab.findViewById(R.id.icon_container)
+        chatContainer = chatTab.findViewById(R.id.icon_container)
 
         // Set up tab data
         setupTabData()
@@ -91,9 +91,9 @@ class ModernBottomNavigationView @JvmOverloads constructor(
         askMathlyText.setSpan(StyleSpan(Typeface.BOLD), 4, 10, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         voiceLabel.text = askMathlyText
 
-        // Category tab
-        categoryIcon.setImageResource(R.drawable.ic_grid)
-        categoryLabel.text = "Category"
+        // Chat tab
+        chatIcon.setImageResource(R.drawable.ic_ai) // Fallback to AI icon if ic_chat does not exist
+        chatLabel.text = "Chat"
     }
 
     private fun setupClickListeners() {
@@ -107,7 +107,7 @@ class ModernBottomNavigationView @JvmOverloads constructor(
             onTabSelectedListener?.invoke(1)
         }
 
-        categoryTab.setOnClickListener {
+        chatTab.setOnClickListener {
             setSelectedTab(2)
             onTabSelectedListener?.invoke(2)
         }
@@ -126,7 +126,7 @@ class ModernBottomNavigationView @JvmOverloads constructor(
         val (container, icon, label) = when (position) {
             0 -> Triple(homeContainer, homeIcon, homeLabel)
             1 -> Triple(voiceContainer, voiceIcon, voiceLabel)
-            2 -> Triple(categoryContainer, categoryIcon, categoryLabel)
+            2 -> Triple(chatContainer, chatIcon, chatLabel)
             else -> return
         }
 

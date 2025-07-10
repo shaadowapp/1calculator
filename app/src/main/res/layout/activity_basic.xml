@@ -7,6 +7,13 @@
     android:background="@color/dark_background"
     tools:context=".BasicActivity">
 
+    <include
+        android:id="@+id/custom_toolbar"
+        layout="@layout/custom_toolbar"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <!-- Top bar for Basic screen -->
     <LinearLayout
         android:id="@+id/top_navbar"
@@ -99,6 +106,18 @@
             android:longClickable="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/initial_result_text_description"
+            android:scrollHorizontally="true"
+            android:singleLine="true" />
+        <TextView
+            android:id="@+id/result_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/display_text_size"
+            android:longClickable="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Final result display"
             android:scrollHorizontally="true"
             android:singleLine="true" />
     </LinearLayout>

@@ -112,6 +112,41 @@ class MathlyFragment : Fragment() {
         tvTranscription.setOnClickListener {
             if (!isListening && hasPermission) startListening()
         }
+
+        val leftEdge = view.findViewById<View>(R.id.left_edge_gesture)
+        val rightEdge = view.findViewById<View>(R.id.right_edge_gesture)
+        val gestureDetectorLeft = android.view.GestureDetector(requireContext(), object : android.view.GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: android.view.MotionEvent?, e2: android.view.MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                if (e1 == null) return false
+                val deltaX = e2.x - e1.x
+                if (deltaX < -200 && Math.abs(velocityX) > 800) {
+                    // Swipe left: go to Home tab (index 0)
+                    (requireActivity().findViewById<androidx.viewpager2.widget.ViewPager2>(R.id.view_pager)).currentItem = 0
+                    return true
+                }
+                return false
+            }
+        })
+        val gestureDetectorRight = android.view.GestureDetector(requireContext(), object : android.view.GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: android.view.MotionEvent?, e2: android.view.MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                if (e1 == null) return false
+                val deltaX = e2.x - e1.x
+                if (deltaX > 200 && Math.abs(velocityX) > 800) {
+                    // Swipe right: go to Chat tab (index 2)
+                    (requireActivity().findViewById<androidx.viewpager2.widget.ViewPager2>(R.id.view_pager)).currentItem = 2
+                    return true
+                }
+                return false
+            }
+        })
+        leftEdge.setOnTouchListener { _, event ->
+            gestureDetectorLeft.onTouchEvent(event)
+            false
+        }
+        rightEdge.setOnTouchListener { _, event ->
+            gestureDetectorRight.onTouchEvent(event)
+            false
+        }
     }
 
     private fun checkPermission() {

@@ -78,4 +78,7 @@
     <color name="mathly_bg">#18181C</color>
     <color name="mic_on">#4CAF50</color>
     <color name="mic_off">#B0BEC5</color>
+    <color name="deep_grey">#212121</color>
+    <color name="light_text">#FFFFFF</color>
+    <color name="accent_grey">#424242</color>
 </resources>
